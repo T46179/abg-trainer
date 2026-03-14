@@ -1,0 +1,4154 @@
+{
+  "cases": [
+    {
+      "case_id": "COPD_001",
+      "title": "COPD (chronic respiratory acidosis with metabolic compensation)",
+      "case_type": "ABG",
+      "category": "respiratory_acidosis",
+      "archetype": "copd_chronic_retainer",
+      "difficulty_level": 2,
+      "difficulty_label": "intermediate",
+      "learning_objective": "Recognise chronic respiratory acidosis with appropriate renal compensation",
+      "tags": [
+        "copd",
+        "chronic_respiratory_acidosis",
+        "compensation"
+      ],
+      "clinical_stem": "72-year-old with longstanding breathlessness presents with increased sputum and fatigue.",
+      "inputs": {
+        "gas": {
+          "ph": 7.35,
+          "paco2_mmHg": 55,
+          "hco3_mmolL": 29.3
+        },
+        "electrolytes": {
+          "na_mmolL": 137,
+          "cl_mmolL": 97.7
+        },
+        "lactate_mmolL": 0.8
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Alkalemia",
+            "Normal",
+            "Acidemia"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Respiratory alkalosis",
+            "Respiratory acidosis",
+            "Metabolic alkalosis",
+            "Mixed disorder",
+            "Metabolic acidosis"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "compensation",
+          "prompt": "Is compensation appropriate?",
+          "options": [
+            "Appropriate",
+            "Inappropriate (suggests mixed disorder)"
+          ]
+        },
+        {
+          "step": 4,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "Pneumonia",
+            "Opioid toxicity",
+            "COPD",
+            "Neuromuscular weakness",
+            "Sedative overdose"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Normal",
+        "primary_disorder": "Respiratory acidosis",
+        "expected_compensation": {
+          "rule": "Chronic respiratory acidosis",
+          "expected_hco3_mmolL": 30.0,
+          "acceptable_range_mmolL": [
+            28.0,
+            32.0
+          ]
+        },
+        "compensation": "Appropriate",
+        "anion_gap_value": 10.0,
+        "anion_gap_category": "Normal",
+        "final_diagnosis": "COPD"
+      },
+      "explanation": "pH is low or near-normal with elevated PaCO2, indicating respiratory acidosis. In chronic respiratory acidosis, HCO3 should rise by ~4 mmol/L per 10 mmHg PaCO2 above 40. Expected HCO3 is ~30.0; measured 29.3 is appropriately elevated, consistent with chronic respiratory compensation seen in COPD.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "PANIC_003",
+      "title": "Panic / hyperventilation (acute respiratory alkalosis)",
+      "case_type": "ABG",
+      "category": "respiratory_alkalosis",
+      "archetype": "panic_hyperventilation",
+      "difficulty_level": 1,
+      "difficulty_label": "beginner",
+      "learning_objective": "Recognise acute respiratory alkalosis with appropriate metabolic compensation",
+      "tags": [
+        "panic",
+        "hyperventilation",
+        "respiratory_alkalosis"
+      ],
+      "clinical_stem": "22-year-old presents with sudden shortness of breath, tingling fingers, and chest tightness during emotional distress.",
+      "inputs": {
+        "gas": {
+          "ph": 7.54,
+          "paco2_mmHg": 26,
+          "hco3_mmolL": 21.5
+        },
+        "electrolytes": {
+          "na_mmolL": 138,
+          "cl_mmolL": 108.5
+        },
+        "lactate_mmolL": 0.9
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Alkalemia",
+            "Normal",
+            "Acidemia"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Metabolic alkalosis",
+            "Mixed disorder",
+            "Respiratory acidosis",
+            "Respiratory alkalosis",
+            "Metabolic acidosis"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "COPD",
+            "Pulmonary embolism",
+            "DKA",
+            "Panic attack / hyperventilation",
+            "Vomiting"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Alkalemia",
+        "primary_disorder": "Respiratory alkalosis",
+        "expected_compensation": {
+          "rule": "Acute respiratory alkalosis",
+          "expected_hco3_mmolL": 21.2,
+          "acceptable_range_mmolL": [
+            19.2,
+            23.2
+          ]
+        },
+        "compensation": "Appropriate",
+        "anion_gap_value": 8.0,
+        "anion_gap_category": "Normal",
+        "final_diagnosis": "Panic attack / hyperventilation"
+      },
+      "explanation": "High pH indicates alkalemia. Low PaCO2 indicates a primary respiratory alkalosis. In acute respiratory alkalosis, expected HCO3 is ~21.2; measured 21.5 is appropriate, consistent with acute hyperventilation such as panic.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "SALICYLATE_004",
+      "title": "Salicylate toxicity (mixed respiratory alkalosis + HAGMA)",
+      "case_type": "ABG",
+      "category": "mixed_disorder",
+      "archetype": "salicylate_toxicity",
+      "difficulty_level": 4,
+      "difficulty_label": "expert",
+      "learning_objective": "Recognise the mixed respiratory alkalosis and high anion gap metabolic acidosis of salicylate toxicity",
+      "tags": [
+        "salicylate",
+        "mixed_disorder",
+        "respiratory_alkalosis",
+        "hagma",
+        "toxicology"
+      ],
+      "clinical_stem": "27-year-old presents with nausea, hyperventilation, and tinnitus after ingesting a large quantity of tablets.",
+      "inputs": {
+        "gas": {
+          "ph": 7.32,
+          "paco2_mmHg": 20,
+          "hco3_mmolL": 10
+        },
+        "electrolytes": {
+          "na_mmolL": 142,
+          "cl_mmolL": 106
+        },
+        "lactate_mmolL": 1.3
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Alkalemia",
+            "Acidemia",
+            "Normal"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Respiratory acidosis",
+            "Metabolic acidosis",
+            "Respiratory alkalosis",
+            "Mixed disorder",
+            "Metabolic alkalosis"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "compensation",
+          "prompt": "Is compensation appropriate?",
+          "options": [
+            "Appropriate",
+            "Inappropriate (suggests mixed disorder)"
+          ]
+        },
+        {
+          "step": 4,
+          "key": "anion_gap",
+          "prompt": "Calculate the anion gap (Na \u2212 (Cl + HCO3)).",
+          "options": [
+            "Raised",
+            "Normal"
+          ]
+        },
+        {
+          "step": 5,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "Renal failure (uraemia)",
+            "Salicylate toxicity",
+            "DKA",
+            "Panic attack / hyperventilation",
+            "Diarrhoea"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Acidemia",
+        "primary_disorder": "Mixed disorder",
+        "expected_compensation": {
+          "rule": "Mixed disorder present",
+          "note": "Low PaCO2 and low HCO3 are due to two primary processes: respiratory alkalosis and HAGMA"
+        },
+        "compensation": "Inappropriate (suggests mixed disorder)",
+        "anion_gap_value": 26,
+        "anion_gap_category": "Raised",
+        "final_diagnosis": "Salicylate toxicity"
+      },
+      "explanation": "Both PaCO2 and HCO3 are low. This is not explained by a single primary disorder alone. The low PaCO2 indicates a respiratory alkalosis, while the low HCO3 with raised anion gap (142 \u2212 (106 + 10) = 26) indicates a high anion gap metabolic acidosis. This is a mixed respiratory alkalosis and metabolic acidosis, classic for salicylate toxicity.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "VOMITING_003",
+      "title": "Vomiting (metabolic alkalosis with respiratory compensation)",
+      "case_type": "ABG",
+      "category": "metabolic_alkalosis",
+      "archetype": "vomiting_metabolic_alkalosis",
+      "difficulty_level": 2,
+      "difficulty_label": "intermediate",
+      "learning_objective": "Recognise metabolic alkalosis with appropriate respiratory compensation",
+      "tags": [
+        "vomiting",
+        "metabolic_alkalosis",
+        "chloride_responsive"
+      ],
+      "clinical_stem": "67-year-old presents with dizziness and volume depletion after recurrent nausea and retching.",
+      "inputs": {
+        "gas": {
+          "ph": 7.49,
+          "paco2_mmHg": 46.3,
+          "hco3_mmolL": 34
+        },
+        "electrolytes": {
+          "na_mmolL": 140,
+          "cl_mmolL": 97
+        },
+        "lactate_mmolL": 1.6
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Normal",
+            "Alkalemia",
+            "Acidemia"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Metabolic alkalosis",
+            "Respiratory alkalosis",
+            "Mixed disorder",
+            "Respiratory acidosis",
+            "Metabolic acidosis"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "compensation",
+          "prompt": "Is compensation appropriate?",
+          "options": [
+            "Inappropriate (suggests mixed disorder)",
+            "Appropriate"
+          ]
+        },
+        {
+          "step": 4,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "DKA",
+            "Panic attack",
+            "COPD",
+            "Diuretic use",
+            "Vomiting"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Alkalemia",
+        "primary_disorder": "Metabolic alkalosis",
+        "expected_compensation": {
+          "rule": "Metabolic alkalosis compensation",
+          "expected_paco2_mmHg": 47.0,
+          "acceptable_range_mmHg": [
+            44.0,
+            50.0
+          ]
+        },
+        "compensation": "Appropriate",
+        "anion_gap_value": 9,
+        "anion_gap_category": "Normal",
+        "final_diagnosis": "Vomiting"
+      },
+      "explanation": "High pH indicates alkalemia. Elevated HCO3 indicates a primary metabolic alkalosis. Expected compensatory PaCO2 is ~47.0; measured 46.3 is appropriate, supporting metabolic alkalosis with expected respiratory compensation, as seen with vomiting.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "DIARRHOEA_005",
+      "title": "Diarrhoea (normal anion gap metabolic acidosis)",
+      "case_type": "ABG",
+      "category": "metabolic_acidosis_nagma",
+      "archetype": "diarrhoea_nagma",
+      "difficulty_level": 2,
+      "difficulty_label": "intermediate",
+      "learning_objective": "Recognise normal anion gap metabolic acidosis with appropriate respiratory compensation",
+      "tags": [
+        "diarrhoea",
+        "nagma",
+        "metabolic_acidosis"
+      ],
+      "clinical_stem": "34-year-old presents dehydrated and weak after several days of high-output gastrointestinal losses.",
+      "inputs": {
+        "gas": {
+          "ph": 7.34,
+          "paco2_mmHg": 36.1,
+          "hco3_mmolL": 19
+        },
+        "electrolytes": {
+          "na_mmolL": 139,
+          "cl_mmolL": 110
+        },
+        "lactate_mmolL": 1.1
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Alkalemia",
+            "Normal",
+            "Acidemia"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Metabolic alkalosis",
+            "Mixed disorder",
+            "Metabolic acidosis",
+            "Respiratory acidosis",
+            "Respiratory alkalosis"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "compensation",
+          "prompt": "Is compensation appropriate?",
+          "options": [
+            "Appropriate",
+            "Inappropriate (suggests mixed disorder)"
+          ]
+        },
+        {
+          "step": 4,
+          "key": "anion_gap",
+          "prompt": "Calculate the anion gap (Na \u2212 (Cl + HCO3)).",
+          "options": [
+            "Raised",
+            "Normal"
+          ]
+        },
+        {
+          "step": 5,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "Toxic alcohol",
+            "Diarrhoea",
+            "Vomiting",
+            "Renal failure (uraemia)",
+            "DKA"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Acidemia",
+        "primary_disorder": "Metabolic acidosis",
+        "expected_compensation": {
+          "rule": "Winter",
+          "expected_paco2_mmHg": 36.5,
+          "acceptable_range_mmHg": [
+            34.5,
+            38.5
+          ]
+        },
+        "compensation": "Appropriate",
+        "anion_gap_value": 10,
+        "anion_gap_category": "Normal",
+        "final_diagnosis": "Diarrhoea"
+      },
+      "explanation": "Low pH indicates acidemia. Low HCO3 indicates a primary metabolic acidosis. Winter\u2019s formula predicts PaCO2 ~36.5 (\u00b12); measured 36.1 is appropriate compensation. Anion gap is 139 \u2212 (110 + 19) = 10, which is normal, consistent with NAGMA such as diarrhoea.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "PANIC_005",
+      "title": "Panic / hyperventilation (acute respiratory alkalosis)",
+      "case_type": "ABG",
+      "category": "respiratory_alkalosis",
+      "archetype": "panic_hyperventilation",
+      "difficulty_level": 1,
+      "difficulty_label": "beginner",
+      "learning_objective": "Recognise acute respiratory alkalosis with appropriate metabolic compensation",
+      "tags": [
+        "panic",
+        "hyperventilation",
+        "respiratory_alkalosis"
+      ],
+      "clinical_stem": "30-year-old presents with rapid breathing, light-headedness, and perioral tingling after an acute stressful event.",
+      "inputs": {
+        "gas": {
+          "ph": 7.52,
+          "paco2_mmHg": 27,
+          "hco3_mmolL": 21.4
+        },
+        "electrolytes": {
+          "na_mmolL": 138,
+          "cl_mmolL": 103.6
+        },
+        "lactate_mmolL": 1.5
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Normal",
+            "Alkalemia",
+            "Acidemia"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Respiratory alkalosis",
+            "Metabolic acidosis",
+            "Respiratory acidosis",
+            "Metabolic alkalosis",
+            "Mixed disorder"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "Pulmonary embolism",
+            "DKA",
+            "COPD",
+            "Vomiting",
+            "Panic attack / hyperventilation"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Alkalemia",
+        "primary_disorder": "Respiratory alkalosis",
+        "expected_compensation": {
+          "rule": "Acute respiratory alkalosis",
+          "expected_hco3_mmolL": 21.4,
+          "acceptable_range_mmolL": [
+            19.4,
+            23.4
+          ]
+        },
+        "compensation": "Appropriate",
+        "anion_gap_value": 13.0,
+        "anion_gap_category": "Normal",
+        "final_diagnosis": "Panic attack / hyperventilation"
+      },
+      "explanation": "High pH indicates alkalemia. Low PaCO2 indicates a primary respiratory alkalosis. In acute respiratory alkalosis, expected HCO3 is ~21.4; measured 21.4 is appropriate, consistent with acute hyperventilation such as panic.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "COPD_003",
+      "title": "COPD (chronic respiratory acidosis with metabolic compensation)",
+      "case_type": "ABG",
+      "category": "respiratory_acidosis",
+      "archetype": "copd_chronic_retainer",
+      "difficulty_level": 2,
+      "difficulty_label": "intermediate",
+      "learning_objective": "Recognise chronic respiratory acidosis with appropriate renal compensation",
+      "tags": [
+        "copd",
+        "chronic_respiratory_acidosis",
+        "compensation"
+      ],
+      "clinical_stem": "72-year-old with longstanding breathlessness presents with increased sputum and fatigue.",
+      "inputs": {
+        "gas": {
+          "ph": 7.34,
+          "paco2_mmHg": 61,
+          "hco3_mmolL": 32.0
+        },
+        "electrolytes": {
+          "na_mmolL": 142,
+          "cl_mmolL": 96.0
+        },
+        "lactate_mmolL": 1.5
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Acidemia",
+            "Alkalemia",
+            "Normal"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Mixed disorder",
+            "Metabolic alkalosis",
+            "Respiratory alkalosis",
+            "Respiratory acidosis",
+            "Metabolic acidosis"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "compensation",
+          "prompt": "Is compensation appropriate?",
+          "options": [
+            "Appropriate",
+            "Inappropriate (suggests mixed disorder)"
+          ]
+        },
+        {
+          "step": 4,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "Neuromuscular weakness",
+            "COPD",
+            "Sedative overdose",
+            "Pneumonia",
+            "Opioid toxicity"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Acidemia",
+        "primary_disorder": "Respiratory acidosis",
+        "expected_compensation": {
+          "rule": "Chronic respiratory acidosis",
+          "expected_hco3_mmolL": 32.4,
+          "acceptable_range_mmolL": [
+            30.4,
+            34.4
+          ]
+        },
+        "compensation": "Appropriate",
+        "anion_gap_value": 14.0,
+        "anion_gap_category": "Normal",
+        "final_diagnosis": "COPD"
+      },
+      "explanation": "pH is low or near-normal with elevated PaCO2, indicating respiratory acidosis. In chronic respiratory acidosis, HCO3 should rise by ~4 mmol/L per 10 mmHg PaCO2 above 40. Expected HCO3 is ~32.4; measured 32.0 is appropriately elevated, consistent with chronic respiratory compensation seen in COPD.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "DIARRHOEA_003",
+      "title": "Diarrhoea (normal anion gap metabolic acidosis)",
+      "case_type": "ABG",
+      "category": "metabolic_acidosis_nagma",
+      "archetype": "diarrhoea_nagma",
+      "difficulty_level": 2,
+      "difficulty_label": "intermediate",
+      "learning_objective": "Recognise normal anion gap metabolic acidosis with appropriate respiratory compensation",
+      "tags": [
+        "diarrhoea",
+        "nagma",
+        "metabolic_acidosis"
+      ],
+      "clinical_stem": "29-year-old presents with light-headedness and dehydration after several days of gastroenteritis symptoms.",
+      "inputs": {
+        "gas": {
+          "ph": 7.32,
+          "paco2_mmHg": 36.2,
+          "hco3_mmolL": 18
+        },
+        "electrolytes": {
+          "na_mmolL": 142,
+          "cl_mmolL": 116
+        },
+        "lactate_mmolL": 1.0
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Acidemia",
+            "Normal",
+            "Alkalemia"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Mixed disorder",
+            "Respiratory alkalosis",
+            "Respiratory acidosis",
+            "Metabolic alkalosis",
+            "Metabolic acidosis"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "compensation",
+          "prompt": "Is compensation appropriate?",
+          "options": [
+            "Appropriate",
+            "Inappropriate (suggests mixed disorder)"
+          ]
+        },
+        {
+          "step": 4,
+          "key": "anion_gap",
+          "prompt": "Calculate the anion gap (Na \u2212 (Cl + HCO3)).",
+          "options": [
+            "Normal",
+            "Raised"
+          ]
+        },
+        {
+          "step": 5,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "Diarrhoea",
+            "Toxic alcohol",
+            "Vomiting",
+            "DKA",
+            "Renal failure (uraemia)"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Acidemia",
+        "primary_disorder": "Metabolic acidosis",
+        "expected_compensation": {
+          "rule": "Winter",
+          "expected_paco2_mmHg": 35.0,
+          "acceptable_range_mmHg": [
+            33.0,
+            37.0
+          ]
+        },
+        "compensation": "Appropriate",
+        "anion_gap_value": 8,
+        "anion_gap_category": "Normal",
+        "final_diagnosis": "Diarrhoea"
+      },
+      "explanation": "Low pH indicates acidemia. Low HCO3 indicates a primary metabolic acidosis. Winter\u2019s formula predicts PaCO2 ~35.0 (\u00b12); measured 36.2 is appropriate compensation. Anion gap is 142 \u2212 (116 + 18) = 8, which is normal, consistent with NAGMA such as diarrhoea.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "COPD_004",
+      "title": "COPD (chronic respiratory acidosis with metabolic compensation)",
+      "case_type": "ABG",
+      "category": "respiratory_acidosis",
+      "archetype": "copd_chronic_retainer",
+      "difficulty_level": 2,
+      "difficulty_label": "intermediate",
+      "learning_objective": "Recognise chronic respiratory acidosis with appropriate renal compensation",
+      "tags": [
+        "copd",
+        "chronic_respiratory_acidosis",
+        "compensation"
+      ],
+      "clinical_stem": "72-year-old with longstanding breathlessness presents with increased sputum and fatigue.",
+      "inputs": {
+        "gas": {
+          "ph": 7.35,
+          "paco2_mmHg": 64,
+          "hco3_mmolL": 34.3
+        },
+        "electrolytes": {
+          "na_mmolL": 142,
+          "cl_mmolL": 96.7
+        },
+        "lactate_mmolL": 1.8
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Alkalemia",
+            "Acidemia",
+            "Normal"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Metabolic alkalosis",
+            "Respiratory acidosis",
+            "Metabolic acidosis",
+            "Mixed disorder",
+            "Respiratory alkalosis"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "compensation",
+          "prompt": "Is compensation appropriate?",
+          "options": [
+            "Appropriate",
+            "Inappropriate (suggests mixed disorder)"
+          ]
+        },
+        {
+          "step": 4,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "Sedative overdose",
+            "Opioid toxicity",
+            "Pneumonia",
+            "Neuromuscular weakness",
+            "COPD"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Normal",
+        "primary_disorder": "Respiratory acidosis",
+        "expected_compensation": {
+          "rule": "Chronic respiratory acidosis",
+          "expected_hco3_mmolL": 33.6,
+          "acceptable_range_mmolL": [
+            31.6,
+            35.6
+          ]
+        },
+        "compensation": "Appropriate",
+        "anion_gap_value": 11.0,
+        "anion_gap_category": "Normal",
+        "final_diagnosis": "COPD"
+      },
+      "explanation": "pH is low or near-normal with elevated PaCO2, indicating respiratory acidosis. In chronic respiratory acidosis, HCO3 should rise by ~4 mmol/L per 10 mmHg PaCO2 above 40. Expected HCO3 is ~33.6; measured 34.3 is appropriately elevated, consistent with chronic respiratory compensation seen in COPD.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "OPIOID_001",
+      "title": "Opioid toxicity (acute respiratory acidosis)",
+      "case_type": "ABG",
+      "category": "respiratory_acidosis",
+      "archetype": "opioid_toxicity",
+      "difficulty_level": 2,
+      "difficulty_label": "intermediate",
+      "learning_objective": "Recognise acute respiratory acidosis due to hypoventilation with appropriate compensation",
+      "tags": [
+        "opioid",
+        "respiratory_acidosis",
+        "hypoventilation",
+        "toxicology"
+      ],
+      "clinical_stem": "32-year-old is brought in drowsy with bradypnoea and decreased responsiveness.",
+      "inputs": {
+        "gas": {
+          "ph": 7.21,
+          "paco2_mmHg": 68,
+          "hco3_mmolL": 26.4
+        },
+        "electrolytes": {
+          "na_mmolL": 137,
+          "cl_mmolL": 97.6
+        },
+        "lactate_mmolL": 1.0
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Acidemia",
+            "Normal",
+            "Alkalemia"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Respiratory acidosis",
+            "Metabolic alkalosis",
+            "Mixed disorder",
+            "Metabolic acidosis",
+            "Respiratory alkalosis"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "compensation",
+          "prompt": "Is compensation appropriate?",
+          "options": [
+            "Inappropriate (suggests mixed disorder)",
+            "Appropriate"
+          ]
+        },
+        {
+          "step": 4,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "COPD",
+            "Pneumonia",
+            "Opioid toxicity",
+            "Neuromuscular weakness",
+            "Sedative overdose"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Acidemia",
+        "primary_disorder": "Respiratory acidosis",
+        "expected_compensation": {
+          "rule": "Acute respiratory acidosis",
+          "expected_hco3_mmolL": 26.8,
+          "acceptable_range_mmolL": [
+            24.8,
+            28.8
+          ]
+        },
+        "compensation": "Appropriate",
+        "anion_gap_value": 13.0,
+        "anion_gap_category": "Normal",
+        "final_diagnosis": "Opioid toxicity"
+      },
+      "explanation": "Low pH = acidemia. High PaCO2 indicates a primary respiratory acidosis. For acute respiratory acidosis, expected HCO3 is ~26.8; measured 26.4 is appropriate acute compensation. This pattern fits acute hypoventilation, such as opioid toxicity.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "OPIOID_005",
+      "title": "Opioid toxicity (acute respiratory acidosis)",
+      "case_type": "ABG",
+      "category": "respiratory_acidosis",
+      "archetype": "opioid_toxicity",
+      "difficulty_level": 2,
+      "difficulty_label": "intermediate",
+      "learning_objective": "Recognise acute respiratory acidosis due to hypoventilation with appropriate compensation",
+      "tags": [
+        "opioid",
+        "respiratory_acidosis",
+        "hypoventilation",
+        "toxicology"
+      ],
+      "clinical_stem": "27-year-old presents with reduced consciousness, shallow respirations, and pinpoint pupils.",
+      "inputs": {
+        "gas": {
+          "ph": 7.21,
+          "paco2_mmHg": 67,
+          "hco3_mmolL": 26.1
+        },
+        "electrolytes": {
+          "na_mmolL": 141,
+          "cl_mmolL": 106.9
+        },
+        "lactate_mmolL": 1.1
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Alkalemia",
+            "Normal",
+            "Acidemia"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Respiratory alkalosis",
+            "Metabolic acidosis",
+            "Mixed disorder",
+            "Metabolic alkalosis",
+            "Respiratory acidosis"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "compensation",
+          "prompt": "Is compensation appropriate?",
+          "options": [
+            "Inappropriate (suggests mixed disorder)",
+            "Appropriate"
+          ]
+        },
+        {
+          "step": 4,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "Sedative overdose",
+            "Opioid toxicity",
+            "COPD",
+            "Pneumonia",
+            "Neuromuscular weakness"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Acidemia",
+        "primary_disorder": "Respiratory acidosis",
+        "expected_compensation": {
+          "rule": "Acute respiratory acidosis",
+          "expected_hco3_mmolL": 26.7,
+          "acceptable_range_mmolL": [
+            24.7,
+            28.7
+          ]
+        },
+        "compensation": "Appropriate",
+        "anion_gap_value": 8.0,
+        "anion_gap_category": "Normal",
+        "final_diagnosis": "Opioid toxicity"
+      },
+      "explanation": "Low pH = acidemia. High PaCO2 indicates a primary respiratory acidosis. For acute respiratory acidosis, expected HCO3 is ~26.7; measured 26.1 is appropriate acute compensation. This pattern fits acute hypoventilation, such as opioid toxicity.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "VOMITING_004",
+      "title": "Vomiting (metabolic alkalosis with respiratory compensation)",
+      "case_type": "ABG",
+      "category": "metabolic_alkalosis",
+      "archetype": "vomiting_metabolic_alkalosis",
+      "difficulty_level": 2,
+      "difficulty_label": "intermediate",
+      "learning_objective": "Recognise metabolic alkalosis with appropriate respiratory compensation",
+      "tags": [
+        "vomiting",
+        "metabolic_alkalosis",
+        "chloride_responsive"
+      ],
+      "clinical_stem": "67-year-old presents with dizziness and volume depletion after recurrent nausea and retching.",
+      "inputs": {
+        "gas": {
+          "ph": 7.49,
+          "paco2_mmHg": 46.2,
+          "hco3_mmolL": 34
+        },
+        "electrolytes": {
+          "na_mmolL": 137,
+          "cl_mmolL": 89
+        },
+        "lactate_mmolL": 0.9
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Alkalemia",
+            "Acidemia",
+            "Normal"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Metabolic alkalosis",
+            "Respiratory acidosis",
+            "Metabolic acidosis",
+            "Respiratory alkalosis",
+            "Mixed disorder"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "compensation",
+          "prompt": "Is compensation appropriate?",
+          "options": [
+            "Inappropriate (suggests mixed disorder)",
+            "Appropriate"
+          ]
+        },
+        {
+          "step": 4,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "Panic attack",
+            "Diuretic use",
+            "Vomiting",
+            "COPD",
+            "DKA"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Alkalemia",
+        "primary_disorder": "Metabolic alkalosis",
+        "expected_compensation": {
+          "rule": "Metabolic alkalosis compensation",
+          "expected_paco2_mmHg": 47.0,
+          "acceptable_range_mmHg": [
+            44.0,
+            50.0
+          ]
+        },
+        "compensation": "Appropriate",
+        "anion_gap_value": 14,
+        "anion_gap_category": "Normal",
+        "final_diagnosis": "Vomiting"
+      },
+      "explanation": "High pH indicates alkalemia. Elevated HCO3 indicates a primary metabolic alkalosis. Expected compensatory PaCO2 is ~47.0; measured 46.2 is appropriate, supporting metabolic alkalosis with expected respiratory compensation, as seen with vomiting.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "DKA_005",
+      "title": "DKA (HAGMA with appropriate respiratory compensation)",
+      "case_type": "ABG",
+      "category": "metabolic_acidosis_hagma",
+      "archetype": "dka",
+      "difficulty_level": 3,
+      "difficulty_label": "advanced",
+      "learning_objective": "Recognise high anion gap metabolic acidosis with appropriate respiratory compensation",
+      "tags": [
+        "dka",
+        "hagma",
+        "metabolic_acidosis",
+        "compensation"
+      ],
+      "clinical_stem": "28-year-old presents unwell with dehydration, tachypnoea, and reduced oral intake over 2 days.",
+      "inputs": {
+        "gas": {
+          "ph": 7.3,
+          "paco2_mmHg": 27.2,
+          "hco3_mmolL": 13
+        },
+        "electrolytes": {
+          "na_mmolL": 138,
+          "cl_mmolL": 102
+        },
+        "lactate_mmolL": 1.5
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Normal",
+            "Acidemia",
+            "Alkalemia"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Mixed disorder",
+            "Respiratory acidosis",
+            "Metabolic acidosis",
+            "Metabolic alkalosis",
+            "Respiratory alkalosis"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "compensation",
+          "prompt": "Is compensation appropriate?",
+          "options": [
+            "Inappropriate (suggests mixed disorder)",
+            "Appropriate"
+          ]
+        },
+        {
+          "step": 4,
+          "key": "anion_gap",
+          "prompt": "Calculate the anion gap (Na \u2212 (Cl + HCO3)).",
+          "options": [
+            "Normal",
+            "Raised"
+          ]
+        },
+        {
+          "step": 5,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "Diarrhoea (NAGMA)",
+            "Lactic acidosis",
+            "DKA",
+            "Toxic alcohol",
+            "Renal failure (uraemia)"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Acidemia",
+        "primary_disorder": "Metabolic acidosis",
+        "expected_compensation": {
+          "rule": "Winter",
+          "expected_paco2_mmHg": 27.5,
+          "acceptable_range_mmHg": [
+            25.5,
+            29.5
+          ]
+        },
+        "compensation": "Appropriate",
+        "anion_gap_value": 23,
+        "anion_gap_category": "Raised",
+        "final_diagnosis": "DKA"
+      },
+      "explanation": "Low pH = acidemia. Low HCO3 indicates metabolic acidosis. Winter\u2019s formula predicts PaCO2 ~27.5 (\u00b12); measured 27.2 is appropriate compensation. Anion gap is 138 \u2212 (102 + 13) = 23 (raised), consistent with HAGMA such as DKA.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "SALICYLATE_002",
+      "title": "Salicylate toxicity (mixed respiratory alkalosis + HAGMA)",
+      "case_type": "ABG",
+      "category": "mixed_disorder",
+      "archetype": "salicylate_toxicity",
+      "difficulty_level": 4,
+      "difficulty_label": "expert",
+      "learning_objective": "Recognise the mixed respiratory alkalosis and high anion gap metabolic acidosis of salicylate toxicity",
+      "tags": [
+        "salicylate",
+        "mixed_disorder",
+        "respiratory_alkalosis",
+        "hagma",
+        "toxicology"
+      ],
+      "clinical_stem": "27-year-old presents with nausea, hyperventilation, and tinnitus after ingesting a large quantity of tablets.",
+      "inputs": {
+        "gas": {
+          "ph": 7.41,
+          "paco2_mmHg": 21,
+          "hco3_mmolL": 13
+        },
+        "electrolytes": {
+          "na_mmolL": 142,
+          "cl_mmolL": 104
+        },
+        "lactate_mmolL": 1.2
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Alkalemia",
+            "Normal",
+            "Acidemia"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Respiratory acidosis",
+            "Metabolic acidosis",
+            "Metabolic alkalosis",
+            "Respiratory alkalosis",
+            "Mixed disorder"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "compensation",
+          "prompt": "Is compensation appropriate?",
+          "options": [
+            "Appropriate",
+            "Inappropriate (suggests mixed disorder)"
+          ]
+        },
+        {
+          "step": 4,
+          "key": "anion_gap",
+          "prompt": "Calculate the anion gap (Na \u2212 (Cl + HCO3)).",
+          "options": [
+            "Raised",
+            "Normal"
+          ]
+        },
+        {
+          "step": 5,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "DKA",
+            "Renal failure (uraemia)",
+            "Diarrhoea",
+            "Panic attack / hyperventilation",
+            "Salicylate toxicity"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Normal",
+        "primary_disorder": "Mixed disorder",
+        "expected_compensation": {
+          "rule": "Mixed disorder present",
+          "note": "Low PaCO2 and low HCO3 are due to two primary processes: respiratory alkalosis and HAGMA"
+        },
+        "compensation": "Inappropriate (suggests mixed disorder)",
+        "anion_gap_value": 25,
+        "anion_gap_category": "Raised",
+        "final_diagnosis": "Salicylate toxicity"
+      },
+      "explanation": "Both PaCO2 and HCO3 are low. This is not explained by a single primary disorder alone. The low PaCO2 indicates a respiratory alkalosis, while the low HCO3 with raised anion gap (142 \u2212 (104 + 13) = 25) indicates a high anion gap metabolic acidosis. This is a mixed respiratory alkalosis and metabolic acidosis, classic for salicylate toxicity.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "PANIC_001",
+      "title": "Panic / hyperventilation (acute respiratory alkalosis)",
+      "case_type": "ABG",
+      "category": "respiratory_alkalosis",
+      "archetype": "panic_hyperventilation",
+      "difficulty_level": 1,
+      "difficulty_label": "beginner",
+      "learning_objective": "Recognise acute respiratory alkalosis with appropriate metabolic compensation",
+      "tags": [
+        "panic",
+        "hyperventilation",
+        "respiratory_alkalosis"
+      ],
+      "clinical_stem": "30-year-old presents with rapid breathing, light-headedness, and perioral tingling after an acute stressful event.",
+      "inputs": {
+        "gas": {
+          "ph": 7.51,
+          "paco2_mmHg": 27,
+          "hco3_mmolL": 21.0
+        },
+        "electrolytes": {
+          "na_mmolL": 136,
+          "cl_mmolL": 107.0
+        },
+        "lactate_mmolL": 1.3
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Acidemia",
+            "Normal",
+            "Alkalemia"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Metabolic acidosis",
+            "Respiratory acidosis",
+            "Respiratory alkalosis",
+            "Mixed disorder",
+            "Metabolic alkalosis"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "Vomiting",
+            "DKA",
+            "COPD",
+            "Pulmonary embolism",
+            "Panic attack / hyperventilation"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Alkalemia",
+        "primary_disorder": "Respiratory alkalosis",
+        "expected_compensation": {
+          "rule": "Acute respiratory alkalosis",
+          "expected_hco3_mmolL": 21.4,
+          "acceptable_range_mmolL": [
+            19.4,
+            23.4
+          ]
+        },
+        "compensation": "Appropriate",
+        "anion_gap_value": 8.0,
+        "anion_gap_category": "Normal",
+        "final_diagnosis": "Panic attack / hyperventilation"
+      },
+      "explanation": "High pH indicates alkalemia. Low PaCO2 indicates a primary respiratory alkalosis. In acute respiratory alkalosis, expected HCO3 is ~21.4; measured 21.0 is appropriate, consistent with acute hyperventilation such as panic.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "SALICYLATE_001",
+      "title": "Salicylate toxicity (mixed respiratory alkalosis + HAGMA)",
+      "case_type": "ABG",
+      "category": "mixed_disorder",
+      "archetype": "salicylate_toxicity",
+      "difficulty_level": 4,
+      "difficulty_label": "expert",
+      "learning_objective": "Recognise the mixed respiratory alkalosis and high anion gap metabolic acidosis of salicylate toxicity",
+      "tags": [
+        "salicylate",
+        "mixed_disorder",
+        "respiratory_alkalosis",
+        "hagma",
+        "toxicology"
+      ],
+      "clinical_stem": "21-year-old presents with tinnitus, vomiting, fever, and rapid breathing after an overdose.",
+      "inputs": {
+        "gas": {
+          "ph": 7.3,
+          "paco2_mmHg": 21,
+          "hco3_mmolL": 10
+        },
+        "electrolytes": {
+          "na_mmolL": 142,
+          "cl_mmolL": 108
+        },
+        "lactate_mmolL": 2.4
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Alkalemia",
+            "Acidemia",
+            "Normal"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Mixed disorder",
+            "Respiratory acidosis",
+            "Metabolic alkalosis",
+            "Respiratory alkalosis",
+            "Metabolic acidosis"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "compensation",
+          "prompt": "Is compensation appropriate?",
+          "options": [
+            "Inappropriate (suggests mixed disorder)",
+            "Appropriate"
+          ]
+        },
+        {
+          "step": 4,
+          "key": "anion_gap",
+          "prompt": "Calculate the anion gap (Na \u2212 (Cl + HCO3)).",
+          "options": [
+            "Normal",
+            "Raised"
+          ]
+        },
+        {
+          "step": 5,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "Diarrhoea",
+            "Renal failure (uraemia)",
+            "Salicylate toxicity",
+            "Panic attack / hyperventilation",
+            "DKA"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Acidemia",
+        "primary_disorder": "Mixed disorder",
+        "expected_compensation": {
+          "rule": "Mixed disorder present",
+          "note": "Low PaCO2 and low HCO3 are due to two primary processes: respiratory alkalosis and HAGMA"
+        },
+        "compensation": "Inappropriate (suggests mixed disorder)",
+        "anion_gap_value": 24,
+        "anion_gap_category": "Raised",
+        "final_diagnosis": "Salicylate toxicity"
+      },
+      "explanation": "Both PaCO2 and HCO3 are low. This is not explained by a single primary disorder alone. The low PaCO2 indicates a respiratory alkalosis, while the low HCO3 with raised anion gap (142 \u2212 (108 + 10) = 24) indicates a high anion gap metabolic acidosis. This is a mixed respiratory alkalosis and metabolic acidosis, classic for salicylate toxicity.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "DKA_002",
+      "title": "DKA (HAGMA with appropriate respiratory compensation)",
+      "case_type": "ABG",
+      "category": "metabolic_acidosis_hagma",
+      "archetype": "dka",
+      "difficulty_level": 3,
+      "difficulty_label": "advanced",
+      "learning_objective": "Recognise high anion gap metabolic acidosis with appropriate respiratory compensation",
+      "tags": [
+        "dka",
+        "hagma",
+        "metabolic_acidosis",
+        "compensation"
+      ],
+      "clinical_stem": "28-year-old presents unwell with dehydration, tachypnoea, and reduced oral intake over 2 days.",
+      "inputs": {
+        "gas": {
+          "ph": 7.27,
+          "paco2_mmHg": 29.1,
+          "hco3_mmolL": 13
+        },
+        "electrolytes": {
+          "na_mmolL": 141,
+          "cl_mmolL": 105
+        },
+        "lactate_mmolL": 1.3
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Normal",
+            "Acidemia",
+            "Alkalemia"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Metabolic acidosis",
+            "Respiratory alkalosis",
+            "Mixed disorder",
+            "Respiratory acidosis",
+            "Metabolic alkalosis"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "compensation",
+          "prompt": "Is compensation appropriate?",
+          "options": [
+            "Inappropriate (suggests mixed disorder)",
+            "Appropriate"
+          ]
+        },
+        {
+          "step": 4,
+          "key": "anion_gap",
+          "prompt": "Calculate the anion gap (Na \u2212 (Cl + HCO3)).",
+          "options": [
+            "Raised",
+            "Normal"
+          ]
+        },
+        {
+          "step": 5,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "DKA",
+            "Lactic acidosis",
+            "Diarrhoea (NAGMA)",
+            "Renal failure (uraemia)",
+            "Toxic alcohol"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Acidemia",
+        "primary_disorder": "Metabolic acidosis",
+        "expected_compensation": {
+          "rule": "Winter",
+          "expected_paco2_mmHg": 27.5,
+          "acceptable_range_mmHg": [
+            25.5,
+            29.5
+          ]
+        },
+        "compensation": "Appropriate",
+        "anion_gap_value": 23,
+        "anion_gap_category": "Raised",
+        "final_diagnosis": "DKA"
+      },
+      "explanation": "Low pH = acidemia. Low HCO3 indicates metabolic acidosis. Winter\u2019s formula predicts PaCO2 ~27.5 (\u00b12); measured 29.1 is appropriate compensation. Anion gap is 141 \u2212 (105 + 13) = 23 (raised), consistent with HAGMA such as DKA.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "DKA_003",
+      "title": "DKA (HAGMA with appropriate respiratory compensation)",
+      "case_type": "ABG",
+      "category": "metabolic_acidosis_hagma",
+      "archetype": "dka",
+      "difficulty_level": 3,
+      "difficulty_label": "advanced",
+      "learning_objective": "Recognise high anion gap metabolic acidosis with appropriate respiratory compensation",
+      "tags": [
+        "dka",
+        "hagma",
+        "metabolic_acidosis",
+        "compensation"
+      ],
+      "clinical_stem": "23-year-old presents with vomiting, abdominal pain, and deep rapid breathing.",
+      "inputs": {
+        "gas": {
+          "ph": 7.31,
+          "paco2_mmHg": 33.1,
+          "hco3_mmolL": 16
+        },
+        "electrolytes": {
+          "na_mmolL": 140,
+          "cl_mmolL": 101
+        },
+        "lactate_mmolL": 1.1
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Alkalemia",
+            "Acidemia",
+            "Normal"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Respiratory alkalosis",
+            "Metabolic acidosis",
+            "Respiratory acidosis",
+            "Metabolic alkalosis",
+            "Mixed disorder"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "compensation",
+          "prompt": "Is compensation appropriate?",
+          "options": [
+            "Inappropriate (suggests mixed disorder)",
+            "Appropriate"
+          ]
+        },
+        {
+          "step": 4,
+          "key": "anion_gap",
+          "prompt": "Calculate the anion gap (Na \u2212 (Cl + HCO3)).",
+          "options": [
+            "Normal",
+            "Raised"
+          ]
+        },
+        {
+          "step": 5,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "Diarrhoea (NAGMA)",
+            "Lactic acidosis",
+            "DKA",
+            "Toxic alcohol",
+            "Renal failure (uraemia)"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Acidemia",
+        "primary_disorder": "Metabolic acidosis",
+        "expected_compensation": {
+          "rule": "Winter",
+          "expected_paco2_mmHg": 32.0,
+          "acceptable_range_mmHg": [
+            30.0,
+            34.0
+          ]
+        },
+        "compensation": "Appropriate",
+        "anion_gap_value": 23,
+        "anion_gap_category": "Raised",
+        "final_diagnosis": "DKA"
+      },
+      "explanation": "Low pH = acidemia. Low HCO3 indicates metabolic acidosis. Winter\u2019s formula predicts PaCO2 ~32.0 (\u00b12); measured 33.1 is appropriate compensation. Anion gap is 140 \u2212 (101 + 16) = 23 (raised), consistent with HAGMA such as DKA.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "DIARRHOEA_001",
+      "title": "Diarrhoea (normal anion gap metabolic acidosis)",
+      "case_type": "ABG",
+      "category": "metabolic_acidosis_nagma",
+      "archetype": "diarrhoea_nagma",
+      "difficulty_level": 2,
+      "difficulty_label": "intermediate",
+      "learning_objective": "Recognise normal anion gap metabolic acidosis with appropriate respiratory compensation",
+      "tags": [
+        "diarrhoea",
+        "nagma",
+        "metabolic_acidosis"
+      ],
+      "clinical_stem": "34-year-old presents dehydrated and weak after several days of high-output gastrointestinal losses.",
+      "inputs": {
+        "gas": {
+          "ph": 7.3,
+          "paco2_mmHg": 27.5,
+          "hco3_mmolL": 13
+        },
+        "electrolytes": {
+          "na_mmolL": 140,
+          "cl_mmolL": 115
+        },
+        "lactate_mmolL": 0.8
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Alkalemia",
+            "Acidemia",
+            "Normal"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Mixed disorder",
+            "Metabolic acidosis",
+            "Respiratory acidosis",
+            "Metabolic alkalosis",
+            "Respiratory alkalosis"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "compensation",
+          "prompt": "Is compensation appropriate?",
+          "options": [
+            "Appropriate",
+            "Inappropriate (suggests mixed disorder)"
+          ]
+        },
+        {
+          "step": 4,
+          "key": "anion_gap",
+          "prompt": "Calculate the anion gap (Na \u2212 (Cl + HCO3)).",
+          "options": [
+            "Normal",
+            "Raised"
+          ]
+        },
+        {
+          "step": 5,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "Vomiting",
+            "Toxic alcohol",
+            "Diarrhoea",
+            "Renal failure (uraemia)",
+            "DKA"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Acidemia",
+        "primary_disorder": "Metabolic acidosis",
+        "expected_compensation": {
+          "rule": "Winter",
+          "expected_paco2_mmHg": 27.5,
+          "acceptable_range_mmHg": [
+            25.5,
+            29.5
+          ]
+        },
+        "compensation": "Appropriate",
+        "anion_gap_value": 12,
+        "anion_gap_category": "Normal",
+        "final_diagnosis": "Diarrhoea"
+      },
+      "explanation": "Low pH indicates acidemia. Low HCO3 indicates a primary metabolic acidosis. Winter\u2019s formula predicts PaCO2 ~27.5 (\u00b12); measured 27.5 is appropriate compensation. Anion gap is 140 \u2212 (115 + 13) = 12, which is normal, consistent with NAGMA such as diarrhoea.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "OPIOID_002",
+      "title": "Opioid toxicity (acute respiratory acidosis)",
+      "case_type": "ABG",
+      "category": "respiratory_acidosis",
+      "archetype": "opioid_toxicity",
+      "difficulty_level": 2,
+      "difficulty_label": "intermediate",
+      "learning_objective": "Recognise acute respiratory acidosis due to hypoventilation with appropriate compensation",
+      "tags": [
+        "opioid",
+        "respiratory_acidosis",
+        "hypoventilation",
+        "toxicology"
+      ],
+      "clinical_stem": "27-year-old presents with reduced consciousness, shallow respirations, and pinpoint pupils.",
+      "inputs": {
+        "gas": {
+          "ph": 7.23,
+          "paco2_mmHg": 66,
+          "hco3_mmolL": 26.6
+        },
+        "electrolytes": {
+          "na_mmolL": 140,
+          "cl_mmolL": 100.4
+        },
+        "lactate_mmolL": 1.3
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Alkalemia",
+            "Normal",
+            "Acidemia"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Metabolic alkalosis",
+            "Metabolic acidosis",
+            "Mixed disorder",
+            "Respiratory alkalosis",
+            "Respiratory acidosis"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "compensation",
+          "prompt": "Is compensation appropriate?",
+          "options": [
+            "Appropriate",
+            "Inappropriate (suggests mixed disorder)"
+          ]
+        },
+        {
+          "step": 4,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "Opioid toxicity",
+            "Pneumonia",
+            "Neuromuscular weakness",
+            "Sedative overdose",
+            "COPD"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Acidemia",
+        "primary_disorder": "Respiratory acidosis",
+        "expected_compensation": {
+          "rule": "Acute respiratory acidosis",
+          "expected_hco3_mmolL": 26.6,
+          "acceptable_range_mmolL": [
+            24.6,
+            28.6
+          ]
+        },
+        "compensation": "Appropriate",
+        "anion_gap_value": 13.0,
+        "anion_gap_category": "Normal",
+        "final_diagnosis": "Opioid toxicity"
+      },
+      "explanation": "Low pH = acidemia. High PaCO2 indicates a primary respiratory acidosis. For acute respiratory acidosis, expected HCO3 is ~26.6; measured 26.6 is appropriate acute compensation. This pattern fits acute hypoventilation, such as opioid toxicity.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "VOMITING_001",
+      "title": "Vomiting (metabolic alkalosis with respiratory compensation)",
+      "case_type": "ABG",
+      "category": "metabolic_alkalosis",
+      "archetype": "vomiting_metabolic_alkalosis",
+      "difficulty_level": 2,
+      "difficulty_label": "intermediate",
+      "learning_objective": "Recognise metabolic alkalosis with appropriate respiratory compensation",
+      "tags": [
+        "vomiting",
+        "metabolic_alkalosis",
+        "chloride_responsive"
+      ],
+      "clinical_stem": "67-year-old presents with dizziness and volume depletion after recurrent nausea and retching.",
+      "inputs": {
+        "gas": {
+          "ph": 7.5,
+          "paco2_mmHg": 53.0,
+          "hco3_mmolL": 40
+        },
+        "electrolytes": {
+          "na_mmolL": 136,
+          "cl_mmolL": 86
+        },
+        "lactate_mmolL": 1.4
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Alkalemia",
+            "Acidemia",
+            "Normal"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Respiratory alkalosis",
+            "Respiratory acidosis",
+            "Mixed disorder",
+            "Metabolic acidosis",
+            "Metabolic alkalosis"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "compensation",
+          "prompt": "Is compensation appropriate?",
+          "options": [
+            "Inappropriate (suggests mixed disorder)",
+            "Appropriate"
+          ]
+        },
+        {
+          "step": 4,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "Vomiting",
+            "Diuretic use",
+            "Panic attack",
+            "COPD",
+            "DKA"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Alkalemia",
+        "primary_disorder": "Metabolic alkalosis",
+        "expected_compensation": {
+          "rule": "Metabolic alkalosis compensation",
+          "expected_paco2_mmHg": 51.2,
+          "acceptable_range_mmHg": [
+            48.2,
+            54.2
+          ]
+        },
+        "compensation": "Appropriate",
+        "anion_gap_value": 10,
+        "anion_gap_category": "Normal",
+        "final_diagnosis": "Vomiting"
+      },
+      "explanation": "High pH indicates alkalemia. Elevated HCO3 indicates a primary metabolic alkalosis. Expected compensatory PaCO2 is ~51.2; measured 53.0 is appropriate, supporting metabolic alkalosis with expected respiratory compensation, as seen with vomiting.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "DIARRHOEA_002",
+      "title": "Diarrhoea (normal anion gap metabolic acidosis)",
+      "case_type": "ABG",
+      "category": "metabolic_acidosis_nagma",
+      "archetype": "diarrhoea_nagma",
+      "difficulty_level": 2,
+      "difficulty_label": "intermediate",
+      "learning_objective": "Recognise normal anion gap metabolic acidosis with appropriate respiratory compensation",
+      "tags": [
+        "diarrhoea",
+        "nagma",
+        "metabolic_acidosis"
+      ],
+      "clinical_stem": "29-year-old presents with light-headedness and dehydration after several days of gastroenteritis symptoms.",
+      "inputs": {
+        "gas": {
+          "ph": 7.32,
+          "paco2_mmHg": 26.2,
+          "hco3_mmolL": 13
+        },
+        "electrolytes": {
+          "na_mmolL": 141,
+          "cl_mmolL": 116
+        },
+        "lactate_mmolL": 1.6
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Alkalemia",
+            "Normal",
+            "Acidemia"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Metabolic acidosis",
+            "Mixed disorder",
+            "Respiratory alkalosis",
+            "Metabolic alkalosis",
+            "Respiratory acidosis"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "compensation",
+          "prompt": "Is compensation appropriate?",
+          "options": [
+            "Inappropriate (suggests mixed disorder)",
+            "Appropriate"
+          ]
+        },
+        {
+          "step": 4,
+          "key": "anion_gap",
+          "prompt": "Calculate the anion gap (Na \u2212 (Cl + HCO3)).",
+          "options": [
+            "Normal",
+            "Raised"
+          ]
+        },
+        {
+          "step": 5,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "Toxic alcohol",
+            "Vomiting",
+            "DKA",
+            "Diarrhoea",
+            "Renal failure (uraemia)"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Acidemia",
+        "primary_disorder": "Metabolic acidosis",
+        "expected_compensation": {
+          "rule": "Winter",
+          "expected_paco2_mmHg": 27.5,
+          "acceptable_range_mmHg": [
+            25.5,
+            29.5
+          ]
+        },
+        "compensation": "Appropriate",
+        "anion_gap_value": 12,
+        "anion_gap_category": "Normal",
+        "final_diagnosis": "Diarrhoea"
+      },
+      "explanation": "Low pH indicates acidemia. Low HCO3 indicates a primary metabolic acidosis. Winter\u2019s formula predicts PaCO2 ~27.5 (\u00b12); measured 26.2 is appropriate compensation. Anion gap is 141 \u2212 (116 + 13) = 12, which is normal, consistent with NAGMA such as diarrhoea.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "DIARRHOEA_004",
+      "title": "Diarrhoea (normal anion gap metabolic acidosis)",
+      "case_type": "ABG",
+      "category": "metabolic_acidosis_nagma",
+      "archetype": "diarrhoea_nagma",
+      "difficulty_level": 2,
+      "difficulty_label": "intermediate",
+      "learning_objective": "Recognise normal anion gap metabolic acidosis with appropriate respiratory compensation",
+      "tags": [
+        "diarrhoea",
+        "nagma",
+        "metabolic_acidosis"
+      ],
+      "clinical_stem": "70-year-old from a nursing home presents with volume depletion following ongoing lower gastrointestinal fluid loss.",
+      "inputs": {
+        "gas": {
+          "ph": 7.27,
+          "paco2_mmHg": 26.9,
+          "hco3_mmolL": 12
+        },
+        "electrolytes": {
+          "na_mmolL": 136,
+          "cl_mmolL": 114
+        },
+        "lactate_mmolL": 1.1
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Normal",
+            "Acidemia",
+            "Alkalemia"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Respiratory alkalosis",
+            "Respiratory acidosis",
+            "Metabolic alkalosis",
+            "Mixed disorder",
+            "Metabolic acidosis"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "compensation",
+          "prompt": "Is compensation appropriate?",
+          "options": [
+            "Inappropriate (suggests mixed disorder)",
+            "Appropriate"
+          ]
+        },
+        {
+          "step": 4,
+          "key": "anion_gap",
+          "prompt": "Calculate the anion gap (Na \u2212 (Cl + HCO3)).",
+          "options": [
+            "Raised",
+            "Normal"
+          ]
+        },
+        {
+          "step": 5,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "Diarrhoea",
+            "DKA",
+            "Renal failure (uraemia)",
+            "Toxic alcohol",
+            "Vomiting"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Acidemia",
+        "primary_disorder": "Metabolic acidosis",
+        "expected_compensation": {
+          "rule": "Winter",
+          "expected_paco2_mmHg": 26.0,
+          "acceptable_range_mmHg": [
+            24.0,
+            28.0
+          ]
+        },
+        "compensation": "Appropriate",
+        "anion_gap_value": 10,
+        "anion_gap_category": "Normal",
+        "final_diagnosis": "Diarrhoea"
+      },
+      "explanation": "Low pH indicates acidemia. Low HCO3 indicates a primary metabolic acidosis. Winter\u2019s formula predicts PaCO2 ~26.0 (\u00b12); measured 26.9 is appropriate compensation. Anion gap is 136 \u2212 (114 + 12) = 10, which is normal, consistent with NAGMA such as diarrhoea.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "PANIC_002",
+      "title": "Panic / hyperventilation (acute respiratory alkalosis)",
+      "case_type": "ABG",
+      "category": "respiratory_alkalosis",
+      "archetype": "panic_hyperventilation",
+      "difficulty_level": 1,
+      "difficulty_label": "beginner",
+      "learning_objective": "Recognise acute respiratory alkalosis with appropriate metabolic compensation",
+      "tags": [
+        "panic",
+        "hyperventilation",
+        "respiratory_alkalosis"
+      ],
+      "clinical_stem": "26-year-old presents with acute dyspnoea, dizziness, and hand paraesthesiae with a normal cardiorespiratory examination.",
+      "inputs": {
+        "gas": {
+          "ph": 7.54,
+          "paco2_mmHg": 26,
+          "hco3_mmolL": 21.3
+        },
+        "electrolytes": {
+          "na_mmolL": 140,
+          "cl_mmolL": 105.7
+        },
+        "lactate_mmolL": 1.6
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Acidemia",
+            "Normal",
+            "Alkalemia"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Metabolic acidosis",
+            "Respiratory alkalosis",
+            "Mixed disorder",
+            "Respiratory acidosis",
+            "Metabolic alkalosis"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "COPD",
+            "Vomiting",
+            "DKA",
+            "Panic attack / hyperventilation",
+            "Pulmonary embolism"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Alkalemia",
+        "primary_disorder": "Respiratory alkalosis",
+        "expected_compensation": {
+          "rule": "Acute respiratory alkalosis",
+          "expected_hco3_mmolL": 21.2,
+          "acceptable_range_mmolL": [
+            19.2,
+            23.2
+          ]
+        },
+        "compensation": "Appropriate",
+        "anion_gap_value": 13.0,
+        "anion_gap_category": "Normal",
+        "final_diagnosis": "Panic attack / hyperventilation"
+      },
+      "explanation": "High pH indicates alkalemia. Low PaCO2 indicates a primary respiratory alkalosis. In acute respiratory alkalosis, expected HCO3 is ~21.2; measured 21.3 is appropriate, consistent with acute hyperventilation such as panic.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "VOMITING_002",
+      "title": "Vomiting (metabolic alkalosis with respiratory compensation)",
+      "case_type": "ABG",
+      "category": "metabolic_alkalosis",
+      "archetype": "vomiting_metabolic_alkalosis",
+      "difficulty_level": 2,
+      "difficulty_label": "intermediate",
+      "learning_objective": "Recognise metabolic alkalosis with appropriate respiratory compensation",
+      "tags": [
+        "vomiting",
+        "metabolic_alkalosis",
+        "chloride_responsive"
+      ],
+      "clinical_stem": "67-year-old presents with dizziness and volume depletion after recurrent nausea and retching.",
+      "inputs": {
+        "gas": {
+          "ph": 7.48,
+          "paco2_mmHg": 46.9,
+          "hco3_mmolL": 34
+        },
+        "electrolytes": {
+          "na_mmolL": 136,
+          "cl_mmolL": 94
+        },
+        "lactate_mmolL": 1.0
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Alkalemia",
+            "Acidemia",
+            "Normal"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Respiratory alkalosis",
+            "Metabolic alkalosis",
+            "Mixed disorder",
+            "Metabolic acidosis",
+            "Respiratory acidosis"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "compensation",
+          "prompt": "Is compensation appropriate?",
+          "options": [
+            "Inappropriate (suggests mixed disorder)",
+            "Appropriate"
+          ]
+        },
+        {
+          "step": 4,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "Diuretic use",
+            "Vomiting",
+            "COPD",
+            "Panic attack",
+            "DKA"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Alkalemia",
+        "primary_disorder": "Metabolic alkalosis",
+        "expected_compensation": {
+          "rule": "Metabolic alkalosis compensation",
+          "expected_paco2_mmHg": 47.0,
+          "acceptable_range_mmHg": [
+            44.0,
+            50.0
+          ]
+        },
+        "compensation": "Appropriate",
+        "anion_gap_value": 8,
+        "anion_gap_category": "Normal",
+        "final_diagnosis": "Vomiting"
+      },
+      "explanation": "High pH indicates alkalemia. Elevated HCO3 indicates a primary metabolic alkalosis. Expected compensatory PaCO2 is ~47.0; measured 46.9 is appropriate, supporting metabolic alkalosis with expected respiratory compensation, as seen with vomiting.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "OPIOID_003",
+      "title": "Opioid toxicity (acute respiratory acidosis)",
+      "case_type": "ABG",
+      "category": "respiratory_acidosis",
+      "archetype": "opioid_toxicity",
+      "difficulty_level": 2,
+      "difficulty_label": "intermediate",
+      "learning_objective": "Recognise acute respiratory acidosis due to hypoventilation with appropriate compensation",
+      "tags": [
+        "opioid",
+        "respiratory_acidosis",
+        "hypoventilation",
+        "toxicology"
+      ],
+      "clinical_stem": "40-year-old presents with low GCS and hypoventilation after being found collapsed at home.",
+      "inputs": {
+        "gas": {
+          "ph": 7.2,
+          "paco2_mmHg": 72,
+          "hco3_mmolL": 26.9
+        },
+        "electrolytes": {
+          "na_mmolL": 140,
+          "cl_mmolL": 104.1
+        },
+        "lactate_mmolL": 0.8
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Normal",
+            "Acidemia",
+            "Alkalemia"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Respiratory alkalosis",
+            "Metabolic acidosis",
+            "Respiratory acidosis",
+            "Metabolic alkalosis",
+            "Mixed disorder"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "compensation",
+          "prompt": "Is compensation appropriate?",
+          "options": [
+            "Inappropriate (suggests mixed disorder)",
+            "Appropriate"
+          ]
+        },
+        {
+          "step": 4,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "Neuromuscular weakness",
+            "Opioid toxicity",
+            "COPD",
+            "Pneumonia",
+            "Sedative overdose"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Acidemia",
+        "primary_disorder": "Respiratory acidosis",
+        "expected_compensation": {
+          "rule": "Acute respiratory acidosis",
+          "expected_hco3_mmolL": 27.2,
+          "acceptable_range_mmolL": [
+            25.2,
+            29.2
+          ]
+        },
+        "compensation": "Appropriate",
+        "anion_gap_value": 9.0,
+        "anion_gap_category": "Normal",
+        "final_diagnosis": "Opioid toxicity"
+      },
+      "explanation": "Low pH = acidemia. High PaCO2 indicates a primary respiratory acidosis. For acute respiratory acidosis, expected HCO3 is ~27.2; measured 26.9 is appropriate acute compensation. This pattern fits acute hypoventilation, such as opioid toxicity.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "COPD_005",
+      "title": "COPD (chronic respiratory acidosis with metabolic compensation)",
+      "case_type": "ABG",
+      "category": "respiratory_acidosis",
+      "archetype": "copd_chronic_retainer",
+      "difficulty_level": 2,
+      "difficulty_label": "intermediate",
+      "learning_objective": "Recognise chronic respiratory acidosis with appropriate renal compensation",
+      "tags": [
+        "copd",
+        "chronic_respiratory_acidosis",
+        "compensation"
+      ],
+      "clinical_stem": "68-year-old smoker presents with worsening dyspnoea, productive cough, and chronic exercise limitation.",
+      "inputs": {
+        "gas": {
+          "ph": 7.36,
+          "paco2_mmHg": 57,
+          "hco3_mmolL": 31.0
+        },
+        "electrolytes": {
+          "na_mmolL": 139,
+          "cl_mmolL": 97.0
+        },
+        "lactate_mmolL": 1.8
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Normal",
+            "Alkalemia",
+            "Acidemia"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Mixed disorder",
+            "Respiratory acidosis",
+            "Respiratory alkalosis",
+            "Metabolic alkalosis",
+            "Metabolic acidosis"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "compensation",
+          "prompt": "Is compensation appropriate?",
+          "options": [
+            "Inappropriate (suggests mixed disorder)",
+            "Appropriate"
+          ]
+        },
+        {
+          "step": 4,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "Neuromuscular weakness",
+            "Sedative overdose",
+            "Pneumonia",
+            "Opioid toxicity",
+            "COPD"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Normal",
+        "primary_disorder": "Respiratory acidosis",
+        "expected_compensation": {
+          "rule": "Chronic respiratory acidosis",
+          "expected_hco3_mmolL": 30.8,
+          "acceptable_range_mmolL": [
+            28.8,
+            32.8
+          ]
+        },
+        "compensation": "Appropriate",
+        "anion_gap_value": 11.0,
+        "anion_gap_category": "Normal",
+        "final_diagnosis": "COPD"
+      },
+      "explanation": "pH is low or near-normal with elevated PaCO2, indicating respiratory acidosis. In chronic respiratory acidosis, HCO3 should rise by ~4 mmol/L per 10 mmHg PaCO2 above 40. Expected HCO3 is ~30.8; measured 31.0 is appropriately elevated, consistent with chronic respiratory compensation seen in COPD.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "COPD_002",
+      "title": "COPD (chronic respiratory acidosis with metabolic compensation)",
+      "case_type": "ABG",
+      "category": "respiratory_acidosis",
+      "archetype": "copd_chronic_retainer",
+      "difficulty_level": 2,
+      "difficulty_label": "intermediate",
+      "learning_objective": "Recognise chronic respiratory acidosis with appropriate renal compensation",
+      "tags": [
+        "copd",
+        "chronic_respiratory_acidosis",
+        "compensation"
+      ],
+      "clinical_stem": "72-year-old with longstanding breathlessness presents with increased sputum and fatigue.",
+      "inputs": {
+        "gas": {
+          "ph": 7.34,
+          "paco2_mmHg": 71,
+          "hco3_mmolL": 36.6
+        },
+        "electrolytes": {
+          "na_mmolL": 140,
+          "cl_mmolL": 92.4
+        },
+        "lactate_mmolL": 1.1
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Acidemia",
+            "Normal",
+            "Alkalemia"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Metabolic acidosis",
+            "Metabolic alkalosis",
+            "Respiratory acidosis",
+            "Mixed disorder",
+            "Respiratory alkalosis"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "compensation",
+          "prompt": "Is compensation appropriate?",
+          "options": [
+            "Appropriate",
+            "Inappropriate (suggests mixed disorder)"
+          ]
+        },
+        {
+          "step": 4,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "Sedative overdose",
+            "COPD",
+            "Opioid toxicity",
+            "Neuromuscular weakness",
+            "Pneumonia"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Acidemia",
+        "primary_disorder": "Respiratory acidosis",
+        "expected_compensation": {
+          "rule": "Chronic respiratory acidosis",
+          "expected_hco3_mmolL": 36.4,
+          "acceptable_range_mmolL": [
+            34.4,
+            38.4
+          ]
+        },
+        "compensation": "Appropriate",
+        "anion_gap_value": 11.0,
+        "anion_gap_category": "Normal",
+        "final_diagnosis": "COPD"
+      },
+      "explanation": "pH is low or near-normal with elevated PaCO2, indicating respiratory acidosis. In chronic respiratory acidosis, HCO3 should rise by ~4 mmol/L per 10 mmHg PaCO2 above 40. Expected HCO3 is ~36.4; measured 36.6 is appropriately elevated, consistent with chronic respiratory compensation seen in COPD.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "SALICYLATE_005",
+      "title": "Salicylate toxicity (mixed respiratory alkalosis + HAGMA)",
+      "case_type": "ABG",
+      "category": "mixed_disorder",
+      "archetype": "salicylate_toxicity",
+      "difficulty_level": 4,
+      "difficulty_label": "expert",
+      "learning_objective": "Recognise the mixed respiratory alkalosis and high anion gap metabolic acidosis of salicylate toxicity",
+      "tags": [
+        "salicylate",
+        "mixed_disorder",
+        "respiratory_alkalosis",
+        "hagma",
+        "toxicology"
+      ],
+      "clinical_stem": "27-year-old presents with nausea, hyperventilation, and tinnitus after ingesting a large quantity of tablets.",
+      "inputs": {
+        "gas": {
+          "ph": 7.34,
+          "paco2_mmHg": 21,
+          "hco3_mmolL": 11
+        },
+        "electrolytes": {
+          "na_mmolL": 136,
+          "cl_mmolL": 105
+        },
+        "lactate_mmolL": 1.3
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Normal",
+            "Alkalemia",
+            "Acidemia"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Metabolic acidosis",
+            "Respiratory alkalosis",
+            "Metabolic alkalosis",
+            "Respiratory acidosis",
+            "Mixed disorder"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "compensation",
+          "prompt": "Is compensation appropriate?",
+          "options": [
+            "Inappropriate (suggests mixed disorder)",
+            "Appropriate"
+          ]
+        },
+        {
+          "step": 4,
+          "key": "anion_gap",
+          "prompt": "Calculate the anion gap (Na \u2212 (Cl + HCO3)).",
+          "options": [
+            "Raised",
+            "Normal"
+          ]
+        },
+        {
+          "step": 5,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "Renal failure (uraemia)",
+            "Diarrhoea",
+            "DKA",
+            "Panic attack / hyperventilation",
+            "Salicylate toxicity"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Acidemia",
+        "primary_disorder": "Mixed disorder",
+        "expected_compensation": {
+          "rule": "Mixed disorder present",
+          "note": "Low PaCO2 and low HCO3 are due to two primary processes: respiratory alkalosis and HAGMA"
+        },
+        "compensation": "Inappropriate (suggests mixed disorder)",
+        "anion_gap_value": 20,
+        "anion_gap_category": "Raised",
+        "final_diagnosis": "Salicylate toxicity"
+      },
+      "explanation": "Both PaCO2 and HCO3 are low. This is not explained by a single primary disorder alone. The low PaCO2 indicates a respiratory alkalosis, while the low HCO3 with raised anion gap (136 \u2212 (105 + 11) = 20) indicates a high anion gap metabolic acidosis. This is a mixed respiratory alkalosis and metabolic acidosis, classic for salicylate toxicity.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "OPIOID_004",
+      "title": "Opioid toxicity (acute respiratory acidosis)",
+      "case_type": "ABG",
+      "category": "respiratory_acidosis",
+      "archetype": "opioid_toxicity",
+      "difficulty_level": 2,
+      "difficulty_label": "intermediate",
+      "learning_objective": "Recognise acute respiratory acidosis due to hypoventilation with appropriate compensation",
+      "tags": [
+        "opioid",
+        "respiratory_acidosis",
+        "hypoventilation",
+        "toxicology"
+      ],
+      "clinical_stem": "27-year-old presents with reduced consciousness, shallow respirations, and pinpoint pupils.",
+      "inputs": {
+        "gas": {
+          "ph": 7.26,
+          "paco2_mmHg": 63,
+          "hco3_mmolL": 27.1
+        },
+        "electrolytes": {
+          "na_mmolL": 139,
+          "cl_mmolL": 102.9
+        },
+        "lactate_mmolL": 1.4
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Normal",
+            "Alkalemia",
+            "Acidemia"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Respiratory alkalosis",
+            "Metabolic acidosis",
+            "Metabolic alkalosis",
+            "Respiratory acidosis",
+            "Mixed disorder"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "compensation",
+          "prompt": "Is compensation appropriate?",
+          "options": [
+            "Inappropriate (suggests mixed disorder)",
+            "Appropriate"
+          ]
+        },
+        {
+          "step": 4,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "Sedative overdose",
+            "Opioid toxicity",
+            "Neuromuscular weakness",
+            "COPD",
+            "Pneumonia"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Acidemia",
+        "primary_disorder": "Respiratory acidosis",
+        "expected_compensation": {
+          "rule": "Acute respiratory acidosis",
+          "expected_hco3_mmolL": 26.3,
+          "acceptable_range_mmolL": [
+            24.3,
+            28.3
+          ]
+        },
+        "compensation": "Appropriate",
+        "anion_gap_value": 9.0,
+        "anion_gap_category": "Normal",
+        "final_diagnosis": "Opioid toxicity"
+      },
+      "explanation": "Low pH = acidemia. High PaCO2 indicates a primary respiratory acidosis. For acute respiratory acidosis, expected HCO3 is ~26.3; measured 27.1 is appropriate acute compensation. This pattern fits acute hypoventilation, such as opioid toxicity.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "DKA_001",
+      "title": "DKA (HAGMA with appropriate respiratory compensation)",
+      "case_type": "ABG",
+      "category": "metabolic_acidosis_hagma",
+      "archetype": "dka",
+      "difficulty_level": 3,
+      "difficulty_label": "advanced",
+      "learning_objective": "Recognise high anion gap metabolic acidosis with appropriate respiratory compensation",
+      "tags": [
+        "dka",
+        "hagma",
+        "metabolic_acidosis",
+        "compensation"
+      ],
+      "clinical_stem": "28-year-old presents unwell with dehydration, tachypnoea, and reduced oral intake over 2 days.",
+      "inputs": {
+        "gas": {
+          "ph": 7.33,
+          "paco2_mmHg": 25.8,
+          "hco3_mmolL": 13
+        },
+        "electrolytes": {
+          "na_mmolL": 139,
+          "cl_mmolL": 99
+        },
+        "lactate_mmolL": 1.5
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Normal",
+            "Alkalemia",
+            "Acidemia"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Metabolic alkalosis",
+            "Respiratory alkalosis",
+            "Mixed disorder",
+            "Metabolic acidosis",
+            "Respiratory acidosis"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "compensation",
+          "prompt": "Is compensation appropriate?",
+          "options": [
+            "Inappropriate (suggests mixed disorder)",
+            "Appropriate"
+          ]
+        },
+        {
+          "step": 4,
+          "key": "anion_gap",
+          "prompt": "Calculate the anion gap (Na \u2212 (Cl + HCO3)).",
+          "options": [
+            "Normal",
+            "Raised"
+          ]
+        },
+        {
+          "step": 5,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "Renal failure (uraemia)",
+            "Diarrhoea (NAGMA)",
+            "Toxic alcohol",
+            "Lactic acidosis",
+            "DKA"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Acidemia",
+        "primary_disorder": "Metabolic acidosis",
+        "expected_compensation": {
+          "rule": "Winter",
+          "expected_paco2_mmHg": 27.5,
+          "acceptable_range_mmHg": [
+            25.5,
+            29.5
+          ]
+        },
+        "compensation": "Appropriate",
+        "anion_gap_value": 27,
+        "anion_gap_category": "Raised",
+        "final_diagnosis": "DKA"
+      },
+      "explanation": "Low pH = acidemia. Low HCO3 indicates metabolic acidosis. Winter\u2019s formula predicts PaCO2 ~27.5 (\u00b12); measured 25.8 is appropriate compensation. Anion gap is 139 \u2212 (99 + 13) = 27 (raised), consistent with HAGMA such as DKA.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "VOMITING_005",
+      "title": "Vomiting (metabolic alkalosis with respiratory compensation)",
+      "case_type": "ABG",
+      "category": "metabolic_alkalosis",
+      "archetype": "vomiting_metabolic_alkalosis",
+      "difficulty_level": 2,
+      "difficulty_label": "intermediate",
+      "learning_objective": "Recognise metabolic alkalosis with appropriate respiratory compensation",
+      "tags": [
+        "vomiting",
+        "metabolic_alkalosis",
+        "chloride_responsive"
+      ],
+      "clinical_stem": "24-year-old presents dehydrated and weak after several days of persistent upper gastrointestinal losses.",
+      "inputs": {
+        "gas": {
+          "ph": 7.48,
+          "paco2_mmHg": 48.6,
+          "hco3_mmolL": 35
+        },
+        "electrolytes": {
+          "na_mmolL": 136,
+          "cl_mmolL": 89
+        },
+        "lactate_mmolL": 1.5
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Alkalemia",
+            "Acidemia",
+            "Normal"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Metabolic alkalosis",
+            "Respiratory alkalosis",
+            "Respiratory acidosis",
+            "Metabolic acidosis",
+            "Mixed disorder"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "compensation",
+          "prompt": "Is compensation appropriate?",
+          "options": [
+            "Appropriate",
+            "Inappropriate (suggests mixed disorder)"
+          ]
+        },
+        {
+          "step": 4,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "Panic attack",
+            "DKA",
+            "COPD",
+            "Diuretic use",
+            "Vomiting"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Alkalemia",
+        "primary_disorder": "Metabolic alkalosis",
+        "expected_compensation": {
+          "rule": "Metabolic alkalosis compensation",
+          "expected_paco2_mmHg": 47.7,
+          "acceptable_range_mmHg": [
+            44.7,
+            50.7
+          ]
+        },
+        "compensation": "Appropriate",
+        "anion_gap_value": 12,
+        "anion_gap_category": "Normal",
+        "final_diagnosis": "Vomiting"
+      },
+      "explanation": "High pH indicates alkalemia. Elevated HCO3 indicates a primary metabolic alkalosis. Expected compensatory PaCO2 is ~47.7; measured 48.6 is appropriate, supporting metabolic alkalosis with expected respiratory compensation, as seen with vomiting.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "SALICYLATE_003",
+      "title": "Salicylate toxicity (mixed respiratory alkalosis + HAGMA)",
+      "case_type": "ABG",
+      "category": "mixed_disorder",
+      "archetype": "salicylate_toxicity",
+      "difficulty_level": 4,
+      "difficulty_label": "expert",
+      "learning_objective": "Recognise the mixed respiratory alkalosis and high anion gap metabolic acidosis of salicylate toxicity",
+      "tags": [
+        "salicylate",
+        "mixed_disorder",
+        "respiratory_alkalosis",
+        "hagma",
+        "toxicology"
+      ],
+      "clinical_stem": "27-year-old presents with nausea, hyperventilation, and tinnitus after ingesting a large quantity of tablets.",
+      "inputs": {
+        "gas": {
+          "ph": 7.52,
+          "paco2_mmHg": 19,
+          "hco3_mmolL": 15
+        },
+        "electrolytes": {
+          "na_mmolL": 136,
+          "cl_mmolL": 94
+        },
+        "lactate_mmolL": 1.6
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Alkalemia",
+            "Normal",
+            "Acidemia"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Mixed disorder",
+            "Metabolic acidosis",
+            "Metabolic alkalosis",
+            "Respiratory acidosis",
+            "Respiratory alkalosis"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "compensation",
+          "prompt": "Is compensation appropriate?",
+          "options": [
+            "Appropriate",
+            "Inappropriate (suggests mixed disorder)"
+          ]
+        },
+        {
+          "step": 4,
+          "key": "anion_gap",
+          "prompt": "Calculate the anion gap (Na \u2212 (Cl + HCO3)).",
+          "options": [
+            "Normal",
+            "Raised"
+          ]
+        },
+        {
+          "step": 5,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "DKA",
+            "Diarrhoea",
+            "Panic attack / hyperventilation",
+            "Renal failure (uraemia)",
+            "Salicylate toxicity"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Alkalemia",
+        "primary_disorder": "Mixed disorder",
+        "expected_compensation": {
+          "rule": "Mixed disorder present",
+          "note": "Low PaCO2 and low HCO3 are due to two primary processes: respiratory alkalosis and HAGMA"
+        },
+        "compensation": "Inappropriate (suggests mixed disorder)",
+        "anion_gap_value": 27,
+        "anion_gap_category": "Raised",
+        "final_diagnosis": "Salicylate toxicity"
+      },
+      "explanation": "Both PaCO2 and HCO3 are low. This is not explained by a single primary disorder alone. The low PaCO2 indicates a respiratory alkalosis, while the low HCO3 with raised anion gap (136 \u2212 (94 + 15) = 27) indicates a high anion gap metabolic acidosis. This is a mixed respiratory alkalosis and metabolic acidosis, classic for salicylate toxicity.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "DKA_004",
+      "title": "DKA (HAGMA with appropriate respiratory compensation)",
+      "case_type": "ABG",
+      "category": "metabolic_acidosis_hagma",
+      "archetype": "dka",
+      "difficulty_level": 3,
+      "difficulty_label": "advanced",
+      "learning_objective": "Recognise high anion gap metabolic acidosis with appropriate respiratory compensation",
+      "tags": [
+        "dka",
+        "hagma",
+        "metabolic_acidosis",
+        "compensation"
+      ],
+      "clinical_stem": "19-year-old presents dehydrated, tachypnoeic, and confused with abdominal pain and polyuria.",
+      "inputs": {
+        "gas": {
+          "ph": 7.29,
+          "paco2_mmHg": 32.1,
+          "hco3_mmolL": 15
+        },
+        "electrolytes": {
+          "na_mmolL": 136,
+          "cl_mmolL": 91
+        },
+        "lactate_mmolL": 2.0
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Alkalemia",
+            "Acidemia",
+            "Normal"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Respiratory alkalosis",
+            "Metabolic acidosis",
+            "Metabolic alkalosis",
+            "Mixed disorder",
+            "Respiratory acidosis"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "compensation",
+          "prompt": "Is compensation appropriate?",
+          "options": [
+            "Appropriate",
+            "Inappropriate (suggests mixed disorder)"
+          ]
+        },
+        {
+          "step": 4,
+          "key": "anion_gap",
+          "prompt": "Calculate the anion gap (Na \u2212 (Cl + HCO3)).",
+          "options": [
+            "Raised",
+            "Normal"
+          ]
+        },
+        {
+          "step": 5,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "Lactic acidosis",
+            "DKA",
+            "Renal failure (uraemia)",
+            "Toxic alcohol",
+            "Diarrhoea (NAGMA)"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Acidemia",
+        "primary_disorder": "Metabolic acidosis",
+        "expected_compensation": {
+          "rule": "Winter",
+          "expected_paco2_mmHg": 30.5,
+          "acceptable_range_mmHg": [
+            28.5,
+            32.5
+          ]
+        },
+        "compensation": "Appropriate",
+        "anion_gap_value": 30,
+        "anion_gap_category": "Raised",
+        "final_diagnosis": "DKA"
+      },
+      "explanation": "Low pH = acidemia. Low HCO3 indicates metabolic acidosis. Winter\u2019s formula predicts PaCO2 ~30.5 (\u00b12); measured 32.1 is appropriate compensation. Anion gap is 136 \u2212 (91 + 15) = 30 (raised), consistent with HAGMA such as DKA.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "PANIC_004",
+      "title": "Panic / hyperventilation (acute respiratory alkalosis)",
+      "case_type": "ABG",
+      "category": "respiratory_alkalosis",
+      "archetype": "panic_hyperventilation",
+      "difficulty_level": 1,
+      "difficulty_label": "beginner",
+      "learning_objective": "Recognise acute respiratory alkalosis with appropriate metabolic compensation",
+      "tags": [
+        "panic",
+        "hyperventilation",
+        "respiratory_alkalosis"
+      ],
+      "clinical_stem": "26-year-old presents with acute dyspnoea, dizziness, and hand paraesthesiae with a normal cardiorespiratory examination.",
+      "inputs": {
+        "gas": {
+          "ph": 7.53,
+          "paco2_mmHg": 26,
+          "hco3_mmolL": 20.8
+        },
+        "electrolytes": {
+          "na_mmolL": 138,
+          "cl_mmolL": 106.2
+        },
+        "lactate_mmolL": 1.2
+      },
+      "questions_flow": [
+        {
+          "step": 1,
+          "key": "ph_status",
+          "prompt": "Is the patient acidemic, alkalemic, or normal?",
+          "options": [
+            "Normal",
+            "Acidemia",
+            "Alkalemia"
+          ]
+        },
+        {
+          "step": 2,
+          "key": "primary_disorder",
+          "prompt": "What is the acid-base disorder?",
+          "options": [
+            "Metabolic alkalosis",
+            "Mixed disorder",
+            "Metabolic acidosis",
+            "Respiratory acidosis",
+            "Respiratory alkalosis"
+          ]
+        },
+        {
+          "step": 3,
+          "key": "final_diagnosis",
+          "prompt": "Most likely diagnosis?",
+          "options": [
+            "Panic attack / hyperventilation",
+            "Vomiting",
+            "DKA",
+            "Pulmonary embolism",
+            "COPD"
+          ]
+        }
+      ],
+      "answer_key": {
+        "ph_status": "Alkalemia",
+        "primary_disorder": "Respiratory alkalosis",
+        "expected_compensation": {
+          "rule": "Acute respiratory alkalosis",
+          "expected_hco3_mmolL": 21.2,
+          "acceptable_range_mmolL": [
+            19.2,
+            23.2
+          ]
+        },
+        "compensation": "Appropriate",
+        "anion_gap_value": 11.0,
+        "anion_gap_category": "Normal",
+        "final_diagnosis": "Panic attack / hyperventilation"
+      },
+      "explanation": "High pH indicates alkalemia. Low PaCO2 indicates a primary respiratory alkalosis. In acute respiratory alkalosis, expected HCO3 is ~21.2; measured 20.8 is appropriate, consistent with acute hyperventilation such as panic.",
+      "timing": {
+        "timer_visible_by_default": false,
+        "time_bonus_scope": "whole_case",
+        "time_bonus_tiers_seconds_inclusive": [
+          {
+            "max_seconds": 30,
+            "bonus": 20
+          },
+          {
+            "max_seconds": 45,
+            "bonus": 15
+          },
+          {
+            "max_seconds": 60,
+            "bonus": 10
+          },
+          {
+            "max_seconds": 90,
+            "bonus": 5
+          },
+          {
+            "max_seconds": 999999,
+            "bonus": 0
+          }
+        ]
+      }
+    }
+  ]
+}
