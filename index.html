@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>ABG Trainer Prototype</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; }
+    .card { border: 1px solid #ddd; border-radius: 10px; padding: 16px; margin: 12px 0; max-width: 720px; }
+    .row { display: flex; gap: 16px; flex-wrap: wrap; }
+    .pill { display: inline-block; padding: 4px 10px; border: 1px solid #ddd; border-radius: 999px; margin-right: 8px; }
+    button { padding: 10px 12px; margin: 6px 6px 0 0; cursor: pointer; }
+
+	button:disabled {
+		opacity: 0.6;
+		cursor: default;
+	}
+
+	.muted { color: #666; }
+	.correct { color: #0a7a0a; font-weight: bold; }
+	.incorrect { color: #b00020; font-weight: bold; }
+	select { padding: 8px; }
+	
+	.card b {
+    display: block;
+    margin-bottom: 6px;
+  }
+  </style>
+</head>
+
+<body>
+  <h1>ABG Trainer Prototype</h1>
+
+  <div class="card">
+    <div class="row">
+      <div><span class="pill" id="modePill">Chill mode</span></div>
+      <div>
+        <label class="muted">
+          Mode:
+          <select id="modeSelect">
+            <option value="chill" selected>Chill (timer hidden)</option>
+            <option value="speed">Speedrun (timer visible)</option>
+          </select>
+        </label>
+      </div>
+      <div class="muted" id="timerDisplay" style="display:none;">Time: 0.0s</div>
+    </div>
+  </div>
+
+  <div class="card" id="startCard">
+  <h2>ABG Practice</h2>
+  <p>
+    Practice interpreting arterial blood gases step-by-step.
+  </p>
+
+  <ul>
+    <li>Identify acidemia or alkalemia</li>
+    <li>Determine the acid–base disorder</li>
+    <li>Assess compensation</li>
+    <li>Recognise common clinical patterns</li>
+  </ul>
+
+  <button id="startBtn">Start practice</button>
+</div>
+
+<div class="card" id="caseCard" style="display:none;"></div>
+
+  <div class="card" id="qaCard" style="display:none;"></div>
+
+  <div class="card" id="resultCard" style="display:none;"></div>
+
+  <div class="row">
+    <button id="nextBtn" disabled>Next case</button>
+    <button id="resetBtn">Reset session score</button>
+  </div>
+
+  <p class="muted">
+    Tip: Keep <code>abg_cases_v1.json</code> in the same folder as this HTML file.
+  </p>
+
+<script>
+/** ---- CONFIG (Option A time bonus; whole-case; timer hidden by default) ---- **/
+const SCORING = {
+  perStepCorrect: 10,
+  perfectCaseBonus: 30,
+  timeBonusTiers: [
+    { maxSeconds: 30, bonus: 20 },
+    { maxSeconds: 45, bonus: 15 },
+    { maxSeconds: 60, bonus: 10 },
+    { maxSeconds: 90, bonus: 5 },
+    { maxSeconds: Infinity, bonus: 0 },
+  ]
+};
+
+let allCases = [];
+let currentCase = null;
+let currentStepIndex = 0;
+let stepResults = []; // {key, correct, chosen, correctAnswer}
+let caseStartMs = null;
+let timerInterval = null;
+
+let sessionScore = 0;
+let sessionCasesCompleted = 0;
+
+/** Utility */
+function pickRandom(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+function calcAnionGap(na, cl, hco3) {
+  return na - (cl + hco3);
+}
+function getTimeBonus(seconds) {
+  for (const t of SCORING.timeBonusTiers) {
+    if (seconds <= t.maxSeconds) return t.bonus;
+  }
+  return 0;
+}
+function nowMs() { return Date.now(); }
+
+function getMode() {
+  return document.getElementById("modeSelect").value; // chill | speed
+}
+function updateModeUI() {
+  const mode = getMode();
+  const pill = document.getElementById("modePill");
+  const timer = document.getElementById("timerDisplay");
+  if (mode === "speed") {
+    pill.textContent = "Speedrun mode";
+    timer.style.display = "block";
+  } else {
+    pill.textContent = "Chill mode";
+    timer.style.display = "none";
+  }
+}
+
+/** Load JSON */
+async function loadCases() {
+  const res = await fetch("./abg_cases.json", { cache: "no-store" });
+  if (!res.ok) throw new Error(`Failed to load JSON: ${res.status}`);
+
+  const data = await res.json();
+
+  if (Array.isArray(data)) return data;
+  if (data && Array.isArray(data.cases)) return data.cases;
+
+  throw new Error("JSON format not recognized. Expected an array or {cases:[...]}.");
+}
+
+/** Render case header */
+function renderCaseCard(c) {
+  const gas = c.inputs?.gas ?? {};
+  const ely = c.inputs?.electrolytes ?? {};
+  const lact = c.inputs?.lactate_mmolL;
+
+  const ag = (ely.na_mmolL != null && ely.cl_mmolL != null && gas.hco3_mmolL != null)
+    ? calcAnionGap(ely.na_mmolL, ely.cl_mmolL, gas.hco3_mmolL)
+    : null;
+
+  document.getElementById("caseCard").innerHTML = `
+    <div class="row">
+  <div><span class="pill">Practice Case</span></div>
+</div>
+
+    <p>${c.clinical_stem ?? ""}</p>
+
+    <div class="row">
+
+  <div class="card">
+    <b>Gas</b><br/>
+    pH: ${gas.ph ?? "—"}<br/>
+    PaCO₂: ${gas.paco2_mmHg ?? "—"} mmHg<br/>
+    HCO₃⁻: ${gas.hco3_mmolL ?? "—"} mmol/L
+  </div>
+
+  <div class="card">
+    <b>Electrolytes</b><br/>
+    Na⁺: ${ely.na_mmolL ?? "—"}<br/>
+    Cl⁻: ${ely.cl_mmolL ?? "—"}<br/>
+    Lactate: ${lact ?? "—"}<br/>
+    <span class="muted">AG: —</span>
+  </div>
+
+  <div class="card">
+    <b>Reference</b><br/>
+    pH: 7.35–7.45<br/>
+    PaCO₂: 35–45 mmHg<br/>
+    HCO₃⁻: 22–26 mmol/L<br/>
+    Na⁺: 135–145<br/>
+    Cl⁻: 98–106<br/>
+    Lactate: &lt; 2.0<br/>
+    AG: 8–12
+  </div>
+
+</div>
+
+    <p class="muted">Session: ${sessionCasesCompleted} cases • Score: ${sessionScore}</p>
+  `;
+}
+
+/** Render current step question */
+function renderStep() {
+  const qaCard = document.getElementById("qaCard");
+  const resultCard = document.getElementById("resultCard");
+  resultCard.style.display = "none";
+  qaCard.style.display = "block";
+
+  const flow = currentCase.questions_flow;
+  const step = flow[currentStepIndex];
+
+  qaCard.innerHTML = `
+    <h3>Step ${step.step}: ${step.prompt}</h3>
+    <div id="options"></div>
+    <p class="muted">Question ${currentStepIndex + 1} of ${flow.length}</p>
+  `;
+
+  const optionsDiv = document.getElementById("options");
+  step.options.forEach(opt => {
+  const btn = document.createElement("button");
+  btn.textContent = opt;
+
+  btn.onclick = () => {
+
+  const buttons = optionsDiv.querySelectorAll("button");
+  buttons.forEach(b => b.disabled = true);
+
+  btn.style.backgroundColor = "#eee";
+
+  handleAnswer(step.key, opt);
+};
+
+  optionsDiv.appendChild(btn);
+});
+
+  document.getElementById("nextBtn").disabled = true;
+}
+
+/** Check answer against answer_key */
+function isCorrect(stepKey, chosen) {
+  const ak = currentCase.answer_key ?? {};
+
+  if (stepKey === "anion_gap") {
+    // Accept "Raised"/"Normal" based on computed AG threshold
+    const gas = currentCase.inputs?.gas ?? {};
+    const ely = currentCase.inputs?.electrolytes ?? {};
+    const ag = calcAnionGap(ely.na_mmolL, ely.cl_mmolL, gas.hco3_mmolL);
+    const category = ag > 12 ? "Raised" : "Normal";
+    return chosen === category;
+  }
+
+  return chosen === ak[stepKey];
+}
+
+function correctAnswerFor(stepKey) {
+  const ak = currentCase.answer_key ?? {};
+
+  if (stepKey === "anion_gap") {
+    const gas = currentCase.inputs?.gas ?? {};
+    const ely = currentCase.inputs?.electrolytes ?? {};
+    const ag = calcAnionGap(ely.na_mmolL, ely.cl_mmolL, gas.hco3_mmolL);
+    return (ag > 12 ? "Raised" : "Normal");
+  }
+
+  return ak[stepKey];
+}
+
+function handleAnswer(stepKey, chosen) {
+  const correct = isCorrect(stepKey, chosen);
+  const correctAns = correctAnswerFor(stepKey);
+
+  stepResults.push({ key: stepKey, correct, chosen, correctAnswer: correctAns });
+
+  // Show immediate feedback, then enable “Next case” only if finished, otherwise proceed
+  const qaCard = document.getElementById("qaCard");
+  const resultCard = document.getElementById("resultCard");
+
+  qaCard.style.display = "none";
+  resultCard.style.display = "block";
+
+  resultCard.innerHTML = `
+    <p class="${correct ? "correct" : "incorrect"}">${correct ? "Correct ✅" : "Incorrect ❌"}</p>
+    <p><b>Your answer:</b> ${chosen}</p>
+    <p><b>Correct answer:</b> ${correctAns}</p>
+    <button id="continueBtn">${currentStepIndex < currentCase.questions_flow.length - 1 ? "Continue" : "Finish case"}</button>
+  `;
+
+  document.getElementById("continueBtn").onclick = () => {
+    if (currentStepIndex < currentCase.questions_flow.length - 1) {
+      currentStepIndex++;
+      renderStep();
+    } else {
+      finishCase();
+    }
+  };
+}
+
+function finishCase() {
+  stopTimer();
+
+  const elapsedSeconds = (nowMs() - caseStartMs) / 1000;
+  const timeBonus = getTimeBonus(elapsedSeconds);
+
+  const correctSteps = stepResults.filter(s => s.correct).length;
+  const baseScore = correctSteps * SCORING.perStepCorrect;
+  const perfect = (correctSteps === currentCase.questions_flow.length);
+  const perfectBonus = perfect ? SCORING.perfectCaseBonus : 0;
+
+  const caseScore = baseScore + perfectBonus + timeBonus;
+
+  sessionScore += caseScore;
+  sessionCasesCompleted += 1;
+
+  const resultCard = document.getElementById("resultCard");
+  const qaCard = document.getElementById("qaCard");
+  qaCard.style.display = "none";
+  resultCard.style.display = "block";
+
+  const breakdownRows = stepResults.map(s =>
+    `<li><b>${s.key}</b>: ${s.correct ? "✅" : "❌"} (you: ${s.chosen} | correct: ${s.correctAnswer})</li>`
+  ).join("");
+
+  resultCard.innerHTML = `
+    <h3>Case complete</h3>
+    <p><b>Time:</b> ${elapsedSeconds.toFixed(1)}s</p>
+    <p><b>Score:</b> ${caseScore} (Steps ${baseScore} + Perfect ${perfectBonus} + Time ${timeBonus})</p>
+
+    <p><b>Explanation</b><br/>${currentCase.explanation ?? ""}</p>
+
+    <details>
+      <summary>Show step breakdown</summary>
+      <ul>${breakdownRows}</ul>
+    </details>
+
+    <p class="muted">Session total: ${sessionScore} • Cases: ${sessionCasesCompleted}</p>
+  `;
+
+  document.getElementById("nextBtn").disabled = false;
+}
+
+function startTimer() {
+  caseStartMs = nowMs();
+  const timerEl = document.getElementById("timerDisplay");
+
+  timerInterval = setInterval(() => {
+    const elapsed = (nowMs() - caseStartMs) / 1000;
+    if (getMode() === "speed") {
+      timerEl.textContent = `Time: ${elapsed.toFixed(1)}s`;
+    }
+  }, 100);
+}
+
+function stopTimer() {
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = null;
+}
+
+/** Load next random case */
+function loadNextCase() {
+  stepResults = [];
+  currentStepIndex = 0;
+  currentCase = pickRandom(allCases);
+
+  renderCaseCard(currentCase);
+  renderStep();
+  stopTimer();
+  startTimer();
+
+  document.getElementById("nextBtn").disabled = true;
+}
+
+/** UI wiring */
+document.getElementById("nextBtn").onclick = loadNextCase;
+document.getElementById("resetBtn").onclick = () => {
+  sessionScore = 0;
+  sessionCasesCompleted = 0;
+  if (currentCase) renderCaseCard(currentCase);
+};
+document.getElementById("modeSelect").onchange = updateModeUI;
+
+document.getElementById("startBtn").onclick = () => {
+  document.getElementById("startCard").style.display = "none";
+  document.getElementById("caseCard").style.display = "block";
+  loadNextCase();
+};
+
+/** Init */
+(async function init() {
+  updateModeUI();
+  try {
+    allCases = await loadCases();
+    console.log("allCases =", allCases);
+    console.log("firstCase =", allCases[0]);
+
+    if (!allCases.length) throw new Error("No cases found in JSON.");
+
+  } catch (e) {
+    console.error("INIT ERROR:", e);
+    document.getElementById("caseCard").innerHTML = `
+      <p class="incorrect">Error loading cases.</p>
+      <pre>${e.message}</pre>
+      <p class="muted">Check that <code>generator/abg_cases_generated.json</code> exists and you opened this via <code>http://localhost:8000</code>.</p>
+    `;
+  }
+})();</script>
+</body>
+</html>
