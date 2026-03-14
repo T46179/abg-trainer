@@ -1871,7 +1871,7 @@ output = {
 
 import os
 
-output_path = os.path.join(os.path.dirname(__file__), "..", "site", "abg_cases.json")
+output_path = os.path.join(os.path.dirname(__file__), "..", "abg_cases.json")
 
 with open(output_path, "w") as f:
     json.dump(output, f, indent=2)
