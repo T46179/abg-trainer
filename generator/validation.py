@@ -1,4 +1,11 @@
-from physiology import (
+"""Validation rules for generated ABG cases.
+
+This module checks question-flow structure, physiologic plausibility,
+archetype-specific expectations, duplicate IDs, and retry logic for case
+generation until a valid case is produced.
+"""
+
+from .physiology import (
     anion_gap_category,
     calc_anion_gap,
     chronic_respiratory_acidosis_expected_hco3,

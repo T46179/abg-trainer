@@ -1,6 +1,12 @@
+"""Clinical stem generation helpers.
+
+The main function, `generate_stem`, turns structured prompt fragments from
+the shared stem bank into varied scenario text for each archetype.
+"""
+
 import random
 
-from config import STEM_BANK
+from .config import STEM_BANK
 
 
 def generate_stem(archetype, min_features=2, max_features=3):

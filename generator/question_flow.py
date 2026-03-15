@@ -1,4 +1,11 @@
-from config import OPTIONS, PROMPTS, QUESTION_LABELS, SPEED_BONUS_TIERS
+"""Question and timing builders for generated ABG cases.
+
+This module defines reusable question step factories, assembles them into
+difficulty-based flows, and provides the default timing metadata attached
+to each case.
+"""
+
+from .config import OPTIONS, PROMPTS, QUESTION_LABELS, SPEED_BONUS_TIERS
 
 
 def default_timing():

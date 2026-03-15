@@ -1,8 +1,15 @@
+"""Generator entry point.
+
+This module wires together the shared helper modules and archetype-specific
+case builders, assembles the full case set, validates it, and writes the
+final JSON payload consumed by the static site.
+"""
+
 import json
 import os
 import random
 
-from generators import (
+from .generators import (
     generate_acute_copd_case,
     generate_copd_case,
     generate_diarrhoea_case,
@@ -15,15 +22,15 @@ from generators import (
     generate_sepsis_case,
     generate_vomiting_case,
 )
-from progression import (
+from .progression import (
     build_dashboard_state,
     build_default_user_state,
     build_progression_config,
     print_progression_engine_examples,
     run_progression_simulations,
 )
-from reporting import print_generation_report, print_progression_examples
-from validation import generate_valid_case, validate_cases
+from .reporting import print_generation_report, print_progression_examples
+from .validation import generate_valid_case, validate_cases
 
 
 CASE_BUILDERS = [

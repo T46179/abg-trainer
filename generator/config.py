@@ -1,3 +1,10 @@
+"""Shared static configuration for the ABG case generator.
+
+This module centralizes constants used across generation and validation,
+including progression settings, question labels/options, and the clinical
+stem bank used to build varied case prompts.
+"""
+
 PROGRESSION_VERSION = "v1"
 
 BASE_XP_BY_DIFFICULTY = {

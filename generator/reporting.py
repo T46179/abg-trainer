@@ -1,6 +1,12 @@
+"""Reporting helpers for the generator.
+
+These functions print high-level summaries of the generated case set and
+sample XP calculations so generation output is easier to inspect manually.
+"""
+
 from collections import Counter
 
-from progression import calculate_case_xp_award
+from .progression import calculate_case_xp_award
 
 
 def print_generation_report(cases):

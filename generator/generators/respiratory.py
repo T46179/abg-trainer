@@ -1,6 +1,19 @@
+"""Respiratory ABG archetype generators.
+
+Main functions:
+- `generate_opioid_case`
+- `generate_copd_case`
+- `generate_panic_case`
+- `generate_acute_copd_case`
+- `generate_sepsis_case`
+
+These builders generate respiratory acid-base cases with their matching
+clinical stems, answers, and progression metadata.
+"""
+
 import random
 
-from physiology import (
+from ..physiology import (
     calc_anion_gap,
     calculate_ph_from_hco3_paco2,
     chronic_respiratory_acidosis_expected_hco3,
@@ -8,9 +21,9 @@ from physiology import (
     estimate_ph,
     respiratory_alkalosis_expected_hco3_acute,
 )
-from progression import attach_progression_metadata
-from question_flow import beginner_question_flow, default_timing, intermediate_question_flow, shuffle_question_options
-from stems import generate_stem
+from ..progression import attach_progression_metadata
+from ..question_flow import beginner_question_flow, default_timing, intermediate_question_flow, shuffle_question_options
+from ..stems import generate_stem
 
 
 def generate_opioid_case(case_id):

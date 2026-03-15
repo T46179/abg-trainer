@@ -1,6 +1,18 @@
+"""Metabolic ABG archetype generators.
+
+Main functions:
+- `generate_dka_case`
+- `generate_vomiting_case`
+- `generate_diarrhoea_case`
+- `generate_lactate_case`
+
+These builders create metabolic disorder cases and attach the expected
+question flow, answer key, explanation, and progression metadata.
+"""
+
 import random
 
-from physiology import (
+from ..physiology import (
     calc_anion_gap,
     calculate_ph_from_hco3_paco2,
     derived_ph_status,
@@ -8,9 +20,9 @@ from physiology import (
     metabolic_alkalosis_expected_paco2,
     winters_expected_paco2,
 )
-from progression import attach_progression_metadata
-from question_flow import advanced_question_flow, default_timing, intermediate_question_flow, shuffle_question_options
-from stems import generate_stem
+from ..progression import attach_progression_metadata
+from ..question_flow import advanced_question_flow, default_timing, intermediate_question_flow, shuffle_question_options
+from ..stems import generate_stem
 
 
 def generate_dka_case(case_id):

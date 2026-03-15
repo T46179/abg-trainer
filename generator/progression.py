@@ -1,4 +1,13 @@
-from config import (
+"""Progression and XP helpers for generated training data.
+
+Main functions in this module:
+- build progression metadata attached to each case
+- calculate XP awards, levels, and unlocked difficulty
+- build default user and dashboard state examples
+- print progression examples and simulations used during generation
+"""
+
+from .config import (
     BASE_XP_BY_DIFFICULTY,
     DIFFICULTY_UNLOCK_LEVELS,
     FREE_DAILY_CASE_LIMIT,

@@ -1,9 +1,19 @@
+"""Mixed-disorder ABG archetype generators.
+
+Main functions:
+- `generate_salicylate_case`
+- `generate_dka_vomiting_case`
+
+These builders cover cases where more than one primary acid-base process is
+present and the question flow needs to support mixed-disorder reasoning.
+"""
+
 import random
 
-from physiology import calc_anion_gap, calculate_ph_from_hco3_paco2, derived_ph_status, estimate_ph
-from progression import attach_progression_metadata
-from question_flow import advanced_question_flow, default_timing, expert_question_flow, shuffle_question_options
-from stems import generate_stem
+from ..physiology import calc_anion_gap, calculate_ph_from_hco3_paco2, derived_ph_status, estimate_ph
+from ..progression import attach_progression_metadata
+from ..question_flow import advanced_question_flow, default_timing, expert_question_flow, shuffle_question_options
+from ..stems import generate_stem
 
 
 def generate_salicylate_case(case_id):

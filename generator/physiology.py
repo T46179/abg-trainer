@@ -1,3 +1,12 @@
+"""Physiology and numeric helper functions for ABG case generation.
+
+Main responsibilities:
+- round and format generated values consistently
+- calculate pH and compensation expectations
+- derive anion gap and pH status labels
+- provide small reusable clinical math helpers
+"""
+
 import math
 
 
