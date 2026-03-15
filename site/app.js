@@ -431,10 +431,10 @@ document.getElementById("startBtn").onclick = () => {
 
   } catch (e) {
     console.error("INIT ERROR:", e);
-    document.getElementById("caseCard").innerHTML = `
-      <p class="incorrect">Error loading cases.</p>
-      <pre>${e.message}</pre>
-      <p class="muted">Check that <code>generator/abg_cases_generated.json</code> exists and you opened this via <code>http://localhost:8000</code>.</p>
-    `;
+		document.getElementById("caseCard").innerHTML = `
+		  <p class="incorrect">Error loading cases.</p>
+		  <pre>${e.message}</pre>
+		  <p class="muted">Check that <code>abg_cases.json</code> exists in the same folder as the live site files.</p>
+		`;
   }
 })();
