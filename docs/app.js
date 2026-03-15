@@ -21,6 +21,13 @@ let timerInterval = null;
 let sessionScore = 0;
 let sessionCasesCompleted = 0;
 
+let progressionConfig = null;
+let dashboardState = null;
+let userState = null;
+
+let recentArchetypes = [];
+const RECENT_ARCHETYPE_LIMIT = 2;
+
 /** Utility */
 function pickRandom(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
@@ -72,10 +79,27 @@ async function loadCases() {
 
   const data = await res.json();
 
-  if (Array.isArray(data)) return data;
-  if (data && Array.isArray(data.cases)) return data.cases;
+  // Legacy format support (old JSON with only cases)
+  if (Array.isArray(data)) {
+    return {
+      cases: data,
+      progressionConfig: null,
+      dashboardState: null,
+      userState: null
+    };
+  }
 
-  throw new Error("JSON format not recognized. Expected an array or {cases:[...]}.");
+  // New structured format
+  if (data && Array.isArray(data.cases)) {
+    return {
+      cases: data.cases,
+      progressionConfig: data.progression_config ?? null,
+      dashboardState: data.dashboard_state ?? null,
+      userState: data.default_user_state ?? null
+    };
+  }
+
+  throw new Error("JSON format not recognized.");
 }
 
 /** Render case header */
@@ -245,7 +269,7 @@ function isCorrect(stepKey, chosen) {
     const gas = currentCase.inputs?.gas ?? {};
     const ely = currentCase.inputs?.electrolytes ?? {};
     const ag = calcAnionGap(ely.na_mmolL, ely.cl_mmolL, gas.hco3_mmolL);
-    const category = ag > 12 ? "Raised" : "Normal";
+    const category = ag > 16 ? "Raised" : "Normal";
     return chosen === category;
   }
 
@@ -259,7 +283,7 @@ function correctAnswerFor(stepKey) {
     const gas = currentCase.inputs?.gas ?? {};
     const ely = currentCase.inputs?.electrolytes ?? {};
     const ag = calcAnionGap(ely.na_mmolL, ely.cl_mmolL, gas.hco3_mmolL);
-    return (ag > 12 ? "Raised" : "Normal");
+    return (ag > 16 ? "Raised" : "Normal");
   }
 
   return ak[stepKey];
@@ -346,19 +370,41 @@ function finishCase() {
   sessionScore += caseScore;
   sessionCasesCompleted += 1;
 
+  const xpResult = applyCaseXp(
+    currentCase.difficulty_level ?? 1,
+    perfect,
+    elapsedSeconds
+  );
+
   const resultCard = document.getElementById("resultCard");
   const qaCard = document.getElementById("qaCard");
   qaCard.style.display = "none";
   resultCard.style.display = "block";
 
-const breakdownRows = stepResults.map(s =>
-  `<li><b>${prettyStepLabel(s.key)}</b>: ${s.correct ? "✅" : "❌"} (you: ${s.chosen} | correct: ${s.correctAnswer})</li>`
-).join("");
+  const breakdownRows = stepResults.map(s =>
+    `<li><b>${prettyStepLabel(s.key)}</b>: ${s.correct ? "✅" : "❌"} (you: ${s.chosen} | correct: ${s.correctAnswer})</li>`
+  ).join("");
+
+const xpBlock = xpResult ? `
+  <hr>
+  <h4>XP earned</h4>
+  <p><b>+${xpResult.totalXpAward} XP</b></p>
+  ${
+    xpResult.leveledUp
+      ? `<p><b>Level up!</b></p>`
+      : ""
+  }
+  ${
+    xpResult.difficultyUnlocked
+      ? `<p><b>New difficulty unlocked:</b> ${getDifficultyLabel(xpResult.newUnlockedDifficulty)}</p>`
+      : ""
+  }
+` : "";
 
   resultCard.innerHTML = `
     <h3>Case complete</h3>
-    <p><b>Time:</b> ${elapsedSeconds.toFixed(1)}s</p>
-    <p><b>Score:</b> ${caseScore} (Steps ${baseScore} + Perfect ${perfectBonus} + Time ${timeBonus})</p>
+
+    ${xpBlock}
 
     <p><b>Explanation</b><br/>${currentCase.explanation ?? ""}</p>
 
@@ -367,11 +413,11 @@ const breakdownRows = stepResults.map(s =>
       <ul>${breakdownRows}</ul>
     </details>
 
-    <p class="muted">Session total: ${sessionScore} • Cases: ${sessionCasesCompleted}</p>
   `;
 
   document.getElementById("nextBtn").disabled = false;
 }
+
 
 function startTimer() {
   caseStartMs = nowMs();
@@ -394,7 +440,37 @@ function stopTimer() {
 function loadNextCase() {
   stepResults = [];
   currentStepIndex = 0;
-  currentCase = pickRandom(allCases);
+
+  const subscriptionTier =
+    dashboardState?.user?.subscription_tier ??
+    userState?.subscription_tier ??
+    "free";
+
+  const maxDifficulty =
+    subscriptionTier === "exam_prep"
+      ? 4
+      : (userState?.unlocked_difficulty ?? 1);
+
+  let availableCases = allCases.filter(
+    c => (c.difficulty_level ?? 1) <= maxDifficulty
+  );
+
+  let filteredCases = availableCases.filter(
+    c => !recentArchetypes.includes(c.archetype)
+  );
+
+  if (!filteredCases.length) {
+    filteredCases = availableCases;
+  }
+
+  currentCase = pickRandom(filteredCases);
+
+  if (currentCase?.archetype) {
+    recentArchetypes.push(currentCase.archetype);
+    if (recentArchetypes.length > RECENT_ARCHETYPE_LIMIT) {
+      recentArchetypes.shift();
+    }
+  }
 
   renderCaseCard(currentCase);
   renderStep();
@@ -403,6 +479,7 @@ function loadNextCase() {
 
   document.getElementById("nextBtn").disabled = true;
 }
+
 
 /** UI wiring */
 document.getElementById("nextBtn").onclick = loadNextCase;
@@ -413,28 +490,213 @@ document.getElementById("resetBtn").onclick = () => {
 };
 document.getElementById("modeSelect").onchange = updateModeUI;
 
-document.getElementById("startBtn").onclick = () => {
-  document.getElementById("startCard").style.display = "none";
-  document.getElementById("caseCard").style.display = "block";
-  loadNextCase();
-};
+
+function renderProgression() {
+  if (!userState) return;
+
+  const level = userState.level;
+  const xpInto = userState.level_progress?.xp_into_level ?? 0;
+  const xpNeeded = userState.level_progress?.xp_needed_for_next_level;
+  const unlockedLabel = userState.unlocked_difficulty_label ?? "Beginner";
+
+  const el = document.getElementById("progressionDebug");
+  if (!el) return;
+
+  el.innerHTML = `
+    <strong>Level ${level}</strong><br>
+    XP: ${xpNeeded == null ? `${userState.total_xp} total` : `${xpInto} / ${xpNeeded}`}<br>
+    Unlocked: ${unlockedLabel}
+  `;
+}
+
+
+function getBaseXpForDifficulty(difficultyLevel) {
+  if (!progressionConfig?.base_xp_by_difficulty) return 0;
+  return progressionConfig.base_xp_by_difficulty[difficultyLevel] ?? 0;
+}
+
+function getPerfectXpBonus(difficultyLevel, perfectCase) {
+  if (!perfectCase) return 0;
+
+  const baseXp = getBaseXpForDifficulty(difficultyLevel);
+  const percent = progressionConfig?.perfect_case_bonus_percent ?? 0;
+  return Math.round(baseXp * percent);
+}
+
+function getSpeedXpBonus(secondsTaken) {
+  const tiers = progressionConfig?.speed_bonus_tiers ?? [];
+  for (const tier of tiers) {
+    if (secondsTaken <= tier.max_seconds) return tier.bonus;
+  }
+  return 0;
+}
+
+function getStreakXpBonus(streakDays) {
+  const tiers = progressionConfig?.streak_bonus_tiers ?? [];
+  let bonus = 0;
+
+  for (const tier of tiers) {
+    if (streakDays >= tier.min_days) {
+      bonus = tier.bonus;
+    }
+  }
+
+  return bonus;
+}
+
+function getXpRequiredForLevel(level) {
+  return progressionConfig?.xp_required_per_level?.[level] ?? null;
+}
+
+function getLevelFromTotalXp(totalXp) {
+  let level = 1;
+
+  while (true) {
+    const xpNeeded = getXpRequiredForLevel(level);
+    if (xpNeeded == null) return level;
+
+    let thresholdForNext = 0;
+    for (let l = 1; l <= level; l++) {
+      thresholdForNext += progressionConfig?.xp_required_per_level?.[l] ?? 0;
+    }
+
+    if (totalXp < thresholdForNext) return level;
+    level++;
+  }
+}
+
+function getDifficultyLabel(difficultyLevel) {
+  return progressionConfig?.difficulty_labels?.[difficultyLevel] ?? `Difficulty ${difficultyLevel}`;
+}
+
+function getUnlockedDifficultyForLevel(level) {
+  const unlocks = progressionConfig?.difficulty_unlock_levels ?? {};
+  let unlocked = 1;
+
+  for (const [difficulty, requiredLevel] of Object.entries(unlocks)) {
+    if (level >= requiredLevel) {
+      unlocked = Number(difficulty);
+    }
+  }
+
+  return unlocked;
+}
+
+function getLevelProgressFromXp(totalXp) {
+  const level = getLevelFromTotalXp(totalXp);
+
+  let currentLevelStartXp = 0;
+  for (let l = 1; l < level; l++) {
+    currentLevelStartXp += progressionConfig?.xp_required_per_level?.[l] ?? 0;
+  }
+
+  const xpNeededForNextLevel = getXpRequiredForLevel(level);
+
+  return {
+    level,
+    xp_into_level: totalXp - currentLevelStartXp,
+    xp_needed_for_next_level: xpNeededForNextLevel,
+    current_level_start_xp: currentLevelStartXp,
+    next_level_total_xp:
+      xpNeededForNextLevel == null ? null : currentLevelStartXp + xpNeededForNextLevel
+  };
+}
+
+function applyCaseXp(difficultyLevel, perfectCase, secondsTaken) {
+  if (!userState || !progressionConfig) return null;
+
+  const baseXp = getBaseXpForDifficulty(difficultyLevel);
+  const perfectBonus = getPerfectXpBonus(difficultyLevel, perfectCase);
+  const speedBonus = getSpeedXpBonus(secondsTaken);
+  const streakBonus = getStreakXpBonus(userState.streak_days ?? 0);
+
+  const totalXpAward = baseXp + perfectBonus + speedBonus + streakBonus;
+
+  const previousTotalXp = userState.total_xp ?? 0;
+  const previousLevel = userState.level ?? 1;
+  const previousUnlockedDifficulty = userState.unlocked_difficulty ?? 1;
+
+  const newTotalXp = previousTotalXp + totalXpAward;
+  const newLevel = getLevelFromTotalXp(newTotalXp);
+  const newUnlockedDifficulty = getUnlockedDifficultyForLevel(newLevel);
+  const newLevelProgress = getLevelProgressFromXp(newTotalXp);
+
+  userState.total_xp = newTotalXp;
+  userState.level = newLevel;
+  userState.level_progress = newLevelProgress;
+  userState.unlocked_difficulty = newUnlockedDifficulty;
+  userState.unlocked_difficulty_label = getDifficultyLabel(newUnlockedDifficulty);
+  userState.cases_completed_today = (userState.cases_completed_today ?? 0) + 1;
+
+  if (userState.daily_case_limit != null) {
+    userState.cases_remaining_today = Math.max(
+      0,
+      userState.daily_case_limit - userState.cases_completed_today
+    );
+  }
+
+  renderProgression();
+
+  return {
+    baseXp,
+    perfectBonus,
+    speedBonus,
+    streakBonus,
+    totalXpAward,
+    previousLevel,
+    newLevel,
+    leveledUp: newLevel > previousLevel,
+    previousUnlockedDifficulty,
+    newUnlockedDifficulty,
+    difficultyUnlocked: newUnlockedDifficulty > previousUnlockedDifficulty
+  };
+}
 
 /** Init */
 (async function init() {
   updateModeUI();
+
   try {
-    allCases = await loadCases();
+    const data = await loadCases();
+
+    allCases = data.cases;
+    progressionConfig = data.progressionConfig;
+    dashboardState = data.dashboardState;
+    userState = data.userState;
+	
+	renderProgression();
+
     console.log("allCases =", allCases);
     console.log("firstCase =", allCases[0]);
 
-    if (!allCases.length) throw new Error("No cases found in JSON.");
+    if (!Array.isArray(allCases) || !allCases.length) {
+      throw new Error("No cases found in JSON.");
+    }
+
+    const startBtn = document.getElementById("startBtn");
+    console.log("binding startBtn =", startBtn);
+
+    if (startBtn) {
+      startBtn.onclick = () => {
+        console.log("Start button clicked");
+
+        document.getElementById("startCard").style.display = "none";
+        document.getElementById("caseCard").style.display = "block";
+
+        console.log("About to load next case");
+        console.log("allCases =", allCases);
+
+        loadNextCase();
+      };
+    }
 
   } catch (e) {
     console.error("INIT ERROR:", e);
-		document.getElementById("caseCard").innerHTML = `
-		  <p class="incorrect">Error loading cases.</p>
-		  <pre>${e.message}</pre>
-		  <p class="muted">Check that <code>abg_cases.json</code> exists in the same folder as the live site files.</p>
-		`;
+    document.getElementById("caseCard").innerHTML = `
+      <p class="incorrect">Error loading cases.</p>
+      <pre>${e.message}</pre>
+      <p class="muted">Check that <code>abg_cases.json</code> exists in the same folder as the live site files.</p>
+    `;
   }
 })();
+

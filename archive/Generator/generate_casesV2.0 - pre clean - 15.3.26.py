@@ -2,11 +2,10 @@ import json
 import random
 import math
 from collections import Counter
-import os
 
-# =========================================================
-# NUMERIC FORMATTING / ROUNDING
-# =========================================================
+# ----------------------------
+# Numeric formatting / rounding
+# ----------------------------
 
 PH_DP = 2
 GAS_DP = 1
@@ -66,56 +65,9 @@ def get_display_values(inputs):
         inputs.get("lactate_mmolL"),
     )
     
-# =========================================================
-# PROGRESSION / XP CONFIGURATION
-# =========================================================
-
-PROGRESSION_VERSION = "v1"
-
-BASE_XP_BY_DIFFICULTY = {
-    1: 10,  # Beginner
-    2: 15,  # Intermediate
-    3: 25,  # Advanced
-    4: 40,  # Master
-}
-
-PERFECT_CASE_BONUS_PERCENT = 0.10
-
-SPEED_BONUS_TIERS = [
-    {"max_seconds": 30, "bonus": 10},
-    {"max_seconds": 45, "bonus": 7},
-    {"max_seconds": 60, "bonus": 5},
-    {"max_seconds": 90, "bonus": 3},
-    {"max_seconds": 999999, "bonus": 0},
-]
-
-STREAK_BONUS_TIERS = [
-    {"min_days": 3, "bonus": 2},
-    {"min_days": 7, "bonus": 5},
-    {"min_days": 14, "bonus": 8},
-]
-
-# XP required to go FROM the current level TO the next level
-XP_REQUIRED_PER_LEVEL = {
-    1: 40,   # Level 1 -> 2
-    2: 50,   # Level 2 -> 3
-    3: 60,   # Level 3 -> 4
-    4: 80,   # Level 4 -> 5
-    # Fill 5->20 later
-}
-
-DIFFICULTY_UNLOCK_LEVELS = {
-    1: 1,   # Beginner
-    2: 5,   # Intermediate
-    3: 10,  # Advanced
-    4: 20,  # Master
-}
-
-FREE_DAILY_CASE_LIMIT = 5
-    
-# =========================================================
-# QUESTION WORDING / FLOW CONFIGURATION
-# =========================================================
+# ----------------------------
+# QUESTION WORDING / FLOW CONFIG
+# ----------------------------
 
 USE_EXPLANATORY_COMPENSATION_LABEL = False
 
@@ -167,16 +119,27 @@ OPTIONS = {
 }
 
 
-# =========================================================
-# DIFFICULTY
-# =========================================================
-
+#--------------------------
+#DIFFICULTY SETTINGS
+#--------------------------
 def difficulty_label(level):
     mapping = {
         1: "beginner",
         2: "intermediate",
         3: "advanced",
-        4: "master"
+        4: "expert"
+    }
+    return mapping.get(level, "custom")
+
+def tier_name(level, is_mixed=False):
+    if is_mixed:
+        return "master"
+
+    mapping = {
+        1: "beginner",
+        2: "competent",
+        3: "advanced",
+        4: "expert"
     }
     return mapping.get(level, "custom")
 
@@ -212,25 +175,46 @@ def case_pool_for_archetype(archetype):
         "salicylate_toxicity": "mixed_disorders"
     }
     return mapping.get(archetype, "core")
+
+
+def base_xp_for_tier(tier):
+    mapping = {
+        "beginner": 10,
+        "competent": 15,
+        "advanced": 20,
+        "expert": 25,
+        "master": 30
+    }
+    return mapping.get(tier, 10)
+
+
+def mastery_weight_for_tier(tier):
+    mapping = {
+        "beginner": 1.0,
+        "competent": 1.0,
+        "advanced": 1.1,
+        "expert": 1.25,
+        "master": 1.5
+    }
+    return mapping.get(tier, 1.0)
     
 def attach_progression_metadata(case, level, archetype, is_mixed=False):
+    tier = tier_name(level, is_mixed)
 
     case["archetype"] = archetype
     case["difficulty_level"] = level
     case["difficulty_label"] = difficulty_label(level)
+    case["tier"] = tier
     case["skills_tested"] = skills_for_case(level, is_mixed)
     case["case_pool"] = case_pool_for_archetype(archetype)
-    case["progression"] = {
-        "base_xp": base_xp_for_difficulty(level)
-    }
+    case["base_xp"] = base_xp_for_tier(tier)
+    case["mastery_weight"] = mastery_weight_for_tier(tier)
 
-    return case
-
+    return case    
     
-# =========================================================
-# HELPERS
-# =========================================================
-
+#------------------------------------
+# HELPER FUNCTIONS
+#------------------------------------
 def winters_expected_paco2(hco3):
     return 1.5 * hco3 + 8
 
@@ -270,525 +254,11 @@ def derived_ph_status(ph):
         return "Alkalaemia"
     return "Normal"
 
+
+
 def in_range(value, low, high, tolerance=0.05):
     return (low - tolerance) <= value <= (high + tolerance)
-    
-    
-def base_xp_for_difficulty(level):
-    return BASE_XP_BY_DIFFICULTY.get(level, 0)
 
-
-def perfect_case_bonus(level):
-    base_xp = base_xp_for_difficulty(level)
-    return round(base_xp * PERFECT_CASE_BONUS_PERCENT)
-
-
-def speed_bonus_for_seconds(seconds):
-    for tier in SPEED_BONUS_TIERS:
-        if seconds <= tier["max_seconds"]:
-            return tier["bonus"]
-    return 0
-
-
-def streak_bonus_for_days(streak_days):
-    bonus = 0
-    for tier in STREAK_BONUS_TIERS:
-        if streak_days >= tier["min_days"]:
-            bonus = tier["bonus"]
-    return bonus
-
-
-def xp_to_reach_level(target_level):
-    """
-    Total cumulative XP required to REACH a given level.
-    Example:
-    level 1 = 0 XP
-    level 2 = XP_REQUIRED_PER_LEVEL[1]
-    """
-    if target_level <= 1:
-        return 0
-
-    total = 0
-    for level in range(1, target_level):
-        total += XP_REQUIRED_PER_LEVEL.get(level, 0)
-    return total
-
-
-def level_from_total_xp(total_xp):
-    level = 1
-
-    while True:
-        xp_needed = XP_REQUIRED_PER_LEVEL.get(level)
-        if xp_needed is None:
-            return level
-
-        threshold_for_next = xp_to_reach_level(level + 1)
-        if total_xp < threshold_for_next:
-            return level
-
-        level += 1
-
-
-def unlocked_difficulty_for_level(user_level):
-    unlocked = 1
-    for difficulty, required_level in DIFFICULTY_UNLOCK_LEVELS.items():
-        if user_level >= required_level:
-            unlocked = difficulty
-    return unlocked
-
-
-def calculate_case_xp_award(difficulty_level, perfect_case=False, seconds_taken=None, streak_days=0):
-    base_xp = base_xp_for_difficulty(difficulty_level)
-    perfect_bonus = perfect_case_bonus(difficulty_level) if perfect_case else 0
-    speed_bonus = speed_bonus_for_seconds(seconds_taken) if seconds_taken is not None else 0
-    streak_bonus = streak_bonus_for_days(streak_days)
-
-    total_xp = base_xp + perfect_bonus + speed_bonus + streak_bonus
-
-    return {
-        "base_xp": base_xp,
-        "perfect_bonus": perfect_bonus,
-        "speed_bonus": speed_bonus,
-        "streak_bonus": streak_bonus,
-        "total_xp": total_xp,
-    }
-
-def build_progression_config():
-    return {
-        "version": PROGRESSION_VERSION,
-        "base_xp_by_difficulty": BASE_XP_BY_DIFFICULTY,
-        "perfect_case_bonus_percent": PERFECT_CASE_BONUS_PERCENT,
-        "speed_bonus_tiers": SPEED_BONUS_TIERS,
-        "streak_bonus_tiers": STREAK_BONUS_TIERS,
-        "xp_required_per_level": XP_REQUIRED_PER_LEVEL,
-        "difficulty_unlock_levels": DIFFICULTY_UNLOCK_LEVELS,
-        "free_daily_case_limit": FREE_DAILY_CASE_LIMIT,
-        "difficulty_labels": {
-            level: difficulty_label(level) for level in sorted(BASE_XP_BY_DIFFICULTY.keys())
-        }
-    }
-
-def process_case_completion(
-    current_total_xp,
-    difficulty_level,
-    perfect_case=False,
-    seconds_taken=None,
-    streak_days=0,
-):
-    """
-    Calculate XP awarded for one completed case and return updated progression state.
-
-    Inputs:
-    - current_total_xp: user's XP before this case
-    - difficulty_level: 1-4
-    - perfect_case: True if the whole case was correct
-    - seconds_taken: total case time in seconds
-    - streak_days: current streak in days
-
-    Returns:
-    {
-        "xp_award": {...},
-        "previous_total_xp": int,
-        "new_total_xp": int,
-        "previous_level": int,
-        "new_level": int,
-        "leveled_up": bool,
-        "levels_gained": int,
-        "previous_unlocked_difficulty": int,
-        "new_unlocked_difficulty": int,
-        "difficulty_unlocked": bool,
-    }
-    """
-    xp_award = calculate_case_xp_award(
-        difficulty_level=difficulty_level,
-        perfect_case=perfect_case,
-        seconds_taken=seconds_taken,
-        streak_days=streak_days,
-    )
-
-    previous_total_xp = current_total_xp
-    new_total_xp = current_total_xp + xp_award["total_xp"]
-
-    previous_level = level_from_total_xp(previous_total_xp)
-    new_level = level_from_total_xp(new_total_xp)
-
-    previous_unlocked_difficulty = unlocked_difficulty_for_level(previous_level)
-    new_unlocked_difficulty = unlocked_difficulty_for_level(new_level)
-
-    return {
-        "xp_award": xp_award,
-        "previous_total_xp": previous_total_xp,
-        "new_total_xp": new_total_xp,
-        "previous_level": previous_level,
-        "new_level": new_level,
-        "leveled_up": new_level > previous_level,
-        "levels_gained": new_level - previous_level,
-        "previous_unlocked_difficulty": previous_unlocked_difficulty,
-        "new_unlocked_difficulty": new_unlocked_difficulty,
-        "difficulty_unlocked": new_unlocked_difficulty > previous_unlocked_difficulty,
-    }
-
-def get_level_progress(total_xp):
-    """
-    Returns XP progress within the user's current level.
-
-    Example output:
-    {
-        "level": 3,
-        "xp_into_level": 25,
-        "xp_needed_for_next_level": 60,
-        "current_level_start_xp": 90,
-        "next_level_total_xp": 150,
-    }
-    """
-    level = level_from_total_xp(total_xp)
-    current_level_start_xp = xp_to_reach_level(level)
-    xp_needed_for_next_level = XP_REQUIRED_PER_LEVEL.get(level)
-
-    if xp_needed_for_next_level is None:
-        return {
-            "level": level,
-            "xp_into_level": total_xp - current_level_start_xp,
-            "xp_needed_for_next_level": None,
-            "current_level_start_xp": current_level_start_xp,
-            "next_level_total_xp": None,
-        }
-
-    return {
-        "level": level,
-        "xp_into_level": total_xp - current_level_start_xp,
-        "xp_needed_for_next_level": xp_needed_for_next_level,
-        "current_level_start_xp": current_level_start_xp,
-        "next_level_total_xp": current_level_start_xp + xp_needed_for_next_level,
-    }
-
-def build_user_progression_state(total_xp, streak_days=0):
-    level = level_from_total_xp(total_xp)
-    unlocked_difficulty = unlocked_difficulty_for_level(level)
-    level_progress = get_level_progress(total_xp)
-
-    return {
-        "total_xp": total_xp,
-        "level": level,
-        "level_progress": level_progress,
-        "unlocked_difficulty": unlocked_difficulty,
-        "unlocked_difficulty_label": difficulty_label(unlocked_difficulty),
-        "streak_days": streak_days,
-    }
-
-def print_progression_engine_examples():
-    examples = [
-        {
-            "name": "Beginner perfect fast case",
-            "current_total_xp": 0,
-            "difficulty_level": 1,
-            "perfect_case": True,
-            "seconds_taken": 40,
-            "streak_days": 0,
-        },
-        {
-            "name": "Intermediate perfect streak case",
-            "current_total_xp": 220,
-            "difficulty_level": 2,
-            "perfect_case": True,
-            "seconds_taken": 28,
-            "streak_days": 7,
-        },
-        {
-            "name": "Master case slower, not perfect",
-            "current_total_xp": 900,
-            "difficulty_level": 4,
-            "perfect_case": False,
-            "seconds_taken": 80,
-            "streak_days": 3,
-        },
-    ]
-
-    print("\nProgression engine examples")
-    print("---------------------------")
-
-    for ex in examples:
-        result = process_case_completion(
-            current_total_xp=ex["current_total_xp"],
-            difficulty_level=ex["difficulty_level"],
-            perfect_case=ex["perfect_case"],
-            seconds_taken=ex["seconds_taken"],
-            streak_days=ex["streak_days"],
-        )
-
-        progress = get_level_progress(result["new_total_xp"])
-
-        print(f"\n{ex['name']}")
-        print(f"XP award: {result['xp_award']}")
-        print(f"Old XP: {result['previous_total_xp']} -> New XP: {result['new_total_xp']}")
-        print(f"Level: {result['previous_level']} -> {result['new_level']}")
-        print(f"Unlocked difficulty: {difficulty_label(result['new_unlocked_difficulty'])}")
-        print(f"XP into current level: {progress['xp_into_level']}")
-        print(f"XP needed for next level: {progress['xp_needed_for_next_level']}")
-        
-        
-def simulate_user_progression(case_results_per_day, starting_xp=0, starting_streak=0):
-    """
-    Simulate user progression over multiple days.
-
-    case_results_per_day = [
-        [  # day 1
-            {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 40},
-            {"difficulty_level": 1, "perfect_case": False, "seconds_taken": 70},
-        ],
-        [  # day 2
-            ...
-        ]
-    ]
-    """
-    total_xp = starting_xp
-    streak_days = starting_streak
-    history = []
-
-    for day_index, day_cases in enumerate(case_results_per_day, start=1):
-        if day_cases:
-            streak_days += 1
-        else:
-            streak_days = 0
-
-        day_start_xp = total_xp
-        day_start_level = level_from_total_xp(total_xp)
-
-        case_summaries = []
-
-        for case_result in day_cases:
-            outcome = process_case_completion(
-                current_total_xp=total_xp,
-                difficulty_level=case_result["difficulty_level"],
-                perfect_case=case_result.get("perfect_case", False),
-                seconds_taken=case_result.get("seconds_taken"),
-                streak_days=streak_days,
-            )
-
-            total_xp = outcome["new_total_xp"]
-            case_summaries.append(outcome)
-
-        day_end_level = level_from_total_xp(total_xp)
-        unlocked_difficulty = unlocked_difficulty_for_level(day_end_level)
-
-        history.append({
-            "day": day_index,
-            "cases_completed": len(day_cases),
-            "streak_days": streak_days,
-            "day_start_xp": day_start_xp,
-            "day_end_xp": total_xp,
-            "xp_gained_today": total_xp - day_start_xp,
-            "day_start_level": day_start_level,
-            "day_end_level": day_end_level,
-            "unlocked_difficulty": unlocked_difficulty,
-            "unlocked_difficulty_label": difficulty_label(unlocked_difficulty),
-            "case_summaries": case_summaries,
-        })
-
-    return {
-        "final_total_xp": total_xp,
-        "final_level": level_from_total_xp(total_xp),
-        "final_unlocked_difficulty": unlocked_difficulty_for_level(level_from_total_xp(total_xp)),
-        "final_unlocked_difficulty_label": difficulty_label(
-            unlocked_difficulty_for_level(level_from_total_xp(total_xp))
-        ),
-        "history": history,
-    }
-
-
-def print_simulation_summary(simulation_result):
-    print("\nUser progression simulation")
-    print("---------------------------")
-
-    for day in simulation_result["history"]:
-        print(
-            f"Day {day['day']}: "
-            f"{day['cases_completed']} cases, "
-            f"streak {day['streak_days']}, "
-            f"+{day['xp_gained_today']} XP, "
-            f"Level {day['day_start_level']} -> {day['day_end_level']}, "
-            f"Unlocked: {day['unlocked_difficulty_label']}"
-        )
-
-    print("\nFinal result")
-    print(f"Total XP: {simulation_result['final_total_xp']}")
-    print(f"Level: {simulation_result['final_level']}")
-    print(f"Unlocked difficulty: {simulation_result['final_unlocked_difficulty_label']}")
-    
-def build_test_scenarios():
-    return {
-        "fast_beginner": [
-            [  # day 1
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 35},
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 42},
-                {"difficulty_level": 1, "perfect_case": False, "seconds_taken": 55},
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 38},
-                {"difficulty_level": 1, "perfect_case": False, "seconds_taken": 65},
-            ],
-            [  # day 2
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 30},
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 40},
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 48},
-                {"difficulty_level": 1, "perfect_case": False, "seconds_taken": 58},
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 36},
-            ],
-            [  # day 3
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 29},
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 34},
-                {"difficulty_level": 1, "perfect_case": False, "seconds_taken": 52},
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 41},
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 33},
-            ],
-            [  # day 4
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 27},
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 39},
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 44},
-                {"difficulty_level": 1, "perfect_case": False, "seconds_taken": 61},
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 35},
-            ],
-        ],
-
-        "average_beginner": [
-            [  # day 1
-                {"difficulty_level": 1, "perfect_case": False, "seconds_taken": 62},
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 54},
-                {"difficulty_level": 1, "perfect_case": False, "seconds_taken": 70},
-                {"difficulty_level": 1, "perfect_case": False, "seconds_taken": 58},
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 47},
-            ],
-            [  # day 2
-                {"difficulty_level": 1, "perfect_case": False, "seconds_taken": 60},
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 50},
-                {"difficulty_level": 1, "perfect_case": False, "seconds_taken": 68},
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 45},
-                {"difficulty_level": 1, "perfect_case": False, "seconds_taken": 72},
-            ],
-            [  # day 3
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 49},
-                {"difficulty_level": 1, "perfect_case": False, "seconds_taken": 63},
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 52},
-                {"difficulty_level": 1, "perfect_case": False, "seconds_taken": 66},
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 44},
-            ],
-            [  # day 4
-                {"difficulty_level": 1, "perfect_case": False, "seconds_taken": 59},
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 46},
-                {"difficulty_level": 1, "perfect_case": False, "seconds_taken": 64},
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 43},
-                {"difficulty_level": 1, "perfect_case": False, "seconds_taken": 69},
-            ],
-        ],
-
-        "very_fast_user": [
-            [  # day 1
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 24},
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 28},
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 26},
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 29},
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 25},
-            ],
-            [  # day 2
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 24},
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 27},
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 28},
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 29},
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 26},
-            ],
-            [  # day 3
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 23},
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 25},
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 27},
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 29},
-                {"difficulty_level": 1, "perfect_case": True, "seconds_taken": 24},
-            ],
-        ],
-    }
-
-def run_progression_simulations():
-    scenarios = build_test_scenarios()
-
-    for scenario_name, case_results_per_day in scenarios.items():
-        print(f"\n=== Scenario: {scenario_name} ===")
-        simulation = simulate_user_progression(case_results_per_day)
-        print_simulation_summary(simulation)
-
-def build_default_user_state():
-    total_xp = 0
-    streak_days = 0
-    level = level_from_total_xp(total_xp)
-    unlocked_difficulty = unlocked_difficulty_for_level(level)
-
-    return {
-        "total_xp": total_xp,
-        "level": level,
-        "level_progress": get_level_progress(total_xp),
-        "unlocked_difficulty": unlocked_difficulty,
-        "unlocked_difficulty_label": difficulty_label(unlocked_difficulty),
-        "streak_days": streak_days,
-        "cases_completed_today": 0,
-        "daily_case_limit": FREE_DAILY_CASE_LIMIT,
-        "cases_remaining_today": FREE_DAILY_CASE_LIMIT,
-        "subscription_tier": "free",  # free / premium / exam_prep
-    }
-
-def build_difficulty_cards(user_level=1, subscription_tier="free"):
-    cards = []
-
-    for difficulty in sorted(DIFFICULTY_UNLOCK_LEVELS.keys()):
-        required_level = DIFFICULTY_UNLOCK_LEVELS[difficulty]
-        label = difficulty_label(difficulty)
-
-        # Learn mode unlock logic
-        unlocked_by_level = user_level >= required_level
-
-        # Exam prep can bypass difficulty locks later in real backend logic,
-        # but for now we keep dashboard cards based on learn-mode progression.
-        cards.append({
-            "difficulty_level": difficulty,
-            "label": label.title(),
-            "unlock_level": required_level,
-            "is_unlocked": unlocked_by_level,
-            "is_locked": not unlocked_by_level,
-        })
-
-    return cards
-
-def build_dashboard_state(total_xp=0, streak_days=0, cases_completed_today=0, subscription_tier="free"):
-    user_state = build_user_progression_state(total_xp, streak_days=streak_days)
-
-    daily_limit = None if subscription_tier in ["premium", "exam_prep"] else FREE_DAILY_CASE_LIMIT
-    cases_remaining_today = None if daily_limit is None else max(0, daily_limit - cases_completed_today)
-
-    dashboard = {
-        "user": {
-            "subscription_tier": subscription_tier,
-            "total_xp": user_state["total_xp"],
-            "level": user_state["level"],
-            "level_progress": user_state["level_progress"],
-            "unlocked_difficulty": user_state["unlocked_difficulty"],
-            "unlocked_difficulty_label": user_state["unlocked_difficulty_label"],
-            "streak_days": streak_days,
-            "cases_completed_today": cases_completed_today,
-            "daily_case_limit": daily_limit,
-            "cases_remaining_today": cases_remaining_today,
-        },
-        "difficulty_cards": build_difficulty_cards(
-            user_level=user_state["level"],
-            subscription_tier=subscription_tier,
-        ),
-        "stats": {
-            "cases_completed": 0,
-            "accuracy_percent": 0,
-            "recent_badges": [],
-        }
-    }
-
-    return dashboard
-
-
-# =========================================================
-# CASE VALIDATION 
-# =========================================================
 
 def validate_question_flow(case):
     errors = []
@@ -1079,7 +549,9 @@ def generate_valid_case(generator_fn, case_id, max_attempts=50):
         f"Failed to generate valid case for {case_id} after {max_attempts} attempts.\n"
         + "\n".join(last_errors)
     )
-    
+
+
+from collections import Counter
 
 def print_generation_report(cases):
     archetypes = Counter(case.get("archetype", "unknown") for case in cases)
@@ -1098,20 +570,6 @@ def print_generation_report(cases):
     print(f"PaCO2 range: {min(paco2_values)} → {max(paco2_values)}")
     print(f"HCO3 range: {min(hco3_values)} → {max(hco3_values)}")
     
-# =========================================================
-# TIMING
-# =========================================================
-
-def default_timing():
-    return {
-        "timer_visible_by_default": False,
-        "time_bonus_scope": "whole_case",
-        "time_bonus_tiers_seconds_inclusive": SPEED_BONUS_TIERS[:]
-    }
-    
-# =========================================================
-# 
-# =========================================================
     
 def q_ph_status():
     return {
@@ -1229,17 +687,16 @@ def shuffle_question_options(flow):
 
     for q in flow:
         q_copy = q.copy()
+        if "options" in q_copy and isinstance(q_copy["options"], list):
+            random.shuffle(q_copy["options"])
         shuffled_flow.append(q_copy)
 
     return shuffled_flow
-    
-    
 
 
-
-# =========================================================
-# STEM VARIATION SYSTEM
-# =========================================================
+# -------------------------------------
+# Stem variation system
+# -------------------------------------
 
 STEM_BANK = {
 
@@ -1584,9 +1041,9 @@ def generate_stem(archetype, min_features=2, max_features=3):
         f3=selected_features[2]
     )
 
-# =========================================================
+#------------------------------------------------------------------------------
 # GENERATORS
-# =========================================================
+#------------------------------------------------------------------------------
     
 def generate_dka_case(case_id):
     hco3 = random.randint(8, 16)
@@ -1610,6 +1067,7 @@ def generate_dka_case(case_id):
     )
     level = 3
     archetype = "dka"
+    tier = tier_name(level)
         
     case = {
         "case_id": case_id,
@@ -1656,11 +1114,20 @@ def generate_dka_case(case_id):
             "final_diagnosis": "DKA"
         },
         "explanation": explanation,
-        "timing": default_timing()
+        "timing": {
+            "timer_visible_by_default": False,
+            "time_bonus_scope": "whole_case",
+            "time_bonus_tiers_seconds_inclusive": [
+                {"max_seconds": 30, "bonus": 20},
+                {"max_seconds": 45, "bonus": 15},
+                {"max_seconds": 60, "bonus": 10},
+                {"max_seconds": 90, "bonus": 5},
+                {"max_seconds": 999999, "bonus": 0}
+            ]
+        }
     }
 
-    return attach_progression_metadata(case, level=level, archetype=archetype)
-
+    return attach_progression_metadata(case, level=3, archetype="dka")
 
 
 def generate_opioid_case(case_id):
@@ -1689,8 +1156,9 @@ def generate_opioid_case(case_id):
         f"This pattern fits acute hypoventilation, such as opioid toxicity."
     )
 
-    level = 1
+    level = 2
     archetype = "opioid_toxicity"
+    tier = tier_name(level)
 
     case = {
         "case_id": case_id,
@@ -1713,7 +1181,7 @@ def generate_opioid_case(case_id):
             "lactate_mmolL": lactate
         },
         "questions_flow": shuffle_question_options(
-    beginner_question_flow([
+    intermediate_question_flow([
         "Opioid toxicity",
         "COPD",
         "Pneumonia",
@@ -1738,10 +1206,20 @@ def generate_opioid_case(case_id):
             "final_diagnosis": "Opioid toxicity"
         },
         "explanation": explanation,
-        "timing": default_timing()
+        "timing": {
+            "timer_visible_by_default": False,
+            "time_bonus_scope": "whole_case",
+            "time_bonus_tiers_seconds_inclusive": [
+                {"max_seconds": 30, "bonus": 20},
+                {"max_seconds": 45, "bonus": 15},
+                {"max_seconds": 60, "bonus": 10},
+                {"max_seconds": 90, "bonus": 5},
+                {"max_seconds": 999999, "bonus": 0}
+            ]
+        }
     }
 
-    return attach_progression_metadata(case, level=1, archetype="opioid_toxicity")
+    return attach_progression_metadata(case, level=2, archetype="opioid_toxicity")
 
 def generate_copd_case(case_id):
     paco2 = random.randint(55, 75)
@@ -1772,6 +1250,7 @@ def generate_copd_case(case_id):
 
     level = 2
     archetype = "copd_chronic_retainer"
+    tier = tier_name(level)
 
     case = {
         "case_id": case_id,
@@ -1819,7 +1298,17 @@ def generate_copd_case(case_id):
             "final_diagnosis": "COPD"
         },
         "explanation": explanation,
-        "timing": default_timing()
+        "timing": {
+            "timer_visible_by_default": False,
+            "time_bonus_scope": "whole_case",
+            "time_bonus_tiers_seconds_inclusive": [
+                {"max_seconds": 30, "bonus": 20},
+                {"max_seconds": 45, "bonus": 15},
+                {"max_seconds": 60, "bonus": 10},
+                {"max_seconds": 90, "bonus": 5},
+                {"max_seconds": 999999, "bonus": 0}
+            ]
+        }
     }
 
     return attach_progression_metadata(case, level=2, archetype="copd_chronic_retainer")
@@ -1852,6 +1341,7 @@ def generate_vomiting_case(case_id):
 
     level = 2
     archetype = "vomiting_metabolic_alkalosis"
+    tier = tier_name(level)
     
     case = {
         "case_id": case_id,
@@ -1899,7 +1389,17 @@ def generate_vomiting_case(case_id):
             "final_diagnosis": "Vomiting"
         },
         "explanation": explanation,
-        "timing": default_timing()
+        "timing": {
+            "timer_visible_by_default": False,
+            "time_bonus_scope": "whole_case",
+            "time_bonus_tiers_seconds_inclusive": [
+                {"max_seconds": 30, "bonus": 20},
+                {"max_seconds": 45, "bonus": 15},
+                {"max_seconds": 60, "bonus": 10},
+                {"max_seconds": 90, "bonus": 5},
+                {"max_seconds": 999999, "bonus": 0}
+            ]
+        }
     }
     
     return attach_progression_metadata(case, level=2, archetype="vomiting_metabolic_alkalosis")
@@ -1932,6 +1432,7 @@ def generate_panic_case(case_id):
     
     level = 1
     archetype = "panic_hyperventilation"
+    tier = tier_name(level)
 
     case = {
         "case_id": case_id,
@@ -1979,7 +1480,17 @@ def generate_panic_case(case_id):
             "final_diagnosis": "Panic attack / hyperventilation"
         },
         "explanation": explanation,
-        "timing": default_timing()
+        "timing": {
+            "timer_visible_by_default": False,
+            "time_bonus_scope": "whole_case",
+            "time_bonus_tiers_seconds_inclusive": [
+                {"max_seconds": 30, "bonus": 20},
+                {"max_seconds": 45, "bonus": 15},
+                {"max_seconds": 60, "bonus": 10},
+                {"max_seconds": 90, "bonus": 5},
+                {"max_seconds": 999999, "bonus": 0}
+            ]
+        }
     }
 
     return attach_progression_metadata(case, level=1, archetype="panic_hyperventilation")
@@ -2022,6 +1533,7 @@ def generate_diarrhoea_case(case_id):
 
     level = 3
     archetype = "diarrhoea_nagma"
+    tier = tier_name(level)
 
     case = {
         "case_id": case_id,
@@ -2069,7 +1581,17 @@ def generate_diarrhoea_case(case_id):
             "final_diagnosis": "Diarrhoea"
         },
         "explanation": explanation,
-        "timing": default_timing()
+        "timing": {
+            "timer_visible_by_default": False,
+            "time_bonus_scope": "whole_case",
+            "time_bonus_tiers_seconds_inclusive": [
+                {"max_seconds": 30, "bonus": 20},
+                {"max_seconds": 45, "bonus": 15},
+                {"max_seconds": 60, "bonus": 10},
+                {"max_seconds": 90, "bonus": 5},
+                {"max_seconds": 999999, "bonus": 0}
+            ]
+        }
     }
     
     return attach_progression_metadata(case, level=3, archetype="diarrhoea_nagma")
@@ -2105,6 +1627,7 @@ def generate_salicylate_case(case_id):
     
     level = 4
     archetype = "salicylate_toxicity"
+    tier = tier_name(level, is_mixed=True)
 
     case = {
         "case_id": case_id,
@@ -2149,7 +1672,17 @@ def generate_salicylate_case(case_id):
         },
 
         "explanation": explanation,
-        "timing": default_timing()
+        "timing": {
+            "timer_visible_by_default": False,
+            "time_bonus_scope": "whole_case",
+            "time_bonus_tiers_seconds_inclusive": [
+                {"max_seconds": 30, "bonus": 20},
+                {"max_seconds": 45, "bonus": 15},
+                {"max_seconds": 60, "bonus": 10},
+                {"max_seconds": 90, "bonus": 5},
+                {"max_seconds": 999999, "bonus": 0}
+            ]
+        }
     }
     
     return attach_progression_metadata(case, level=4, archetype="salicylate_toxicity", is_mixed=True)
@@ -2384,85 +1917,63 @@ def generate_dka_vomiting_case(case_id):
     }
 
     return attach_progression_metadata(case, level=4, archetype="dka_vomiting", is_mixed=True)
+    
+cases = []
 
-# =========================================================
-# ARCHETYPE CONFIGURATION
-# =========================================================
+for i in range(5):
+    cases.append(generate_valid_case(generate_dka_case, f"DKA_{i+1:03d}"))
 
-CASE_BUILDERS = [
-    ("DKA", generate_dka_case),
-    ("OPIOID", generate_opioid_case),
-    ("COPD", generate_copd_case),
-    ("VOMITING", generate_vomiting_case),
-    ("PANIC", generate_panic_case),
-    ("DIARRHOEA", generate_diarrhoea_case),
-    ("SALICYLATE", generate_salicylate_case),
-    ("LACTATE", generate_lactate_case),
-    ("ACUTE_COPD", generate_acute_copd_case),
-    ("SEPSIS", generate_sepsis_case),
-    ("DKA_VOMIT", generate_dka_vomiting_case),
-]
+for i in range(5):
+    cases.append(generate_valid_case(generate_opioid_case, f"OPIOID_{i+1:03d}"))
 
-# =========================================================
-# CASE GENERATION
-# =========================================================
+for i in range(5):
+    cases.append(generate_valid_case(generate_copd_case, f"COPD_{i+1:03d}"))
 
-def generate_all_cases():
-    cases = []
+for i in range(5):
+    cases.append(generate_valid_case(generate_vomiting_case, f"VOMITING_{i+1:03d}"))
 
-    for prefix, generator_fn in CASE_BUILDERS:
-        for i in range(5):
-            case_id = f"{prefix}_{i+1:03d}"
-            cases.append(generate_valid_case(generator_fn, case_id))
+for i in range(5):
+    cases.append(generate_valid_case(generate_panic_case, f"PANIC_{i+1:03d}"))
 
-    return cases
+for i in range(5):
+    cases.append(generate_valid_case(generate_diarrhoea_case, f"DIARRHOEA_{i+1:03d}"))
 
-def print_progression_examples():
-    examples = [
-        ("Beginner perfect fast", calculate_case_xp_award(1, perfect_case=True, seconds_taken=40, streak_days=0)),
-        ("Intermediate perfect streak", calculate_case_xp_award(2, perfect_case=True, seconds_taken=28, streak_days=7)),
-        ("Master not perfect", calculate_case_xp_award(4, perfect_case=False, seconds_taken=80, streak_days=0)),
-    ]
+for i in range(5):
+    cases.append(generate_valid_case(generate_salicylate_case, f"SALICYLATE_{i+1:03d}"))
+    
+for i in range(5):
+    cases.append(generate_valid_case(generate_lactate_case, f"LACTATE_{i+1:03d}"))
 
-    print("\nProgression examples")
-    print("--------------------")
-    for name, result in examples:
-        print(f"{name}: {result}")
+for i in range(5):
+    cases.append(generate_valid_case(generate_acute_copd_case, f"ACUTE_COPD_{i+1:03d}"))
 
+for i in range(5):
+    cases.append(generate_valid_case(generate_sepsis_case, f"SEPSIS_{i+1:03d}"))
 
-def main():
-    cases = generate_all_cases()
+for i in range(5):
+    cases.append(generate_valid_case(generate_dka_vomiting_case, f"DKA_VOMIT_{i+1:03d}"))
 
-    validation_errors = validate_cases(cases)
+validation_errors = validate_cases(cases)
 
-    if validation_errors:
-        print("Validation failed:\n")
-        for err in validation_errors:
-            print(f"- {err}")
-        raise ValueError(f"{len(validation_errors)} validation error(s) found.")
+if validation_errors:
+    print("Validation failed:\n")
+    for err in validation_errors:
+        print(f"- {err}")
+    raise ValueError(f"{len(validation_errors)} validation error(s) found.")
 
-    random.shuffle(cases)
+random.shuffle(cases)
 
-    output = {
-        "progression_config": build_progression_config(),
-        "default_user_state": build_default_user_state(),
-        "dashboard_state": build_dashboard_state(),
-        "cases": cases
-    }
+output = {
+    "cases": cases
+}
 
+import os
 
-    output_path = os.path.join(os.path.dirname(__file__), "..", "docs", "abg_cases.json")
+output_path = os.path.join(os.path.dirname(__file__), "..", "docs", "abg_cases.json")
 
-    with open(output_path, "w") as f:
-        json.dump(output, f, indent=2)
+with open(output_path, "w") as f:
+    json.dump(output, f, indent=2)
 
-    print_generation_report(cases)
-    print_progression_examples()
-    print_progression_engine_examples()
-    run_progression_simulations()
+print_generation_report(cases)
 
-    print(f"\nGenerated {len(cases)} cases successfully with validation passed")
-
-
-if __name__ == "__main__":
-    main()
+print(f"\nGenerated {len(cases)} cases successfully with validation passed")
