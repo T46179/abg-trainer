@@ -24,17 +24,49 @@ from ..question_flow import advanced_question_flow, default_timing, intermediate
 from ..stems import generate_stem
 from .common import build_answer_key, build_case, build_inputs
 
+DKA_VARIATION_BANDS = [
+    {
+        "name": "mild",
+        "hco3_range": (13, 16),
+        "anion_gap_range": (20, 24),
+        "lactate_range": (0.9, 1.8),
+        "sodium_range": (136, 142),
+        "compensation_delta_range": (-1.0, 1.0),
+        "stem_feature_range": (2, 3),
+    },
+    {
+        "name": "moderate",
+        "hco3_range": (10, 13),
+        "anion_gap_range": (24, 28),
+        "lactate_range": (1.0, 2.3),
+        "sodium_range": (134, 141),
+        "compensation_delta_range": (-1.5, 1.5),
+        "stem_feature_range": (2, 4),
+    },
+    {
+        "name": "severe",
+        "hco3_range": (8, 10),
+        "anion_gap_range": (28, 32),
+        "lactate_range": (1.4, 2.8),
+        "sodium_range": (132, 140),
+        "compensation_delta_range": (-1.8, 1.8),
+        "stem_feature_range": (3, 4),
+    },
+]
+
 
 def generate_dka_case(case_id):
-    hco3 = random.randint(8, 16)
+    band = random.choice(DKA_VARIATION_BANDS)
+    hco3 = random.randint(*band["hco3_range"])
     expected_paco2 = winters_expected_paco2(hco3)
-    paco2 = round(random.uniform(expected_paco2 - 2, expected_paco2 + 2), 1)
+    compensation_midpoint = expected_paco2 + random.uniform(*band["compensation_delta_range"])
+    paco2 = round(random.uniform(compensation_midpoint - 0.4, compensation_midpoint + 0.4), 1)
     ph = estimate_ph(hco3, paco2)
-    na = random.randint(134, 142)
-    target_ag = random.randint(22, 30)
+    na = random.randint(*band["sodium_range"])
+    target_ag = random.randint(*band["anion_gap_range"])
     cl = na - (hco3 + target_ag)
     ag = na - (cl + hco3)
-    lactate = round(random.uniform(1.0, 2.5), 1)
+    lactate = round(random.uniform(*band["lactate_range"]), 1)
 
     explanation = (
         f"Low pH = acidaemia. Low HCO3 indicates metabolic acidosis. "
@@ -48,7 +80,11 @@ def generate_dka_case(case_id):
         category="metabolic_acidosis_hagma",
         learning_objective="Recognise high anion gap metabolic acidosis with appropriate respiratory compensation",
         tags=["dka", "hagma", "metabolic_acidosis"],
-        clinical_stem=generate_stem("dka"),
+        clinical_stem=generate_stem(
+            "dka",
+            min_features=band["stem_feature_range"][0],
+            max_features=band["stem_feature_range"][1],
+        ),
         inputs=build_inputs(ph, paco2, hco3, na, cl, lactate=lactate),
         questions_flow=shuffle_question_options(
             advanced_question_flow([

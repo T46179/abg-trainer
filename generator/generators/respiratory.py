@@ -25,6 +25,36 @@ from ..question_flow import beginner_question_flow, default_timing, intermediate
 from ..stems import generate_stem
 from .common import build_answer_key, build_case, build_inputs
 
+ACUTE_COPD_VARIATION_BANDS = [
+    {
+        "name": "mild",
+        "paco2_range": (68, 76),
+        "hco3_range": (31, 35),
+        "hco3_offset_range": (-1.0, 1.0),
+        "sodium_range": (136, 142),
+        "chloride_range": (100, 104),
+        "stem_feature_range": (2, 3),
+    },
+    {
+        "name": "moderate",
+        "paco2_range": (76, 84),
+        "hco3_range": (33, 37),
+        "hco3_offset_range": (-1.0, 1.5),
+        "sodium_range": (136, 142),
+        "chloride_range": (98, 103),
+        "stem_feature_range": (3, 4),
+    },
+    {
+        "name": "severe",
+        "paco2_range": (84, 92),
+        "hco3_range": (34, 39),
+        "hco3_offset_range": (-0.5, 2.0),
+        "sodium_range": (135, 141),
+        "chloride_range": (96, 102),
+        "stem_feature_range": (3, 4),
+    },
+]
+
 
 def generate_opioid_case(case_id):
     paco2 = random.randint(55, 75)
@@ -208,17 +238,24 @@ def generate_panic_case(case_id):
 
 
 def generate_acute_copd_case(case_id):
-    paco2 = random.uniform(70, 90)
-    hco3 = random.uniform(32, 38)
+    band = random.choice(ACUTE_COPD_VARIATION_BANDS)
+    paco2 = random.uniform(*band["paco2_range"])
+    expected_hco3 = chronic_respiratory_acidosis_expected_hco3(paco2)
+    hco3 = round(expected_hco3 + random.uniform(*band["hco3_offset_range"]), 1)
+    hco3 = min(max(hco3, band["hco3_range"][0]), band["hco3_range"][1])
     ph = calculate_ph_from_hco3_paco2(hco3, paco2)
-    na = random.randint(136, 142)
-    cl = random.randint(98, 104)
+    na = random.randint(*band["sodium_range"])
+    cl = random.randint(*band["chloride_range"])
 
     return build_case(
         case_id=case_id,
         title="COPD exacerbation (acute-on-chronic respiratory acidosis)",
         category="respiratory_acidosis",
-        clinical_stem=generate_stem("acute_copd_exacerbation"),
+        clinical_stem=generate_stem(
+            "acute_copd_exacerbation",
+            min_features=band["stem_feature_range"][0],
+            max_features=band["stem_feature_range"][1],
+        ),
         inputs=build_inputs(ph, paco2, hco3, na, cl),
         questions_flow=shuffle_question_options(
             intermediate_question_flow([
