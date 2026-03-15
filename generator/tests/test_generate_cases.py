@@ -2,34 +2,23 @@
 
 import json
 import math
-import shutil
+import os
+import subprocess
 import sys
+import tempfile
 import unittest
 from collections import Counter
 from pathlib import Path
+from unittest import mock
 
 
 GENERATOR_DIR = Path(__file__).resolve().parents[1]
 REPO_ROOT = GENERATOR_DIR.parent
-WORKSPACE_ROOT = REPO_ROOT.parent
-if str(WORKSPACE_ROOT) not in sys.path:
-    sys.path.insert(0, str(WORKSPACE_ROOT))
 
-from generator import generate_cases  # noqa: E402
+from generator import generate_cases
 
 
 class GenerateCasesTests(unittest.TestCase):
-    def setUp(self):
-        self.output_path = REPO_ROOT / "docs" / "abg_cases.json"
-        self.backup_path = self.output_path.with_suffix(".json.test-backup")
-
-        if self.output_path.exists():
-            shutil.copy2(self.output_path, self.backup_path)
-
-    def tearDown(self):
-        if self.backup_path.exists():
-            shutil.move(self.backup_path, self.output_path)
-
     def test_generate_all_cases_preserves_expected_archetype_counts(self):
         cases = generate_cases.generate_all_cases()
         counts = Counter(case["archetype"] for case in cases)
@@ -50,6 +39,19 @@ class GenerateCasesTests(unittest.TestCase):
 
         self.assertEqual(len(cases), 55)
         self.assertEqual(dict(counts), expected)
+
+    def test_generate_all_cases_uses_unique_case_ids(self):
+        cases = generate_cases.generate_all_cases()
+        counts = Counter(case["case_id"] for case in cases)
+        duplicates = sorted(case_id for case_id, count in counts.items() if count > 1)
+
+        self.assertFalse(
+            duplicates,
+            msg=(
+                "Duplicate case_id values found: "
+                + ", ".join(f"{case_id} (x{counts[case_id]})" for case_id in duplicates)
+            ),
+        )
 
     def test_every_case_has_required_fields(self):
         cases = generate_cases.generate_all_cases()
@@ -92,6 +94,79 @@ class GenerateCasesTests(unittest.TestCase):
                 msg=f"{case_id}: implausible HCO3 {gas['hco3_mmolL']}",
             )
 
+    def test_generated_cases_have_expected_question_flow_structure(self):
+        cases = generate_cases.generate_all_cases()
+        required_steps_by_level = {
+            1: ["ph_status", "primary_disorder"],
+            2: ["ph_status", "primary_disorder", "compensation"],
+            3: ["ph_status", "primary_disorder", "compensation", "anion_gap"],
+            4: ["ph_status", "primary_disorder", "compensation", "anion_gap"],
+        }
+        allowed_flows_by_level = {
+            1: [
+                ["ph_status", "primary_disorder"],
+                ["ph_status", "primary_disorder", "final_diagnosis"],
+            ],
+            2: [
+                ["ph_status", "primary_disorder", "compensation"],
+                ["ph_status", "primary_disorder", "compensation", "final_diagnosis"],
+            ],
+            3: [
+                ["ph_status", "primary_disorder", "compensation", "anion_gap"],
+                ["ph_status", "primary_disorder", "compensation", "anion_gap", "final_diagnosis"],
+            ],
+            4: [
+                ["ph_status", "primary_disorder", "compensation", "anion_gap"],
+                ["ph_status", "primary_disorder", "compensation", "anion_gap", "final_diagnosis"],
+                ["ph_status", "primary_disorder", "compensation", "anion_gap", "additional_metabolic_process"],
+                ["ph_status", "primary_disorder", "compensation", "anion_gap", "additional_metabolic_process", "final_diagnosis"],
+            ],
+        }
+        required_question_fields = {
+            "ph_status": {"step", "key", "label", "prompt", "options"},
+            "primary_disorder": {"step", "key", "label", "prompt", "options"},
+            "compensation": {"step", "key", "label", "prompt", "options"},
+            "anion_gap": {"step", "key", "label", "prompt", "options"},
+            "additional_metabolic_process": {"step", "key", "label", "prompt", "options"},
+            "final_diagnosis": {"step", "key", "prompt", "options"},
+        }
+
+        for case in cases:
+            case_id = case["case_id"]
+            difficulty = case["difficulty_level"]
+            questions_flow = case["questions_flow"]
+            flow_keys = [question.get("key") for question in questions_flow]
+            missing_steps = [
+                step for step in required_steps_by_level[difficulty] if step not in flow_keys
+            ]
+
+            self.assertFalse(
+                missing_steps,
+                msg=(
+                    f"{case_id}: missing expected question steps for difficulty {difficulty}: "
+                    + ", ".join(missing_steps)
+                ),
+            )
+            self.assertIn(
+                flow_keys,
+                allowed_flows_by_level[difficulty],
+                msg=(
+                    f"{case_id}: questions_flow keys {flow_keys} do not match expected flows "
+                    f"for difficulty {difficulty}: {allowed_flows_by_level[difficulty]}"
+                ),
+            )
+
+            for question in questions_flow:
+                question_key = question.get("key")
+                missing_fields = sorted(required_question_fields[question_key] - question.keys())
+                self.assertFalse(
+                    missing_fields,
+                    msg=(
+                        f"{case_id}: question '{question_key}' missing required keys: "
+                        + ", ".join(missing_fields)
+                    ),
+                )
+
     def test_generated_cases_match_henderson_hasselbalch_within_tolerance(self):
         cases = generate_cases.generate_all_cases()
 
@@ -112,18 +187,47 @@ class GenerateCasesTests(unittest.TestCase):
             )
 
     def test_main_writes_valid_json_payload(self):
-        generate_cases.main()
+        with tempfile.TemporaryDirectory() as temp_dir:
+            output_path = Path(temp_dir) / "abg_cases.json"
 
-        self.assertTrue(self.output_path.exists())
+            with mock.patch.dict(os.environ, {"ABG_CASES_OUTPUT_PATH": str(output_path)}):
+                generate_cases.main()
 
-        with self.output_path.open("r", encoding="utf-8") as handle:
-            payload = json.load(handle)
+            self.assertTrue(output_path.exists())
 
-        self.assertIn("progression_config", payload)
-        self.assertIn("default_user_state", payload)
-        self.assertIn("dashboard_state", payload)
-        self.assertIn("cases", payload)
-        self.assertEqual(len(payload["cases"]), 55)
+            with output_path.open("r", encoding="utf-8") as handle:
+                payload = json.load(handle)
+
+            self.assertIn("progression_config", payload)
+            self.assertIn("default_user_state", payload)
+            self.assertIn("dashboard_state", payload)
+            self.assertIn("cases", payload)
+            self.assertEqual(len(payload["cases"]), 55)
+
+    def test_module_runs_via_package_execution(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            output_path = Path(temp_dir) / "abg_cases.json"
+            env = os.environ.copy()
+            env["ABG_CASES_OUTPUT_PATH"] = str(output_path)
+
+            result = subprocess.run(
+                [sys.executable, "-m", "generator.generate_cases"],
+                cwd=REPO_ROOT,
+                capture_output=True,
+                text=True,
+                env=env,
+            )
+
+            self.assertEqual(
+                result.returncode,
+                0,
+                msg=(
+                    "python -m generator.generate_cases failed\n"
+                    f"stdout:\n{result.stdout}\n"
+                    f"stderr:\n{result.stderr}"
+                ),
+            )
+            self.assertTrue(output_path.exists())
 
 
 if __name__ == "__main__":

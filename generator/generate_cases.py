@@ -48,6 +48,11 @@ CASE_BUILDERS = [
 ]
 
 
+def get_output_path():
+    default_output_path = os.path.join(os.path.dirname(__file__), "..", "docs", "abg_cases.json")
+    return os.environ.get("ABG_CASES_OUTPUT_PATH", default_output_path)
+
+
 def generate_all_cases():
     cases = []
 
@@ -78,9 +83,9 @@ def main():
         "cases": cases,
     }
 
-    output_path = os.path.join(os.path.dirname(__file__), "..", "docs", "abg_cases.json")
+    output_path = get_output_path()
 
-    with open(output_path, "w") as handle:
+    with open(output_path, "w", encoding="utf-8") as handle:
         json.dump(output, handle, indent=2)
 
     print_generation_report(cases)
