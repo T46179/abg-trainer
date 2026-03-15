@@ -133,7 +133,7 @@ def validate_case(case):
         if ag <= 16:
             errors.append(f"{case_id}: DKA should have raised anion gap, got {ag}")
         if not in_range(paco2, low, high):
-            errors.append(f"{case_id}: DKA PaCO2 outside Winter range ({paco2} not in {low}â€“{high})")
+            errors.append(f"{case_id}: DKA PaCO2 outside Winter range ({paco2} not in {low}-{high})")
         if expected_compensation.get("rule") != "Winter":
             errors.append(f"{case_id}: DKA expected rule should be Winter")
 
@@ -149,7 +149,7 @@ def validate_case(case):
         if ag > 16:
             errors.append(f"{case_id}: diarrhoea should be normal AG, got {ag}")
         if not in_range(paco2, low, high):
-            errors.append(f"{case_id}: diarrhoea PaCO2 outside Winter range ({paco2} not in {low}â€“{high})")
+            errors.append(f"{case_id}: diarrhoea PaCO2 outside Winter range ({paco2} not in {low}-{high})")
 
     elif archetype == "opioid_toxicity":
         expected_hco3 = round(24 + ((paco2 - 40) / 10), 1)
@@ -164,7 +164,7 @@ def validate_case(case):
             errors.append(f"{case_id}: opioid case should have elevated PaCO2")
         if not in_range(hco3, low, high):
             errors.append(
-                f"{case_id}: opioid HCO3 outside acute respiratory acidosis range ({hco3} not in {low}â€“{high})"
+                f"{case_id}: opioid HCO3 outside acute respiratory acidosis range ({hco3} not in {low}-{high})"
             )
 
     elif archetype == "copd_chronic_retainer":
@@ -180,7 +180,7 @@ def validate_case(case):
             errors.append(f"{case_id}: COPD case should have elevated PaCO2")
         if not in_range(hco3, low, high):
             errors.append(
-                f"{case_id}: COPD HCO3 outside chronic respiratory acidosis range ({hco3} not in {low}â€“{high})"
+                f"{case_id}: COPD HCO3 outside chronic respiratory acidosis range ({hco3} not in {low}-{high})"
             )
 
     elif archetype == "vomiting_metabolic_alkalosis":
@@ -196,7 +196,7 @@ def validate_case(case):
             errors.append(f"{case_id}: vomiting case should be alkalemic")
         if not in_range(paco2, low, high):
             errors.append(
-                f"{case_id}: vomiting PaCO2 outside expected compensation range ({paco2} not in {low}â€“{high})"
+                f"{case_id}: vomiting PaCO2 outside expected compensation range ({paco2} not in {low}-{high})"
             )
 
     elif archetype == "panic_hyperventilation":
@@ -214,7 +214,7 @@ def validate_case(case):
             errors.append(f"{case_id}: panic case should be alkalemic")
         if not in_range(hco3, low, high):
             errors.append(
-                f"{case_id}: panic HCO3 outside acute respiratory alkalosis range ({hco3} not in {low}â€“{high})"
+                f"{case_id}: panic HCO3 outside acute respiratory alkalosis range ({hco3} not in {low}-{high})"
             )
 
     elif archetype == "salicylate_toxicity":
@@ -245,7 +245,7 @@ def validate_case(case):
         if ag <= 16:
             errors.append(f"{case_id}: lactate case should have raised anion gap, got {ag}")
         if not in_range(paco2, low, high):
-            errors.append(f"{case_id}: lactate PaCO2 outside Winter range ({paco2} not in {low}â€“{high})")
+            errors.append(f"{case_id}: lactate PaCO2 outside Winter range ({paco2} not in {low}-{high})")
         if expected_compensation.get("rule") != "Winter":
             errors.append(f"{case_id}: lactate expected rule should be Winter")
 

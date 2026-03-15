@@ -35,7 +35,7 @@ def generate_salicylate_case(case_id):
     explanation = (
         f"Both PaCO2 and HCO3 are low. This is not explained by a single primary disorder alone. "
         f"The low PaCO2 indicates a respiratory alkalosis, while the low HCO3 with raised anion gap "
-        f"({na} âˆ’ ({cl} + {hco3}) = {ag}) indicates a high anion gap metabolic acidosis. "
+        f"({na} - ({cl} + {hco3}) = {ag}) indicates a high anion gap metabolic acidosis. "
         f"This is a mixed respiratory alkalosis and metabolic acidosis, classic for salicylate toxicity."
     )
 

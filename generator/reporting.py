@@ -22,9 +22,9 @@ def print_generation_report(cases):
     print(f"Total cases: {len(cases)}")
     print(f"Archetypes: {dict(archetypes)}")
     print(f"Difficulties: {dict(difficulties)}")
-    print(f"pH range: {min(ph_values)} â†’ {max(ph_values)}")
-    print(f"PaCO2 range: {min(paco2_values)} â†’ {max(paco2_values)}")
-    print(f"HCO3 range: {min(hco3_values)} â†’ {max(hco3_values)}")
+    print(f"pH range: {min(ph_values)} -> {max(ph_values)}")
+    print(f"PaCO2 range: {min(paco2_values)} -> {max(paco2_values)}")
+    print(f"HCO3 range: {min(hco3_values)} -> {max(hco3_values)}")
 
 
 def print_progression_examples():

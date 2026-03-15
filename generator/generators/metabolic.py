@@ -38,8 +38,8 @@ def generate_dka_case(case_id):
 
     explanation = (
         f"Low pH = acidaemia. Low HCO3 indicates metabolic acidosis. "
-        f"Winterâ€™s formula predicts PaCO2 ~{expected_paco2:.1f} (Â±2); measured {paco2} is appropriate compensation. "
-        f"Anion gap is {na} âˆ’ ({cl} + {hco3}) = {ag} (raised), consistent with HAGMA such as DKA."
+        f"Winter's formula predicts PaCO2 ~{expected_paco2:.1f} (+/-2); measured {paco2} is appropriate compensation. "
+        f"Anion gap is {na} - ({cl} + {hco3}) = {ag} (raised), consistent with HAGMA such as DKA."
     )
 
     case = {
@@ -175,8 +175,8 @@ def generate_diarrhoea_case(case_id):
 
     explanation = (
         f"{ph_text} Low HCO3 indicates a primary metabolic acidosis. "
-        f"Winterâ€™s formula predicts PaCO2 ~{expected_paco2:.1f} (Â±2); measured {paco2} is appropriate compensation. "
-        f"Anion gap is {na} âˆ’ ({cl} + {hco3}) = {ag}, which is normal, consistent with NAGMA such as diarrhoea."
+        f"Winter's formula predicts PaCO2 ~{expected_paco2:.1f} (+/-2); measured {paco2} is appropriate compensation. "
+        f"Anion gap is {na} - ({cl} + {hco3}) = {ag}, which is normal, consistent with NAGMA such as diarrhoea."
     )
 
     case = {

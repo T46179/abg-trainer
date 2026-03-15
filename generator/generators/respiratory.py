@@ -256,7 +256,7 @@ def generate_acute_copd_case(case_id):
             "anion_gap_category": "Normal",
             "final_diagnosis": "COPD exacerbation",
         },
-        "explanation": "COPD exacerbations cause acute rises in COâ‚‚ on a background of chronic respiratory acidosis.",
+        "explanation": "COPD exacerbations cause acute rises in CO2 on a background of chronic respiratory acidosis.",
     }
 
     return attach_progression_metadata(case, level=2, archetype="acute_copd_exacerbation")
