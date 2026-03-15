@@ -64,60 +64,6 @@ def get_display_values(inputs):
         ely["cl_mmolL"],
         inputs.get("lactate_mmolL"),
     )
-    
-# ----------------------------
-# QUESTION WORDING / FLOW CONFIG
-# ----------------------------
-
-USE_EXPLANATORY_COMPENSATION_LABEL = False
-
-QUESTION_LABELS = {
-    "ph_status": "pH",
-    "primary_disorder": "Primary acid-base disorder",
-    "compensation": "Compensation",
-    "anion_gap": "Anion gap",
-    "additional_metabolic_process": "Additional metabolic disorder",
-}
-
-PROMPTS = {
-    "ph_status": "What is the pH status?",
-    "primary_disorder": "What is the primary acid-base disorder?",
-    "compensation": "Is the physiological compensation appropriate?",
-    "anion_gap": "What is the anion gap status?",
-    "additional_metabolic_process": "Is an additional metabolic disorder present?",
-}
-
-OPTIONS = {
-    "ph_status": [
-        "Acidaemia",
-        "Alkalaemia",
-        "Normal"
-    ],
-
-    "primary_disorder": [
-        "Respiratory acidosis",
-        "Respiratory alkalosis",
-        "Metabolic acidosis",
-        "Metabolic alkalosis",
-    ],
-
-    "compensation": [
-        "Appropriate",
-        "Inappropriate",
-    ],
-
-    "anion_gap": [
-        "Raised",
-        "Normal"
-    ],
-
-    "additional_metabolic_process": [
-        "None",
-        "Metabolic alkalosis",
-        "Non-anion gap metabolic acidosis",
-    ],
-}
-
 
 #--------------------------
 #DIFFICULTY SETTINGS
@@ -249,11 +195,10 @@ def calc_anion_gap(na, cl, hco3):
 
 def derived_ph_status(ph):
     if ph < 7.35:
-        return "Acidaemia"
+        return "Acidemia"
     if ph > 7.45:
-        return "Alkalaemia"
+        return "Alkalemia"
     return "Normal"
-
 
 
 def in_range(value, low, high, tolerance=0.05):
@@ -267,33 +212,28 @@ def validate_question_flow(case):
     keys = [q.get("key") for q in qf]
 
     expected_by_level = {
-        1: [
-            ["ph_status", "primary_disorder"],
-            ["ph_status", "primary_disorder", "final_diagnosis"],
-        ],
-        2: [
-            ["ph_status", "primary_disorder", "compensation"],
-            ["ph_status", "primary_disorder", "compensation", "final_diagnosis"],
-        ],
-        3: [
-            ["ph_status", "primary_disorder", "compensation", "anion_gap"],
-            ["ph_status", "primary_disorder", "compensation", "anion_gap", "final_diagnosis"],
-        ],
-        4: [
-            ["ph_status", "primary_disorder", "compensation", "anion_gap"],
-            ["ph_status", "primary_disorder", "compensation", "anion_gap", "final_diagnosis"],
-            ["ph_status", "primary_disorder", "compensation", "anion_gap", "additional_metabolic_process"],
-            ["ph_status", "primary_disorder", "compensation", "anion_gap", "additional_metabolic_process", "final_diagnosis"],
-        ],
+        1: ["ph_status", "primary_disorder", "final_diagnosis"],
+        2: ["ph_status", "primary_disorder", "compensation", "final_diagnosis"],
+        3: ["ph_status", "primary_disorder", "compensation", "anion_gap", "final_diagnosis"],
+        4: ["ph_status", "primary_disorder", "compensation", "anion_gap", "final_diagnosis"],
     }
 
     difficulty = case.get("difficulty_level")
     expected = expected_by_level.get(difficulty)
 
-    if expected and keys not in expected:
+    if expected and keys != expected:
         errors.append(
-            f"questions_flow keys {keys} do not match expected flows {expected} for difficulty {difficulty}"
+            f"questions_flow keys {keys} do not match expected {expected} for difficulty {difficulty}"
         )
+
+    steps = [q.get("step") for q in qf]
+    if steps != list(range(1, len(qf) + 1)):
+        errors.append(f"questions_flow step numbering invalid: {steps}")
+
+    for q in qf:
+        opts = q.get("options", [])
+        if not isinstance(opts, list) or len(opts) < 2:
+            errors.append(f"question '{q.get('key')}' has invalid options list")
 
     return errors
 
@@ -473,24 +413,18 @@ def validate_case(case):
             )
 
     elif archetype == "salicylate_toxicity":
-        if ak.get("primary_disorder") != "Metabolic acidosis":
-            errors.append(f"{case_id}: salicylate case should be classified as metabolic acidosis in this framework")
-
+        if ak.get("primary_disorder") != "Mixed disorder":
+            errors.append(f"{case_id}: salicylate case should be mixed disorder")
         if ak.get("final_diagnosis") != "Salicylate toxicity":
             errors.append(f"{case_id}: salicylate final diagnosis mismatch")
-
         if paco2 >= 40:
             errors.append(f"{case_id}: salicylate case should have low PaCO2")
-
         if hco3 >= 22:
             errors.append(f"{case_id}: salicylate case should have low HCO3")
-
         if ag <= 16:
             errors.append(f"{case_id}: salicylate case should have raised AG, got {ag}")
-
         if ak.get("compensation") != "Inappropriate":
-            errors.append(f"{case_id}: salicylate compensation should be inappropriate")
-
+            errors.append(f"{case_id}: salicylate compensation label should indicate mixed disorder")
             
     elif archetype == "lactic_acidosis":
         expected_paco2 = round(winters_expected_paco2(hco3), 1)
@@ -575,9 +509,8 @@ def q_ph_status():
     return {
         "step": 1,
         "key": "ph_status",
-        "label": QUESTION_LABELS["ph_status"],
-        "prompt": PROMPTS["ph_status"],
-        "options": OPTIONS["ph_status"][:]
+        "prompt": "Is the patient acidemic, alkalemic, or normal?",
+        "options": ["Acidemia", "Alkalemia", "Normal"]
     }
 
 
@@ -585,9 +518,14 @@ def q_acid_base_disorder():
     return {
         "step": 2,
         "key": "primary_disorder",
-        "label": QUESTION_LABELS["primary_disorder"],
-        "prompt": PROMPTS["primary_disorder"],
-        "options": OPTIONS["primary_disorder"][:]
+        "prompt": "What is the acid-base disorder?",
+        "options": [
+            "Metabolic acidosis",
+            "Metabolic alkalosis",
+            "Respiratory acidosis",
+            "Respiratory alkalosis",
+            "Mixed disorder"
+        ]
     }
 
 
@@ -595,9 +533,8 @@ def q_compensation(step=3):
     return {
         "step": step,
         "key": "compensation",
-        "label": QUESTION_LABELS["compensation"],
-        "prompt": PROMPTS["compensation"],
-        "options": OPTIONS["compensation"][:]
+        "prompt": "Is compensation appropriate?",
+        "options": ["Appropriate", "Inappropriate"]
     }
 
 
@@ -605,21 +542,9 @@ def q_anion_gap(step=4):
     return {
         "step": step,
         "key": "anion_gap",
-        "label": QUESTION_LABELS["anion_gap"],
-        "prompt": PROMPTS["anion_gap"],
-        "options": OPTIONS["anion_gap"][:]
+        "prompt": "Calculate the anion gap (Na − (Cl + HCO3)).",
+        "options": ["Normal", "Raised"]
     }
-
-
-def q_additional_metabolic_process(step=5):
-    return {
-        "step": step,
-        "key": "additional_metabolic_process",
-        "label": QUESTION_LABELS["additional_metabolic_process"],
-        "prompt": PROMPTS["additional_metabolic_process"],
-        "options": OPTIONS["additional_metabolic_process"][:]
-    }
-
 
 
 def q_final_diagnosis(step, options):
@@ -630,69 +555,42 @@ def q_final_diagnosis(step, options):
         "options": options
     }
 
-def beginner_question_flow(final_diagnosis_options=None):
-    flow = [
+def beginner_question_flow(final_options):
+    return [
         q_ph_status(),
         q_acid_base_disorder(),
+        q_final_diagnosis(3, final_options)
     ]
-    if final_diagnosis_options:
-        flow.append(q_final_diagnosis(3, final_diagnosis_options))
-    return flow
 
 
-def intermediate_question_flow(final_diagnosis_options=None):
-    flow = [
+def intermediate_question_flow(final_options):
+    return [
         q_ph_status(),
         q_acid_base_disorder(),
         q_compensation(3),
+        q_final_diagnosis(4, final_options)
     ]
-    if final_diagnosis_options:
-        flow.append(q_final_diagnosis(4, final_diagnosis_options))
-    return flow
 
 
-def advanced_question_flow(final_diagnosis_options=None):
-    flow = [
+def advanced_question_flow(final_options):
+    return [
         q_ph_status(),
         q_acid_base_disorder(),
         q_compensation(3),
         q_anion_gap(4),
-    ]
-    if final_diagnosis_options:
-        flow.append(q_final_diagnosis(5, final_diagnosis_options))
-    return flow
+        q_final_diagnosis(5, final_options)
+    ]    
 
 
-def expert_question_flow(final_diagnosis_options=None, include_additional_metabolic_process=False):
-    flow = [
-        q_ph_status(),
-        q_acid_base_disorder(),
-        q_compensation(3),
-        q_anion_gap(4),
-    ]
-
-    next_step = 5
-    if include_additional_metabolic_process:
-        flow.append(q_additional_metabolic_process(5))
-        next_step = 6
-
-    if final_diagnosis_options:
-        flow.append(q_final_diagnosis(next_step, final_diagnosis_options))
-
-    return flow
-
-
-def shuffle_question_options(flow):
-    shuffled_flow = []
-
-    for q in flow:
-        q_copy = q.copy()
-        if "options" in q_copy and isinstance(q_copy["options"], list):
-            random.shuffle(q_copy["options"])
-        shuffled_flow.append(q_copy)
-
-    return shuffled_flow
-
+def shuffle_question_options(questions_flow):
+    shuffled = []
+    for question in questions_flow:
+        q = dict(question)
+        if "options" in q:
+            q["options"] = q["options"][:]
+            random.shuffle(q["options"])
+        shuffled.append(q)
+    return shuffled  
 
 # -------------------------------------
 # Stem variation system
@@ -1061,7 +959,7 @@ def generate_dka_case(case_id):
     lactate = round(random.uniform(1.0, 2.5), 1)
 
     explanation = (
-        f"Low pH = acidaemia. Low HCO3 indicates metabolic acidosis. "
+        f"Low pH = acidemia. Low HCO3 indicates metabolic acidosis. "
         f"Winter’s formula predicts PaCO2 ~{expected_paco2:.1f} (±2); measured {paco2} is appropriate compensation. "
         f"Anion gap is {na} − ({cl} + {hco3}) = {ag} (raised), consistent with HAGMA such as DKA."
     )
@@ -1092,8 +990,9 @@ def generate_dka_case(case_id):
         "questions_flow": shuffle_question_options(
             advanced_question_flow([
                 "DKA",
-                "Vomiting metabolic alkalosis",
-                "Panic hyperventilation",
+                "Diarrhoea",
+                "Renal failure (uraemia)",
+                "Toxic alcohol",
                 "Salicylate toxicity"
             ])
         ),
@@ -1151,7 +1050,7 @@ def generate_opioid_case(case_id):
 ]
 
     explanation = (
-        f"Low pH = acidaemia. High PaCO2 indicates a primary respiratory acidosis. "
+        f"Low pH = acidemia. High PaCO2 indicates a primary respiratory acidosis. "
         f"For acute respiratory acidosis, expected HCO3 is ~{expected_hco3:.1f}; measured {hco3} is appropriate acute compensation. "
         f"This pattern fits acute hypoventilation, such as opioid toxicity."
     )
@@ -1190,7 +1089,7 @@ def generate_opioid_case(case_id):
     ])
 ),
         "answer_key": {
-            "ph_status": derived_ph_status(ph),
+            "ph_status": "Acidemia",
             "primary_disorder": "Respiratory acidosis",
             "expected_compensation": {
                 "rule": "Acute respiratory acidosis",
@@ -1282,7 +1181,7 @@ def generate_copd_case(case_id):
     ])
 ),
         "answer_key": {
-            "ph_status": derived_ph_status(ph),
+            "ph_status": "Acidemia" if ph < 7.35 else "Normal",
             "primary_disorder": "Respiratory acidosis",
             "expected_compensation": {
                 "rule": "Chronic respiratory acidosis",
@@ -1334,7 +1233,7 @@ def generate_vomiting_case(case_id):
 ]
 
     explanation = (
-        f"High pH indicates alkalaemia. Elevated HCO3 indicates a primary metabolic alkalosis. "
+        f"High pH indicates alkalemia. Elevated HCO3 indicates a primary metabolic alkalosis. "
         f"Expected compensatory PaCO2 is ~{expected_paco2:.1f}; measured {paco2} is appropriate, "
         f"supporting metabolic alkalosis with expected respiratory compensation, as seen with vomiting."
     )
@@ -1373,7 +1272,7 @@ def generate_vomiting_case(case_id):
     ])
 ),
         "answer_key": {
-            "ph_status": derived_ph_status(ph),
+            "ph_status": "Alkalemia",
             "primary_disorder": "Metabolic alkalosis",
             "expected_compensation": {
                 "rule": "Metabolic alkalosis compensation",
@@ -1425,7 +1324,7 @@ def generate_panic_case(case_id):
 ]
 
     explanation = (
-        f"High pH indicates alkalaemia. Low PaCO2 indicates a primary respiratory alkalosis. "
+        f"High pH indicates alkalemia. Low PaCO2 indicates a primary respiratory alkalosis. "
         f"In acute respiratory alkalosis, expected HCO3 is ~{expected_hco3:.1f}; measured {hco3} is appropriate, "
         f"consistent with acute hyperventilation such as panic."
     )
@@ -1464,7 +1363,7 @@ def generate_panic_case(case_id):
     ])
 ),
         "answer_key": {
-            "ph_status": derived_ph_status(ph),
+            "ph_status": "Alkalemia",
             "primary_disorder": "Respiratory alkalosis",
             "expected_compensation": {
                 "rule": "Acute respiratory alkalosis",
@@ -1518,10 +1417,10 @@ def generate_diarrhoea_case(case_id):
 
     ph_label = derived_ph_status(ph)
 
-    if ph_label == "acidaemia":
-        ph_text = "Low pH indicates acidaemia."
-    elif ph_label == "alkalaemia":
-        ph_text = "High pH indicates alkalaemia."
+    if ph_label == "Acidemia":
+        ph_text = "Low pH indicates acidemia."
+    elif ph_label == "Alkalemia":
+        ph_text = "High pH indicates alkalemia."
     else:
         ph_text = "The pH is in the normal range, but the low HCO3 still indicates a primary metabolic acidosis with respiratory compensation."
 
@@ -1659,8 +1558,12 @@ def generate_salicylate_case(case_id):
     ])
 ),
         "answer_key": {
-            "ph_status": derived_ph_status(ph),
-            "primary_disorder": "Metabolic acidosis",
+            "ph_status": (
+                "Acidemia" if ph < 7.35 else
+                "Alkalemia" if ph > 7.45 else
+                "Normal"
+            ),
+            "primary_disorder": "Mixed disorder",
             "expected_compensation": {
                 "rule": "Mixed disorder present",
                 "note": "Low PaCO2 and low HCO3 are due to two primary processes: respiratory alkalosis and HAGMA"
@@ -1670,7 +1573,6 @@ def generate_salicylate_case(case_id):
             "anion_gap_category": "Raised",
             "final_diagnosis": "Salicylate toxicity"
         },
-
         "explanation": explanation,
         "timing": {
             "timer_visible_by_default": False,
@@ -1896,24 +1798,24 @@ def generate_dka_vomiting_case(case_id):
         },
 
         "questions_flow": shuffle_question_options(
-            expert_question_flow([
+            advanced_question_flow([
                 "DKA with vomiting",
                 "DKA",
                 "Vomiting",
                 "Salicylate toxicity",
                 "Renal failure"
-            ], include_additional_metabolic_process=True)
+            ])
         ),
 
         "answer_key": {
             "ph_status": derived_ph_status(ph),
-            "primary_disorder": "Metabolic acidosis",
-            "compensation": "Inappropriate",
+            "primary_disorder": "Mixed metabolic disorder",
             "anion_gap_value": ag,
             "anion_gap_category": "Raised",
-            "additional_metabolic_process": "Metabolic alkalosis",
             "final_diagnosis": "DKA with vomiting"
         },
+
+        "explanation": "DKA causes high anion gap metabolic acidosis while vomiting causes metabolic alkalosis."
     }
 
     return attach_progression_metadata(case, level=4, archetype="dka_vomiting", is_mixed=True)
@@ -1969,7 +1871,7 @@ output = {
 
 import os
 
-output_path = os.path.join(os.path.dirname(__file__), "..", "site", "abg_cases.json")
+output_path = os.path.join(os.path.dirname(__file__), "..", "abg_cases.json")
 
 with open(output_path, "w") as f:
     json.dump(output, f, indent=2)

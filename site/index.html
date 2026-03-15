@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>ABG Trainer Prototype</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<h1>ABG Trainer Prototype</h1>
+
+<div class="card">
+  <div class="row">
+    <div><span class="pill" id="modePill">Chill mode</span></div>
+
+    <div>
+      <label class="muted">
+        Mode:
+        <select id="modeSelect">
+          <option value="chill" selected>Chill (timer hidden)</option>
+          <option value="speed">Speedrun (timer visible)</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="muted" id="timerDisplay" style="display:none;">
+      Time: 0.0s
+    </div>
+
+  </div>
+</div>
+
+
+<div class="card" id="startCard">
+
+<h2>ABG Practice</h2>
+
+<p>
+Practice interpreting arterial blood gases step-by-step.
+</p>
+
+<ul>
+<li>Identify acidemia or alkalemia</li>
+<li>Determine the acid–base disorder</li>
+<li>Assess compensation</li>
+<li>Recognise common clinical patterns</li>
+</ul>
+
+<button id="startBtn">Start practice</button>
+
+</div>
+
+
+<div class="card" id="caseCard" style="display:none;"></div>
+
+<div class="card" id="qaCard" style="display:none;"></div>
+
+<div class="card" id="resultCard" style="display:none;"></div>
+
+
+<div class="row">
+<button id="nextBtn" disabled>Next case</button>
+<button id="resetBtn">Reset session score</button>
+</div>
+
+
+<p class="muted">
+Tip: Keep <code>abg_cases.json</code> in the same folder as this HTML file.
+</p>
+
+
+<script src="app.js"></script>
+
+</body>
+</html>

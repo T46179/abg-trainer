@@ -1,0 +1,227 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 24px;
+  background: #f5f6f8;
+}
+
+.card {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 16px;
+  margin: 12px 0;
+  max-width: 720px;
+}
+
+.row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.pill {
+  display: inline-block;
+  padding: 4px 10px;
+  border: 1px solid #ddd;
+  border-radius: 999px;
+  margin-right: 8px;
+}
+
+button {
+  padding: 10px 12px;
+  margin: 6px 6px 0 0;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.muted { color: #666; }
+
+.correct {
+  color: #0a7a0a;
+  font-weight: bold;
+}
+
+.incorrect {
+  color: #b00020;
+  font-weight: bold;
+}
+
+select { padding: 8px; }
+
+.card b {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.practice-header {
+  margin-bottom: 20px;
+}
+
+.practice-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.practice-subtitle {
+  color: #666;
+  font-size: 16px;
+}
+
+.card-section {
+  border: 1px solid #e4e4e7;
+  border-radius: 14px;
+  padding: 24px;
+  margin: 28px 0;
+  background: #ffffff;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+}
+
+.section-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+
+.scenario-text {
+  font-size: 20px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.abg-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.abg-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 16px;
+  border-radius: 12px;
+  background: #f5f5f7;
+}
+
+.abg-row-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.abg-label {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.abg-range {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.abg-value {
+  font-size: 24px;
+  font-weight: 800;
+  color: #111827;
+  white-space: nowrap;
+}
+
+.abg-value.abnormal {
+  color: #d7263d;
+}
+
+.abg-row {
+  border: 1px solid #e6e6e6;
+}
+
+
+#qaCard {
+  min-height: 160px;
+}
+
+
+#resultCard {
+  min-height: 160px;
+}
+
+.option-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.option-btn {
+  width: 100%;
+  text-align: left;
+  padding: 16px 18px;
+  border: 1px solid #dcdfe4;
+  border-radius: 12px;
+  background: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
+}
+
+.option-btn:hover:not(:disabled) {
+  background: #f7f8fa;
+  border-color: #c9ced6;
+}
+
+.option-btn:active:not(:disabled) {
+  transform: scale(0.995);
+}
+
+.option-btn:disabled {
+  opacity: 1;
+  cursor: default;
+}
+
+.option-btn.selected {
+  background: #eef4ff;
+  border-color: #7aa2ff;
+}
+
+#qaCard h3 {
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+.step-meta {
+  color: #6b7280;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.result-box {
+  border-radius: 12px;
+  padding: 18px;
+  margin-top: 10px;
+}
+
+.result-correct {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+}
+
+.result-incorrect {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+.result-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.result-details {
+  font-size: 15px;
+  color: #374151;
+}
