@@ -81,18 +81,20 @@ OPTIONS = {
 
 STEM_BANK = {
     "dka": {
-        "ages": ["19-year-old", "23-year-old", "27-year-old", "31-year-old"],
-        "openers": ["presents to ED", "is brought to ED", "attends ED"],
+        "ages": ["18-year-old", "19-year-old", "23-year-old", "27-year-old", "31-year-old", "34-year-old"],
+        "openers": ["presents to ED", "is brought to ED", "attends ED", "comes to ED"],
         "feature_groups": {
-            "respiratory": ["tachypnoeic", "with deep rapid breathing"],
-            "gi": ["with abdominal pain", "with vomiting"],
-            "volume": ["dehydrated", "with reduced oral intake"],
-            "metabolic": ["with polyuria", "feeling generally unwell"],
+            "respiratory": ["tachypnoea", "deep rapid breathing", "rapid breathing"],
+            "gi": ["abdominal pain", "vomiting", "nausea and abdominal discomfort"],
+            "volume": ["dehydration", "reduced oral intake", "marked thirst"],
+            "metabolic": ["polyuria", "general malaise", "recent weight loss"],
         },
         "patterns": [
             "{age} {opener} {f1}, {f2}, and {f3}.",
             "{age} {opener} with {f1} and {f2}.",
             "{age} {opener} unwell with {f1} and {f2}.",
+            "{age} {opener} after several days of illness, with {f1} and {f2}.",
+            "{age} {opener} with {f1}, {f2}, and appears volume depleted.",
         ],
     },
     "dka_vomiting": {
@@ -141,18 +143,20 @@ STEM_BANK = {
         ],
     },
     "panic_hyperventilation": {
-        "ages": ["22-year-old", "25-year-old", "29-year-old"],
-        "openers": ["presents to ED", "is brought in", "attends ED"],
+        "ages": ["20-year-old", "22-year-old", "25-year-old", "29-year-old", "33-year-old"],
+        "openers": ["presents to ED", "is brought in", "attends ED", "comes to ED"],
         "feature_groups": {
-            "breathing": ["hyperventilating", "with sudden onset dyspnoea"],
-            "anxiety": ["with anxiety", "visibly distressed"],
-            "chest": ["with chest tightness", "with a sensation of not getting enough air"],
-            "peripheral": ["with tingling in the fingers", "with lightheadedness"],
+            "breathing": ["hyperventilation", "sudden dyspnoea", "rapid breathing"],
+            "anxiety": ["anxiety", "visible distress", "recent emotional stress"],
+            "chest": ["chest tightness", "a sensation of not getting enough air", "non-pleuritic chest discomfort"],
+            "peripheral": ["tingling in the fingers", "lightheadedness", "perioral tingling"],
         },
         "patterns": [
             "{age} {opener} {f1} and {f2}.",
             "{age} {opener} with {f1}, {f2}, and {f3}.",
             "{age} {opener} anxious and {f1}, with {f2}.",
+            "{age} {opener} shortly after emotional stress, with {f1} and {f2}.",
+            "{age} {opener} with abrupt symptoms of {f1}, {f2}, and {f3}.",
         ],
     },
     "lactic_acidosis": {
@@ -201,18 +205,20 @@ STEM_BANK = {
         ],
     },
     "acute_copd_exacerbation": {
-        "ages": ["65-year-old", "68-year-old", "72-year-old"],
-        "openers": ["presents", "is brought to ED", "attends ED"],
+        "ages": ["61-year-old", "65-year-old", "68-year-old", "72-year-old", "76-year-old"],
+        "openers": ["presents", "is brought to ED", "attends ED", "comes to ED"],
         "feature_groups": {
-            "worsening": ["with worsening dyspnoea", "after several days of breathlessness"],
-            "airways": ["with productive cough", "with wheeze"],
-            "hypercapnia": ["with increasing somnolence", "with hypercapnic symptoms"],
-            "background": ["with known COPD", "with chronic respiratory disease"],
+            "worsening": ["worsening dyspnoea", "several days of breathlessness", "increased work of breathing"],
+            "airways": ["productive cough", "wheeze", "increased sputum"],
+            "hypercapnia": ["increasing somnolence", "hypercapnic symptoms", "increased drowsiness"],
+            "background": ["known COPD", "chronic respiratory disease", "a history of COPD"],
         },
         "patterns": [
             "{age} {opener} {f1} and {f2}.",
             "{age} {opener} {f1}, {f2}, and {f3}.",
             "{age} {opener} with {f1} on a background of {f2}.",
+            "{age} {opener} after several days of infective symptoms, with {f1} and {f2}.",
+            "{age} {opener} with {f1}, {f2}, on a background of {f3}.",
         ],
     },
     "sepsis_respiratory_alkalosis": {

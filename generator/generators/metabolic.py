@@ -20,9 +20,9 @@ from ..physiology import (
     metabolic_alkalosis_expected_paco2,
     winters_expected_paco2,
 )
-from ..progression import attach_progression_metadata
 from ..question_flow import advanced_question_flow, default_timing, intermediate_question_flow, shuffle_question_options
 from ..stems import generate_stem
+from .common import build_answer_key, build_case, build_inputs
 
 
 def generate_dka_case(case_id):
@@ -42,20 +42,15 @@ def generate_dka_case(case_id):
         f"Anion gap is {na} - ({cl} + {hco3}) = {ag} (raised), consistent with HAGMA such as DKA."
     )
 
-    case = {
-        "case_id": case_id,
-        "title": "DKA (HAGMA with appropriate respiratory compensation)",
-        "case_type": "ABG",
-        "category": "metabolic_acidosis_hagma",
-        "learning_objective": "Recognise high anion gap metabolic acidosis with appropriate respiratory compensation",
-        "tags": ["dka", "hagma", "metabolic_acidosis"],
-        "clinical_stem": generate_stem("dka"),
-        "inputs": {
-            "gas": {"ph": ph, "paco2_mmHg": paco2, "hco3_mmolL": hco3},
-            "electrolytes": {"na_mmolL": na, "cl_mmolL": cl},
-            "lactate_mmolL": lactate,
-        },
-        "questions_flow": shuffle_question_options(
+    return build_case(
+        case_id=case_id,
+        title="DKA (HAGMA with appropriate respiratory compensation)",
+        category="metabolic_acidosis_hagma",
+        learning_objective="Recognise high anion gap metabolic acidosis with appropriate respiratory compensation",
+        tags=["dka", "hagma", "metabolic_acidosis"],
+        clinical_stem=generate_stem("dka"),
+        inputs=build_inputs(ph, paco2, hco3, na, cl, lactate=lactate),
+        questions_flow=shuffle_question_options(
             advanced_question_flow([
                 "DKA",
                 "Vomiting metabolic alkalosis",
@@ -63,24 +58,24 @@ def generate_dka_case(case_id):
                 "Salicylate toxicity",
             ])
         ),
-        "answer_key": {
-            "ph_status": derived_ph_status(ph),
-            "primary_disorder": "Metabolic acidosis",
-            "expected_compensation": {
+        answer_key=build_answer_key(
+            ph_status=derived_ph_status(ph),
+            primary_disorder="Metabolic acidosis",
+            compensation="Appropriate",
+            anion_gap_value=ag,
+            anion_gap_category="Raised",
+            final_diagnosis="DKA",
+            expected_compensation={
                 "rule": "Winter",
                 "expected_paco2_mmHg": round(expected_paco2, 1),
                 "acceptable_range_mmHg": [round(expected_paco2 - 2, 1), round(expected_paco2 + 2, 1)],
             },
-            "compensation": "Appropriate",
-            "anion_gap_value": ag,
-            "anion_gap_category": "Raised",
-            "final_diagnosis": "DKA",
-        },
-        "explanation": explanation,
-        "timing": default_timing(),
-    }
-
-    return attach_progression_metadata(case, level=3, archetype="dka")
+        ),
+        explanation=explanation,
+        timing=default_timing(),
+        level=3,
+        archetype="dka",
+    )
 
 
 def generate_vomiting_case(case_id):
@@ -106,20 +101,15 @@ def generate_vomiting_case(case_id):
         f"supporting metabolic alkalosis with expected respiratory compensation, as seen with vomiting."
     )
 
-    case = {
-        "case_id": case_id,
-        "title": "Vomiting (metabolic alkalosis with respiratory compensation)",
-        "case_type": "ABG",
-        "category": "metabolic_alkalosis",
-        "learning_objective": "Recognise metabolic alkalosis with appropriate respiratory compensation",
-        "tags": ["vomiting", "metabolic_alkalosis", "chloride_responsive"],
-        "clinical_stem": random.choice(stem_options),
-        "inputs": {
-            "gas": {"ph": ph, "paco2_mmHg": paco2, "hco3_mmolL": hco3},
-            "electrolytes": {"na_mmolL": na, "cl_mmolL": cl},
-            "lactate_mmolL": lactate,
-        },
-        "questions_flow": shuffle_question_options(
+    return build_case(
+        case_id=case_id,
+        title="Vomiting (metabolic alkalosis with respiratory compensation)",
+        category="metabolic_alkalosis",
+        learning_objective="Recognise metabolic alkalosis with appropriate respiratory compensation",
+        tags=["vomiting", "metabolic_alkalosis", "chloride_responsive"],
+        clinical_stem=random.choice(stem_options),
+        inputs=build_inputs(ph, paco2, hco3, na, cl, lactate=lactate),
+        questions_flow=shuffle_question_options(
             intermediate_question_flow([
                 "Vomiting",
                 "Diuretic use",
@@ -128,24 +118,24 @@ def generate_vomiting_case(case_id):
                 "DKA",
             ])
         ),
-        "answer_key": {
-            "ph_status": derived_ph_status(ph),
-            "primary_disorder": "Metabolic alkalosis",
-            "expected_compensation": {
+        answer_key=build_answer_key(
+            ph_status=derived_ph_status(ph),
+            primary_disorder="Metabolic alkalosis",
+            compensation="Appropriate",
+            anion_gap_value=ag,
+            anion_gap_category="Normal" if ag <= 16 else "Raised",
+            final_diagnosis="Vomiting",
+            expected_compensation={
                 "rule": "Metabolic alkalosis compensation",
                 "expected_paco2_mmHg": round(expected_paco2, 1),
                 "acceptable_range_mmHg": [round(expected_paco2 - 3, 1), round(expected_paco2 + 3, 1)],
             },
-            "compensation": "Appropriate",
-            "anion_gap_value": ag,
-            "anion_gap_category": "Normal" if ag <= 16 else "Raised",
-            "final_diagnosis": "Vomiting",
-        },
-        "explanation": explanation,
-        "timing": default_timing(),
-    }
-
-    return attach_progression_metadata(case, level=2, archetype="vomiting_metabolic_alkalosis")
+        ),
+        explanation=explanation,
+        timing=default_timing(),
+        level=2,
+        archetype="vomiting_metabolic_alkalosis",
+    )
 
 
 def generate_diarrhoea_case(case_id):
@@ -179,20 +169,15 @@ def generate_diarrhoea_case(case_id):
         f"Anion gap is {na} - ({cl} + {hco3}) = {ag}, which is normal, consistent with NAGMA such as diarrhoea."
     )
 
-    case = {
-        "case_id": case_id,
-        "title": "Diarrhoea (normal anion gap metabolic acidosis)",
-        "case_type": "ABG",
-        "category": "metabolic_acidosis_nagma",
-        "learning_objective": "Recognise normal anion gap metabolic acidosis with appropriate respiratory compensation",
-        "tags": ["diarrhoea", "nagma", "metabolic_acidosis"],
-        "clinical_stem": random.choice(stem_options),
-        "inputs": {
-            "gas": {"ph": ph, "paco2_mmHg": paco2, "hco3_mmolL": hco3},
-            "electrolytes": {"na_mmolL": na, "cl_mmolL": cl},
-            "lactate_mmolL": lactate,
-        },
-        "questions_flow": shuffle_question_options(
+    return build_case(
+        case_id=case_id,
+        title="Diarrhoea (normal anion gap metabolic acidosis)",
+        category="metabolic_acidosis_nagma",
+        learning_objective="Recognise normal anion gap metabolic acidosis with appropriate respiratory compensation",
+        tags=["diarrhoea", "nagma", "metabolic_acidosis"],
+        clinical_stem=random.choice(stem_options),
+        inputs=build_inputs(ph, paco2, hco3, na, cl, lactate=lactate),
+        questions_flow=shuffle_question_options(
             advanced_question_flow([
                 "Diarrhoea",
                 "DKA",
@@ -201,24 +186,24 @@ def generate_diarrhoea_case(case_id):
                 "Toxic alcohol",
             ])
         ),
-        "answer_key": {
-            "ph_status": derived_ph_status(ph),
-            "primary_disorder": "Metabolic acidosis",
-            "expected_compensation": {
+        answer_key=build_answer_key(
+            ph_status=derived_ph_status(ph),
+            primary_disorder="Metabolic acidosis",
+            compensation="Appropriate",
+            anion_gap_value=ag,
+            anion_gap_category="Normal",
+            final_diagnosis="Diarrhoea",
+            expected_compensation={
                 "rule": "Winter",
                 "expected_paco2_mmHg": round(expected_paco2, 1),
                 "acceptable_range_mmHg": [round(expected_paco2 - 2, 1), round(expected_paco2 + 2, 1)],
             },
-            "compensation": "Appropriate",
-            "anion_gap_value": ag,
-            "anion_gap_category": "Normal",
-            "final_diagnosis": "Diarrhoea",
-        },
-        "explanation": explanation,
-        "timing": default_timing(),
-    }
-
-    return attach_progression_metadata(case, level=3, archetype="diarrhoea_nagma")
+        ),
+        explanation=explanation,
+        timing=default_timing(),
+        level=3,
+        archetype="diarrhoea_nagma",
+    )
 
 
 def generate_lactate_case(case_id):
@@ -231,18 +216,13 @@ def generate_lactate_case(case_id):
     lactate = random.uniform(4, 10)
     ag = calc_anion_gap(na, cl, hco3)
 
-    case = {
-        "case_id": case_id,
-        "title": "Lactic acidosis (sepsis)",
-        "case_type": "ABG",
-        "category": "metabolic_acidosis_hagma",
-        "clinical_stem": generate_stem("lactic_acidosis"),
-        "inputs": {
-            "gas": {"ph": ph, "paco2_mmHg": paco2, "hco3_mmolL": hco3},
-            "electrolytes": {"na_mmolL": na, "cl_mmolL": cl},
-            "lactate_mmolL": lactate,
-        },
-        "questions_flow": shuffle_question_options(
+    return build_case(
+        case_id=case_id,
+        title="Lactic acidosis (sepsis)",
+        category="metabolic_acidosis_hagma",
+        clinical_stem=generate_stem("lactic_acidosis"),
+        inputs=build_inputs(ph, paco2, hco3, na, cl, lactate=lactate),
+        questions_flow=shuffle_question_options(
             advanced_question_flow([
                 "Lactic acidosis",
                 "DKA",
@@ -251,20 +231,20 @@ def generate_lactate_case(case_id):
                 "Salicylate toxicity",
             ])
         ),
-        "answer_key": {
-            "ph_status": derived_ph_status(ph),
-            "primary_disorder": "Metabolic acidosis",
-            "expected_compensation": {
+        answer_key=build_answer_key(
+            ph_status=derived_ph_status(ph),
+            primary_disorder="Metabolic acidosis",
+            compensation="Appropriate",
+            anion_gap_value=ag,
+            anion_gap_category="Raised",
+            final_diagnosis="Lactic acidosis",
+            expected_compensation={
                 "rule": "Winter",
                 "expected_paco2_mmHg": round(expected_paco2, 1),
                 "acceptable_range_mmHg": [round(expected_paco2 - 2, 1), round(expected_paco2 + 2, 1)],
             },
-            "compensation": "Appropriate",
-            "anion_gap_value": ag,
-            "anion_gap_category": "Raised",
-            "final_diagnosis": "Lactic acidosis",
-        },
-        "explanation": "Sepsis commonly causes high anion gap metabolic acidosis due to lactate accumulation.",
-    }
-
-    return attach_progression_metadata(case, level=3, archetype="lactic_acidosis")
+        ),
+        explanation="Sepsis commonly causes high anion gap metabolic acidosis due to lactate accumulation.",
+        level=3,
+        archetype="lactic_acidosis",
+    )

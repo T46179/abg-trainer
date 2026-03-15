@@ -11,9 +11,9 @@ present and the question flow needs to support mixed-disorder reasoning.
 import random
 
 from ..physiology import calc_anion_gap, calculate_ph_from_hco3_paco2, derived_ph_status, estimate_ph
-from ..progression import attach_progression_metadata
 from ..question_flow import advanced_question_flow, default_timing, expert_question_flow, shuffle_question_options
 from ..stems import generate_stem
+from .common import build_answer_key, build_case, build_inputs
 
 
 def generate_salicylate_case(case_id):
@@ -39,20 +39,15 @@ def generate_salicylate_case(case_id):
         f"This is a mixed respiratory alkalosis and metabolic acidosis, classic for salicylate toxicity."
     )
 
-    case = {
-        "case_id": case_id,
-        "title": "Salicylate toxicity (mixed respiratory alkalosis + HAGMA)",
-        "case_type": "ABG",
-        "category": "mixed_disorder",
-        "learning_objective": "Recognise the mixed respiratory alkalosis and high anion gap metabolic acidosis of salicylate toxicity",
-        "tags": ["salicylate", "mixed_disorder", "respiratory_alkalosis", "hagma", "toxicology"],
-        "clinical_stem": random.choice(stem_options),
-        "inputs": {
-            "gas": {"ph": ph, "paco2_mmHg": paco2, "hco3_mmolL": hco3},
-            "electrolytes": {"na_mmolL": na, "cl_mmolL": cl},
-            "lactate_mmolL": lactate,
-        },
-        "questions_flow": shuffle_question_options(
+    return build_case(
+        case_id=case_id,
+        title="Salicylate toxicity (mixed respiratory alkalosis + HAGMA)",
+        category="mixed_disorder",
+        learning_objective="Recognise the mixed respiratory alkalosis and high anion gap metabolic acidosis of salicylate toxicity",
+        tags=["salicylate", "mixed_disorder", "respiratory_alkalosis", "hagma", "toxicology"],
+        clinical_stem=random.choice(stem_options),
+        inputs=build_inputs(ph, paco2, hco3, na, cl, lactate=lactate),
+        questions_flow=shuffle_question_options(
             advanced_question_flow([
                 "Salicylate toxicity",
                 "DKA",
@@ -61,23 +56,24 @@ def generate_salicylate_case(case_id):
                 "Renal failure (uraemia)",
             ])
         ),
-        "answer_key": {
-            "ph_status": derived_ph_status(ph),
-            "primary_disorder": "Metabolic acidosis",
-            "expected_compensation": {
+        answer_key=build_answer_key(
+            ph_status=derived_ph_status(ph),
+            primary_disorder="Metabolic acidosis",
+            compensation="Inappropriate",
+            anion_gap_value=ag,
+            anion_gap_category="Raised",
+            final_diagnosis="Salicylate toxicity",
+            expected_compensation={
                 "rule": "Mixed disorder present",
                 "note": "Low PaCO2 and low HCO3 are due to two primary processes: respiratory alkalosis and HAGMA",
             },
-            "compensation": "Inappropriate",
-            "anion_gap_value": ag,
-            "anion_gap_category": "Raised",
-            "final_diagnosis": "Salicylate toxicity",
-        },
-        "explanation": explanation,
-        "timing": default_timing(),
-    }
-
-    return attach_progression_metadata(case, level=4, archetype="salicylate_toxicity", is_mixed=True)
+        ),
+        explanation=explanation,
+        timing=default_timing(),
+        level=4,
+        archetype="salicylate_toxicity",
+        is_mixed=True,
+    )
 
 
 def generate_dka_vomiting_case(case_id):
@@ -88,17 +84,13 @@ def generate_dka_vomiting_case(case_id):
     cl = random.uniform(95, 100)
     ag = calc_anion_gap(na, cl, hco3)
 
-    case = {
-        "case_id": case_id,
-        "title": "DKA with vomiting (mixed metabolic disorder)",
-        "case_type": "ABG",
-        "category": "mixed_disorder",
-        "clinical_stem": generate_stem("dka_vomiting"),
-        "inputs": {
-            "gas": {"ph": ph, "paco2_mmHg": paco2, "hco3_mmolL": hco3},
-            "electrolytes": {"na_mmolL": na, "cl_mmolL": cl},
-        },
-        "questions_flow": shuffle_question_options(
+    return build_case(
+        case_id=case_id,
+        title="DKA with vomiting (mixed metabolic disorder)",
+        category="mixed_disorder",
+        clinical_stem=generate_stem("dka_vomiting"),
+        inputs=build_inputs(ph, paco2, hco3, na, cl),
+        questions_flow=shuffle_question_options(
             expert_question_flow(
                 [
                     "DKA with vomiting",
@@ -110,15 +102,16 @@ def generate_dka_vomiting_case(case_id):
                 include_additional_metabolic_process=True,
             )
         ),
-        "answer_key": {
-            "ph_status": derived_ph_status(ph),
-            "primary_disorder": "Metabolic acidosis",
-            "compensation": "Inappropriate",
-            "anion_gap_value": ag,
-            "anion_gap_category": "Raised",
-            "additional_metabolic_process": "Metabolic alkalosis",
-            "final_diagnosis": "DKA with vomiting",
-        },
-    }
-
-    return attach_progression_metadata(case, level=4, archetype="dka_vomiting", is_mixed=True)
+        answer_key=build_answer_key(
+            ph_status=derived_ph_status(ph),
+            primary_disorder="Metabolic acidosis",
+            compensation="Inappropriate",
+            anion_gap_value=ag,
+            anion_gap_category="Raised",
+            final_diagnosis="DKA with vomiting",
+            additional_metabolic_process="Metabolic alkalosis",
+        ),
+        level=4,
+        archetype="dka_vomiting",
+        is_mixed=True,
+    )
