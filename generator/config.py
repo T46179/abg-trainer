@@ -7,6 +7,9 @@ stem bank used to build varied case prompts.
 
 PROGRESSION_VERSION = "v1"
 
+TESTING_MODE = True
+TESTING_XP_MULTIPLIER = 5
+
 BASE_XP_BY_DIFFICULTY = {
     1: 10,
     2: 15,
@@ -31,10 +34,25 @@ STREAK_BONUS_TIERS = [
 ]
 
 XP_REQUIRED_PER_LEVEL = {
-    1: 40,
-    2: 50,
-    3: 60,
-    4: 80,
+    1: 30,
+    2: 40,
+    3: 50,
+    4: 60,
+    5: 80,
+    6: 100,
+    7: 120,
+    8: 140,
+    9: 160,
+    10: 200,
+    11: 240,
+    12: 280,
+    13: 320,
+    14: 360,
+    15: 400,
+    16: 440,
+    17: 480,
+    18: 520,
+    19: 560,
 }
 
 DIFFICULTY_UNLOCK_LEVELS = {

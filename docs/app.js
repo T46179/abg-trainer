@@ -1,4 +1,5 @@
 const USER_STATE_STORAGE_KEY = "abgmaster_userState";
+const USER_STATE_MODE_STORAGE_KEY = "abgmaster_userState_mode";
 
 const userState = {
   xp: 0,
@@ -55,6 +56,12 @@ const VIEW_NAME_TO_ID = {
   profile: "profileView"
 };
 const DIFFICULTY_ORDER = ["beginner", "intermediate", "advanced", "master"];
+
+function normalizeSubscriptionTier(value) {
+  const normalized = String(value ?? "").toLowerCase();
+  if (normalized === "premium" || normalized === "exam_prep") return normalized;
+  return "free";
+}
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -114,6 +121,88 @@ function yesterdayKey() {
 function calculateAccuracy(correctAnswers = userState.correctAnswers, totalAnswers = userState.totalAnswers) {
   if (!totalAnswers) return 100;
   return Math.round((correctAnswers / totalAnswers) * 100);
+}
+
+function isTestingMode() {
+  return Boolean(appData.progressionConfig?.testing_mode);
+}
+
+function getConfiguredSubscriptionTier() {
+  return normalizeSubscriptionTier(
+    appData.dashboardState?.user?.subscription_tier ??
+    appData.defaultUserState?.subscription_tier ??
+    (userState.isPremium ? "premium" : "free")
+  );
+}
+
+function getEffectiveSubscriptionTier() {
+  if (isTestingMode()) return "testing";
+  return getConfiguredSubscriptionTier();
+}
+
+function getEffectiveUnlockedDifficulty() {
+  const subscriptionTier = getEffectiveSubscriptionTier();
+
+  if (subscriptionTier === "testing" || subscriptionTier === "exam_prep") {
+    return DIFFICULTY_ORDER.length;
+  }
+
+  if (subscriptionTier === "premium") {
+    return getUnlockedDifficultyKeys(userState.level).length;
+  }
+
+  return 1;
+}
+
+function canAccessLearn() {
+  const subscriptionTier = getEffectiveSubscriptionTier();
+  return subscriptionTier === "testing" || subscriptionTier === "premium" || subscriptionTier === "exam_prep";
+}
+
+function canAccessDifficulty(difficultyLevel) {
+  const requestedLevel = typeof difficultyLevel === "number"
+    ? difficultyLevel
+    : getDifficultyLevel(difficultyLevel);
+  return requestedLevel <= getEffectiveUnlockedDifficulty();
+}
+
+function getAccessibleDifficultyKeys() {
+  return getDifficultyMeta()
+    .filter(item => canAccessDifficulty(item.level))
+    .map(item => item.key);
+}
+
+function normalizeDifficultyKey(difficultyKey = sessionState.currentDifficulty) {
+  const normalized = String(difficultyKey ?? "").toLowerCase();
+  const requestedLevel = getDifficultyLevel(normalized);
+
+  if (canAccessDifficulty(requestedLevel)) {
+    return getDifficultyLabel(requestedLevel);
+  }
+
+  const accessible = getAccessibleDifficultyKeys();
+  return accessible[accessible.length - 1] ?? "beginner";
+}
+
+function canStartNewCase() {
+  const subscriptionTier = getEffectiveSubscriptionTier();
+  if (subscriptionTier === "testing" || subscriptionTier === "premium" || subscriptionTier === "exam_prep") {
+    return true;
+  }
+
+  const remaining = getCasesRemainingToday();
+  return remaining == null || remaining > 0;
+}
+
+function getEffectiveXpMultiplier() {
+  if (!isTestingMode()) return 1;
+  return Math.max(1, Number(appData.progressionConfig?.testing_xp_multiplier ?? 1));
+}
+
+function getPersistenceModeSignature() {
+  return JSON.stringify({
+    testingMode: isTestingMode()
+  });
 }
 
 function getDifficultyLabel(level) {
@@ -227,7 +316,10 @@ function getDailyLimit() {
 
 function getCasesRemainingToday() {
   const dailyLimit = getDailyLimit();
-  if (userState.isPremium || !dailyLimit) return null;
+  const subscriptionTier = getEffectiveSubscriptionTier();
+  if (subscriptionTier === "testing" || subscriptionTier === "premium" || subscriptionTier === "exam_prep" || !dailyLimit) {
+    return null;
+  }
   return Math.max(0, dailyLimit - userState.dailyCasesUsed);
 }
 
@@ -269,6 +361,15 @@ function loadUserState() {
   const fallbackState = mapDefaultUserState(appData.defaultUserState ?? appData.dashboardState?.user ?? {});
 
   try {
+    const expectedModeSignature = getPersistenceModeSignature();
+    const persistedModeSignature = window.localStorage.getItem(USER_STATE_MODE_STORAGE_KEY);
+
+    if (persistedModeSignature !== expectedModeSignature) {
+      window.localStorage.removeItem(USER_STATE_STORAGE_KEY);
+      window.localStorage.setItem(USER_STATE_MODE_STORAGE_KEY, expectedModeSignature);
+      return fallbackState;
+    }
+
     const raw = window.localStorage.getItem(USER_STATE_STORAGE_KEY);
     if (!raw) return fallbackState;
 
@@ -287,6 +388,7 @@ function loadUserState() {
 
 function saveUserState() {
   try {
+    window.localStorage.setItem(USER_STATE_MODE_STORAGE_KEY, getPersistenceModeSignature());
     window.localStorage.setItem(USER_STATE_STORAGE_KEY, JSON.stringify(userState));
   } catch (error) {
     console.warn("Failed to save persisted user state.", error);
@@ -315,7 +417,8 @@ function evaluateBadges() {
 }
 
 function showView(viewName) {
-  const nextView = VIEW_NAME_TO_ID[viewName] ? viewName : "dashboard";
+  const requestedView = VIEW_NAME_TO_ID[viewName] ? viewName : "dashboard";
+  const nextView = requestedView === "learn" && !canAccessLearn() ? "dashboard" : requestedView;
 
   if (nextView === "practice" && !sessionState.currentCase) {
     startNewCase(sessionState.currentDifficulty);
@@ -461,14 +564,23 @@ function startNewCase(difficultyKey = sessionState.currentDifficulty) {
     return;
   }
 
+  const nextDifficulty = normalizeDifficultyKey(difficultyKey);
+  sessionState.currentDifficulty = nextDifficulty;
+
+  if (!canStartNewCase()) {
+    resetPracticeSession();
+    sessionState.currentView = "dashboard";
+    renderApp();
+    return;
+  }
+
   appData.loadError = null;
-  sessionState.currentDifficulty = difficultyKey;
   sessionState.currentStepIndex = 0;
   sessionState.stepResults = [];
   sessionState.currentView = "practice";
   appData.lastCaseSummary = null;
 
-  const selectedCase = pickRandom(getEligibleCasesForDifficulty(difficultyKey));
+  const selectedCase = pickRandom(getEligibleCasesForDifficulty(nextDifficulty));
   if (!selectedCase) {
     appData.loadError = "No eligible case could be selected.";
     renderApp();
@@ -546,7 +658,7 @@ function finishCase() {
   const baseXp = getBaseXp(difficultyLevel);
   const perfectBonus = perfectCase ? getPerfectBonus(difficultyLevel) : 0;
   const speedBonus = sessionState.timedMode ? getTimeBonus(elapsedSeconds) : 0;
-  const totalXpAward = baseXp + perfectBonus + speedBonus;
+  const totalXpAward = Math.round((baseXp + perfectBonus + speedBonus) * getEffectiveXpMultiplier());
 
   userState.xp += totalXpAward;
   userState.casesCompleted += 1;
@@ -647,7 +759,7 @@ function renderDashboard() {
   const casesRemaining = getCasesRemainingToday();
   const difficultyCards = getDifficultyMeta()
     .map(item => {
-      const unlocked = userState.unlockedDifficulties.includes(item.key);
+      const unlocked = canAccessDifficulty(item.level);
 
       return `
         <button
@@ -761,6 +873,7 @@ function renderAbgMetrics(caseItem) {
 
 function renderPractice() {
   setText("practiceTitle", "Practice Mode");
+  sessionState.currentDifficulty = normalizeDifficultyKey(sessionState.currentDifficulty);
   const levelProgress = getLevelProgress();
   setText(
     "practiceLevelLine",
@@ -771,10 +884,9 @@ function renderPractice() {
 
   const difficultySelect = document.getElementById("practiceDifficultySelect");
   if (difficultySelect) {
-    difficultySelect.innerHTML = userState.unlockedDifficulties.map(diff => `
+    difficultySelect.innerHTML = getAccessibleDifficultyKeys().map(diff => `
       <option
         value="${escapeHtml(diff)}"
-        ${(diff === "master" && !userState.isPremium) ? "disabled" : ""}
       >
         ${escapeHtml(toTitleCase(diff))}
       </option>
@@ -929,6 +1041,11 @@ function renderResults() {
 }
 
 function renderLearn() {
+  if (!canAccessLearn()) {
+    setHtml("learnGrid", "");
+    return;
+  }
+
   const objectives = new Map();
   for (const caseItem of appData.cases) {
     const difficultyKey = getDifficultyLabel(Number(caseItem.difficulty_level ?? 1));
@@ -1032,6 +1149,7 @@ function renderProfile() {
 }
 
 function renderApp() {
+  sessionState.currentDifficulty = normalizeDifficultyKey(sessionState.currentDifficulty);
   renderNavbar();
   renderDashboard();
   renderPractice();

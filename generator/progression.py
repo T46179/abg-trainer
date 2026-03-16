@@ -15,6 +15,8 @@ from .config import (
     PROGRESSION_VERSION,
     SPEED_BONUS_TIERS,
     STREAK_BONUS_TIERS,
+    TESTING_MODE,
+    TESTING_XP_MULTIPLIER,
     XP_REQUIRED_PER_LEVEL,
 )
 
@@ -155,6 +157,8 @@ def calculate_case_xp_award(
 def build_progression_config():
     return {
         "version": PROGRESSION_VERSION,
+        "testing_mode": TESTING_MODE,
+        "testing_xp_multiplier": TESTING_XP_MULTIPLIER,
         "base_xp_by_difficulty": BASE_XP_BY_DIFFICULTY,
         "perfect_case_bonus_percent": PERFECT_CASE_BONUS_PERCENT,
         "speed_bonus_tiers": SPEED_BONUS_TIERS,
@@ -484,11 +488,12 @@ def build_default_user_state():
 
 def build_difficulty_cards(user_level=1, subscription_tier="free"):
     cards = []
+    tier = str(subscription_tier).lower()
 
     for difficulty in sorted(DIFFICULTY_UNLOCK_LEVELS.keys()):
         required_level = DIFFICULTY_UNLOCK_LEVELS[difficulty]
         label = difficulty_label(difficulty)
-        unlocked_by_level = user_level >= required_level
+        unlocked_by_level = tier == "exam_prep" or user_level >= required_level
 
         cards.append({
             "difficulty_level": difficulty,

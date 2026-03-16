@@ -1,6 +1,6 @@
 # AI Project Context: ABG Trainer
 
-Last updated: 2026-03-16
+Last updated: 2026-03-17
 
 This document summarizes the architecture and case schema so external AI tools can understand the project even when only this file is provided.
 
@@ -74,7 +74,7 @@ What the main modules do:
 
 - `generator/config.py`
   - Shared static configuration.
-  - Stores prompt text, option lists, stem-bank content, XP settings, and difficulty unlock settings.
+  - Stores prompt text, option lists, stem-bank content, XP settings, difficulty unlock settings, and the explicit testing-mode flags used for feedback builds.
 
 - `generator/physiology.py`
   - The core physiology/math helper layer.
@@ -82,7 +82,7 @@ What the main modules do:
 
 - `generator/progression.py`
   - Adds progression metadata to each case.
-  - Defines difficulty labels, XP rules, unlock thresholds, dashboard/user state, and progression simulations.
+  - Defines difficulty labels, XP rules, unlock thresholds, dashboard/user state, progression simulations, and exposes testing-mode config to the frontend.
 
 - `generator/question_flow.py`
   - Defines reusable question steps and difficulty-based question flow builders.
@@ -406,6 +406,8 @@ These numbers may change as new archetypes, generators, or variation bands are a
 
 The platform uses progression levels tied to reasoning complexity.
 
+The XP progression table is now explicitly defined through Level 19. The progression engine uses the absence of a Level 20 requirement as the cap/terminal threshold for computing advancement beyond the final configured unlock.
+
 Levels:
 - Level 1: Beginner
 - Level 2: Intermediate
@@ -415,6 +417,7 @@ Levels:
 Important note:
 - In code, the level-4 difficulty label is `"master"` in `progression.py` and in the generated progression metadata.
 - In the UI, the highest tier is also presented as Master.
+- Master cases unlock at Level 20.
 - This tier contains the highest interpretation complexity, including mixed-disorder reasoning where applicable.
 
 Difficulty controls:
@@ -429,6 +432,13 @@ Typical mapping:
 - Level 2: single-process cases with compensation reasoning.
 - Level 3: more complete metabolic reasoning including anion gap.
 - Level 4: mixed-disorder interpretation and the highest overall reasoning complexity.
+
+Current progression pacing intent:
+- Early levels are front-loaded so beginners can make visible progress quickly.
+- Beginner is designed to act as the initial hook, especially for free users limited to beginner difficulty and 5 cases per day.
+- Intermediate and especially Advanced are intentionally longer progression bands.
+- Master is an aspirational unlock at Level 20 rather than the end of the product.
+- This pacing supports the freemium model: quick early reward, longer mid-game progression, and a meaningful high-tier unlock.
 
 ## 8. Frontend Architecture
 
@@ -462,10 +472,44 @@ In practical frontend terms, `docs/app.js` is primarily responsible for:
 - case selection and navigation
 - rendering dashboard, practice, results, learn, leaderboard, and profile views
 
+Launch-mode access control is also enforced in `docs/app.js` through centralized helpers rather than scattered per-view conditions. That frontend access layer is responsible for:
+- learn-mode gating
+- difficulty access by subscription tier
+- free-tier daily case limits
+- testing-mode bypass behavior
+
 The educational reasoning itself still lives mainly in the generated payload:
 - `questions_flow` defines the learner's reasoning path
 - `answer_key` defines correctness and explanatory interpretation
 - progression metadata defines difficulty labels, unlocks, and XP behavior
+
+## Testing Mode
+
+The project now includes an explicit generated testing override intended for feedback collection only.
+
+Configuration:
+- `TESTING_MODE = False` in `generator/config.py`
+- `TESTING_XP_MULTIPLIER = 3` in `generator/config.py`
+
+How it works:
+- `generator/progression.py` includes these values in `progression_config`
+- `docs/app.js` reads them from the generated JSON payload
+- launch mode remains the default behavior
+
+When `TESTING_MODE` is enabled:
+- paywall and difficulty access restrictions are bypassed
+- learn mode is available
+- the daily free-case limit is bypassed
+- all difficulties are immediately accessible
+- XP is multiplied using the configured testing multiplier so testers can reach higher tiers quickly
+
+When `TESTING_MODE` is disabled:
+- launch behavior is restored
+- free tier is restricted to beginner access and the daily case limit
+- premium uses progression-based difficulty access with unlimited cases
+- exam prep bypasses difficulty locks while still keeping XP/progression active
+
+To keep switching predictable, the frontend treats testing mode as a persistence boundary. If the generated testing-mode flag changes between runs, the saved local user state is reset so stale tester unlocks do not silently carry into launch mode.
 
 ## 9. Design Principles
 
