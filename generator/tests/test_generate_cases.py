@@ -28,16 +28,20 @@ class GenerateCasesTests(unittest.TestCase):
             "opioid_toxicity": 5,
             "copd_chronic_retainer": 5,
             "vomiting_metabolic_alkalosis": 5,
+            "diuretic_metabolic_alkalosis": 5,
             "panic_hyperventilation": 5,
+            "simple_respiratory_alkalosis": 5,
             "diarrhoea_nagma": 5,
+            "uraemia": 5,
             "salicylate_toxicity": 5,
             "lactic_acidosis": 5,
+            "simple_respiratory_acidosis": 5,
             "acute_copd_exacerbation": 5,
             "sepsis_respiratory_alkalosis": 5,
             "dka_vomiting": 5,
         }
 
-        self.assertEqual(len(cases), 55)
+        self.assertEqual(len(cases), 75)
         self.assertEqual(dict(counts), expected)
 
     def test_generate_all_cases_uses_unique_case_ids(self):
@@ -202,7 +206,7 @@ class GenerateCasesTests(unittest.TestCase):
             self.assertIn("default_user_state", payload)
             self.assertIn("dashboard_state", payload)
             self.assertIn("cases", payload)
-            self.assertEqual(len(payload["cases"]), 55)
+            self.assertEqual(len(payload["cases"]), 75)
 
     def test_module_runs_via_package_execution(self):
         with tempfile.TemporaryDirectory() as temp_dir:

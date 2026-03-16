@@ -199,6 +199,24 @@ def validate_case(case):
                 f"{case_id}: vomiting PaCO2 outside expected compensation range ({paco2} not in {low}-{high})"
             )
 
+    elif archetype == "diuretic_metabolic_alkalosis":
+        expected_paco2 = round(metabolic_alkalosis_expected_paco2(hco3), 1)
+        low = round(expected_paco2 - 3, 1)
+        high = round(expected_paco2 + 3, 1)
+
+        if answer_key.get("primary_disorder") != "Metabolic alkalosis":
+            errors.append(f"{case_id}: diuretic case should be metabolic alkalosis")
+        if answer_key.get("final_diagnosis") != "Diuretic use":
+            errors.append(f"{case_id}: diuretic final diagnosis mismatch")
+        if hco3 <= 24:
+            errors.append(f"{case_id}: diuretic case should have elevated HCO3")
+        if not in_range(paco2, low, high):
+            errors.append(
+                f"{case_id}: diuretic PaCO2 outside expected compensation range ({paco2} not in {low}-{high})"
+            )
+        if expected_compensation.get("rule") != "Metabolic alkalosis compensation":
+            errors.append(f"{case_id}: diuretic expected rule should be metabolic alkalosis compensation")
+
     elif archetype == "panic_hyperventilation":
         expected_hco3 = round(respiratory_alkalosis_expected_hco3_acute(paco2), 1)
         low = round(expected_hco3 - 2, 1)
@@ -248,6 +266,22 @@ def validate_case(case):
             errors.append(f"{case_id}: lactate PaCO2 outside Winter range ({paco2} not in {low}-{high})")
         if expected_compensation.get("rule") != "Winter":
             errors.append(f"{case_id}: lactate expected rule should be Winter")
+
+    elif archetype == "uraemia":
+        expected_paco2 = round(winters_expected_paco2(hco3), 1)
+        low = round(expected_paco2 - 2, 1)
+        high = round(expected_paco2 + 2, 1)
+
+        if answer_key.get("primary_disorder") != "Metabolic acidosis":
+            errors.append(f"{case_id}: uraemia case should be metabolic acidosis")
+        if answer_key.get("final_diagnosis") != "Renal failure (uraemia)":
+            errors.append(f"{case_id}: uraemia final diagnosis mismatch")
+        if ag <= 16:
+            errors.append(f"{case_id}: uraemia case should have raised anion gap, got {ag}")
+        if not in_range(paco2, low, high):
+            errors.append(f"{case_id}: uraemia PaCO2 outside Winter range ({paco2} not in {low}-{high})")
+        if expected_compensation.get("rule") != "Winter":
+            errors.append(f"{case_id}: uraemia expected rule should be Winter")
 
     errors.extend(validate_question_flow(case))
     return errors

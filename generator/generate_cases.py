@@ -12,6 +12,7 @@ import random
 from .generators import (
     generate_acute_copd_case,
     generate_copd_case,
+    generate_diuretic_alkalosis_case,
     generate_diarrhoea_case,
     generate_dka_case,
     generate_dka_vomiting_case,
@@ -20,6 +21,9 @@ from .generators import (
     generate_panic_case,
     generate_salicylate_case,
     generate_sepsis_case,
+    generate_simple_respiratory_acidosis_case,
+    generate_simple_respiratory_alkalosis_case,
+    generate_uraemia_case,
     generate_vomiting_case,
 )
 from .progression import (
@@ -38,10 +42,14 @@ CASE_BUILDERS = [
     ("OPIOID", generate_opioid_case),
     ("COPD", generate_copd_case),
     ("VOMITING", generate_vomiting_case),
+    ("DIURETIC", generate_diuretic_alkalosis_case),
     ("PANIC", generate_panic_case),
+    ("SIMPLE_RESP_ALK", generate_simple_respiratory_alkalosis_case),
     ("DIARRHOEA", generate_diarrhoea_case),
+    ("URAEMIA", generate_uraemia_case),
     ("SALICYLATE", generate_salicylate_case),
     ("LACTATE", generate_lactate_case),
+    ("SIMPLE_RESP_ACID", generate_simple_respiratory_acidosis_case),
     ("ACUTE_COPD", generate_acute_copd_case),
     ("SEPSIS", generate_sepsis_case),
     ("DKA_VOMIT", generate_dka_vomiting_case),

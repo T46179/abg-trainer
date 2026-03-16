@@ -2,8 +2,10 @@
 
 Main functions:
 - `generate_opioid_case`
+- `generate_simple_respiratory_acidosis_case`
 - `generate_copd_case`
 - `generate_panic_case`
+- `generate_simple_respiratory_alkalosis_case`
 - `generate_acute_copd_case`
 - `generate_sepsis_case`
 
@@ -113,6 +115,66 @@ def generate_opioid_case(case_id):
         timing=default_timing(),
         level=1,
         archetype="opioid_toxicity",
+    )
+
+
+def generate_simple_respiratory_acidosis_case(case_id):
+    paco2 = random.randint(50, 70)
+    expected_hco3 = 24 + ((paco2 - 40) / 10)
+    hco3 = round(expected_hco3 + random.uniform(-1.0, 1.0), 1)
+    ph = estimate_ph(hco3, paco2)
+    na = random.randint(136, 142)
+    target_ag = random.randint(8, 12)
+    cl = na - (hco3 + target_ag)
+    ag = round(na - (cl + hco3), 1)
+    lactate = round(random.uniform(0.8, 1.8), 1)
+
+    stem_options = [
+        "46-year-old is drowsy with shallow breathing after taking multiple sedating medications.",
+        "59-year-old becomes progressively somnolent with slow respirations after sedation.",
+        "37-year-old presents with reduced consciousness and hypoventilation without focal findings.",
+    ]
+
+    explanation = (
+        f"Low pH indicates acidaemia. High PaCO2 indicates a primary respiratory acidosis. "
+        f"For acute respiratory acidosis, expected HCO3 is ~{expected_hco3:.1f}; measured {hco3} is appropriate acute compensation. "
+        f"The anion gap is normal at {ag:.1f}. This pattern is consistent with acute hypoventilation."
+    )
+
+    return build_case(
+        case_id=case_id,
+        title="Simple respiratory acidosis",
+        category="respiratory_acidosis",
+        learning_objective="Recognise acute respiratory acidosis with appropriate metabolic compensation",
+        tags=["respiratory_acidosis", "hypoventilation", "acute"],
+        clinical_stem=random.choice(stem_options),
+        inputs=build_inputs(ph, paco2, hco3, na, cl, lactate=lactate),
+        questions_flow=shuffle_question_options(
+            beginner_question_flow([
+                "Hypoventilation",
+                "Opioid toxicity",
+                "COPD",
+                "Neuromuscular weakness",
+                "Sedative overdose",
+            ])
+        ),
+        answer_key=build_answer_key(
+            ph_status=derived_ph_status(ph),
+            primary_disorder="Respiratory acidosis",
+            compensation="Appropriate",
+            anion_gap_value=ag,
+            anion_gap_category="Normal" if ag <= 16 else "Raised",
+            final_diagnosis="Hypoventilation",
+            expected_compensation={
+                "rule": "Acute respiratory acidosis",
+                "expected_hco3_mmolL": round(expected_hco3, 1),
+                "acceptable_range_mmolL": [round(expected_hco3 - 2, 1), round(expected_hco3 + 2, 1)],
+            },
+        ),
+        explanation=explanation,
+        timing=default_timing(),
+        level=1,
+        archetype="simple_respiratory_acidosis",
     )
 
 
@@ -234,6 +296,66 @@ def generate_panic_case(case_id):
         timing=default_timing(),
         level=1,
         archetype="panic_hyperventilation",
+    )
+
+
+def generate_simple_respiratory_alkalosis_case(case_id):
+    paco2 = random.randint(24, 32)
+    expected_hco3 = respiratory_alkalosis_expected_hco3_acute(paco2)
+    hco3 = round(expected_hco3 + random.uniform(-0.8, 0.8), 1)
+    ph = estimate_ph(hco3, paco2)
+    na = random.randint(136, 142)
+    target_ag = random.randint(8, 12)
+    cl = na - (hco3 + target_ag)
+    ag = round(na - (cl + hco3), 1)
+    lactate = round(random.uniform(0.8, 1.8), 1)
+
+    stem_options = [
+        "29-year-old presents with rapid breathing, light-headedness, and tingling around the mouth during acute distress.",
+        "34-year-old presents tachypnoeic with pleuritic discomfort and dizziness.",
+        "25-year-old presents with fast breathing and hand tingling while visibly distressed.",
+    ]
+
+    explanation = (
+        f"High pH indicates alkalaemia. Low PaCO2 indicates a primary respiratory alkalosis. "
+        f"For acute respiratory alkalosis, expected HCO3 is ~{expected_hco3:.1f}; measured {hco3} is appropriate acute compensation. "
+        f"The anion gap is normal at {ag:.1f}. This pattern is consistent with simple hyperventilation."
+    )
+
+    return build_case(
+        case_id=case_id,
+        title="Simple respiratory alkalosis",
+        category="respiratory_alkalosis",
+        learning_objective="Recognise acute respiratory alkalosis with appropriate metabolic compensation",
+        tags=["respiratory_alkalosis", "hyperventilation", "acute"],
+        clinical_stem=random.choice(stem_options),
+        inputs=build_inputs(ph, paco2, hco3, na, cl, lactate=lactate),
+        questions_flow=shuffle_question_options(
+            beginner_question_flow([
+                "Hyperventilation",
+                "Pulmonary embolism",
+                "Sepsis",
+                "Vomiting",
+                "Panic attack / hyperventilation",
+            ])
+        ),
+        answer_key=build_answer_key(
+            ph_status=derived_ph_status(ph),
+            primary_disorder="Respiratory alkalosis",
+            compensation="Appropriate",
+            anion_gap_value=ag,
+            anion_gap_category="Normal" if ag <= 16 else "Raised",
+            final_diagnosis="Hyperventilation",
+            expected_compensation={
+                "rule": "Acute respiratory alkalosis",
+                "expected_hco3_mmolL": round(expected_hco3, 1),
+                "acceptable_range_mmolL": [round(expected_hco3 - 2, 1), round(expected_hco3 + 2, 1)],
+            },
+        ),
+        explanation=explanation,
+        timing=default_timing(),
+        level=1,
+        archetype="simple_respiratory_alkalosis",
     )
 
 

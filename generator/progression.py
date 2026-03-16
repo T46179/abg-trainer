@@ -52,7 +52,9 @@ def skills_for_case(level, is_mixed=False):
 def case_pool_for_archetype(archetype):
     mapping = {
         "dka": "core_metabolic",
+        "diuretic_metabolic_alkalosis": "core_metabolic",
         "diarrhoea_nagma": "core_metabolic",
+        "uraemia": "core_metabolic",
         "vomiting_metabolic_alkalosis": "core_metabolic",
         "opioid_toxicity": "core_respiratory",
         "copd_chronic_retainer": "core_respiratory",
