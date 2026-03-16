@@ -446,14 +446,23 @@ function loadNextCase() {
     userState?.subscription_tier ??
     "free";
 
-  const maxDifficulty =
-    subscriptionTier === "exam_prep"
-      ? 4
-      : (userState?.unlocked_difficulty ?? 1);
+  // TESTING MODE: progression lock disabled
+  // This allows testers to experience intermediate-master cases.
+  // Revert before production release.
+  const maxDifficulty = 4;
 
   let availableCases = allCases.filter(
-    c => (c.difficulty_level ?? 1) <= maxDifficulty
+    c => {
+      const difficultyLevel = c.difficulty_level ?? 1;
+      return difficultyLevel >= 2 && difficultyLevel <= maxDifficulty;
+    }
   );
+
+  if (!availableCases.length) {
+    availableCases = allCases.filter(
+      c => (c.difficulty_level ?? 1) <= maxDifficulty
+    );
+  }
 
   let filteredCases = availableCases.filter(
     c => !recentArchetypes.includes(c.archetype)
@@ -663,8 +672,38 @@ function applyCaseXp(difficultyLevel, perfectCase, secondsTaken) {
     progressionConfig = data.progressionConfig;
     dashboardState = data.dashboardState;
     userState = data.userState;
-	
-	renderProgression();
+
+    // TESTING MODE: progression lock disabled
+    // This allows testers to experience intermediate-master cases.
+    // Revert before production release.
+    const testingCurrentLevel = 3;
+    const testingUnlockedLevels = [1, 2, 3, 4];
+    const testingUnlockedDifficulty = testingUnlockedLevels[testingUnlockedLevels.length - 1];
+    const testingTotalXp =
+      (progressionConfig?.xp_required_per_level?.[1] ?? 0) +
+      (progressionConfig?.xp_required_per_level?.[2] ?? 0);
+
+    userState = {
+      ...(userState ?? {}),
+      total_xp: testingTotalXp,
+      level: testingCurrentLevel,
+      level_progress: getLevelProgress(testingTotalXp),
+      unlocked_difficulty: testingUnlockedDifficulty,
+      unlocked_difficulty_label: getDifficultyLabel(testingUnlockedDifficulty),
+    };
+
+    if (dashboardState?.user) {
+      dashboardState.user = {
+        ...dashboardState.user,
+        total_xp: testingTotalXp,
+        level: testingCurrentLevel,
+        level_progress: getLevelProgress(testingTotalXp),
+        unlocked_difficulty: testingUnlockedDifficulty,
+        unlocked_difficulty_label: getDifficultyLabel(testingUnlockedDifficulty),
+      };
+    }
+
+    renderProgression();
 
     console.log("allCases =", allCases);
     console.log("firstCase =", allCases[0]);
