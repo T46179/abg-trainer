@@ -315,6 +315,8 @@ Current role of the question flow system:
 - It keeps question structure consistent across archetypes.
 - It scales cognitive load by difficulty.
 
+Frontend rendering keeps option order static for most question types. To reduce answer-position bias, only the `primary_disorder` step has its options randomized, and that randomization is done once per case attempt so the order remains stable throughout the attempt.
+
 Typical difficulty progression:
 - Beginner: pH status, primary disorder, then diagnosis.
 - Intermediate: adds compensation.

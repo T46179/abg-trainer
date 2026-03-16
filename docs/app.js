@@ -22,6 +22,7 @@ const sessionState = {
   currentDifficulty: "beginner",
   currentStepIndex: 0,
   stepResults: [],
+  stepOptionOverrides: {},
   caseStartMs: null,
   timedMode: false
 };
@@ -89,6 +90,17 @@ function setWidth(id, value) {
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
+}
+
+function shuffleArray(items) {
+  const shuffled = Array.isArray(items) ? [...items] : [];
+
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
+  }
+
+  return shuffled;
 }
 
 function toTitleCase(value) {
@@ -549,10 +561,23 @@ function rememberRecentArchetype(caseItem) {
   }
 }
 
+function buildStepOptionOverrides(caseItem) {
+  const overrides = {};
+
+  (caseItem?.questions_flow ?? []).forEach((step, index) => {
+    if (step?.key === "primary_disorder") {
+      overrides[index] = shuffleArray(step.options ?? []);
+    }
+  });
+
+  return overrides;
+}
+
 function resetPracticeSession() {
   sessionState.currentCase = null;
   sessionState.currentStepIndex = 0;
   sessionState.stepResults = [];
+  sessionState.stepOptionOverrides = {};
   sessionState.caseStartMs = null;
   stopTimer();
 }
@@ -588,6 +613,7 @@ function startNewCase(difficultyKey = sessionState.currentDifficulty) {
   }
 
   sessionState.currentCase = selectedCase;
+  sessionState.stepOptionOverrides = buildStepOptionOverrides(selectedCase);
   rememberRecentArchetype(selectedCase);
   startTimer();
   renderApp();
@@ -924,6 +950,7 @@ function renderPractice() {
   const totalSteps = caseItem.questions_flow?.length ?? 0;
   const currentStep = caseItem.questions_flow?.[sessionState.currentStepIndex];
   const currentResult = sessionState.stepResults[sessionState.currentStepIndex] ?? null;
+  const currentOptions = sessionState.stepOptionOverrides[sessionState.currentStepIndex] ?? currentStep?.options ?? [];
   const stepPills = (caseItem.questions_flow ?? [])
     .map((step, index) => {
       const done = index < sessionState.stepResults.length;
@@ -949,7 +976,7 @@ function renderPractice() {
   setHtml("practiceMetrics", renderAbgMetrics(caseItem));
   setHtml(
     "practiceOptions",
-    currentResult ? "" : (currentStep?.options ?? []).map(option => `
+    currentResult ? "" : currentOptions.map(option => `
       <button
         class="option-btn"
         type="button"
