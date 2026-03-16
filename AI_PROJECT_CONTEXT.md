@@ -150,6 +150,18 @@ Each case generator typically:
 
 Several archetypes also use variation bands. These bands widen replay variety by changing severity or subtlety ranges while preserving the same core physiological pattern, diagnosis family, and question flow.
 
+Current band patterns include:
+- `mild` / `moderate` / `severe`
+- `subtle` / `moderate` / `severe`
+
+Architecturally, these bands are used to vary:
+- PaCO2 ranges
+- HCO3 ranges or compensation deltas
+- electrolyte ranges
+- stem-feature density or stem-option severity
+
+The important design point is that variation bands increase replayability and reduce case memorisation without changing the underlying acid-base physiology or the intended reasoning path for that archetype.
+
 Standard case shape:
 
 ```python
@@ -341,8 +353,9 @@ Design interpretation:
 - An archetype is not just a diagnosis label.
 - It is a reusable physiological pattern with a consistent compensation profile, diagnostic explanation, and question structure.
 - Some archetypes now include mild/moderate/severe or subtle/moderate/severe variation bands to improve replay variety without changing the underlying acid-base pattern.
-- This now includes `simple_respiratory_alkalosis` and `simple_respiratory_acidosis`, where bands vary severity and subtlety while preserving the same beginner single-process respiratory pattern.
-- Respiratory generators also standardize anion gap calculation through the shared physiology helper, and the severe bands in the simple respiratory archetypes allow slightly broader acute-compensation variability for replay realism without changing the intended disorder pattern.
+- This now includes `simple_respiratory_alkalosis` and `simple_respiratory_acidosis`, which represent single-process respiratory disorders aimed primarily at beginner pattern recognition.
+- In those respiratory archetypes, variation bands adjust severity while preserving the same disorder pattern, compensation logic, and beginner question flow.
+- Respiratory generators still compute anion gap through the shared `calc_anion_gap()` helper in `generator/physiology.py`. This keeps the schema and answer-key structure consistent across archetypes, even when anion-gap reasoning is not required at lower levels.
 
 ## Current Case Pool Size
 
@@ -385,6 +398,8 @@ Typical generated dataset size:
 - ~5 cases per archetype
 - ~75 cases total
 
+Variation bands increase effective replay diversity beyond the raw archetype count without requiring a larger archetype library.
+
 These numbers may change as new archetypes, generators, or variation bands are added.
 
 ## 7. Difficulty System
@@ -392,14 +407,15 @@ These numbers may change as new archetypes, generators, or variation bands are a
 The platform uses progression levels tied to reasoning complexity.
 
 Levels:
-- Level 1: beginner
-- Level 2: intermediate
-- Level 3: advanced
-- Level 4: expert/master
+- Level 1: Beginner
+- Level 2: Intermediate
+- Level 3: Advanced
+- Level 4: Master
 
 Important note:
-- In code, the level-4 difficulty label is currently `"master"` in `progression.py`.
-- Conceptually, it serves the expert/master tier.
+- In code, the level-4 difficulty label is `"master"` in `progression.py` and in the generated progression metadata.
+- In the UI, the highest tier is also presented as Master.
+- This tier contains the highest interpretation complexity, including mixed-disorder reasoning where applicable.
 
 Difficulty controls:
 - Question flow depth.
@@ -412,7 +428,7 @@ Typical mapping:
 - Level 1: simple single-process pattern recognition.
 - Level 2: single-process cases with compensation reasoning.
 - Level 3: more complete metabolic reasoning including anion gap.
-- Level 4: mixed-disorder interpretation and more complex reasoning.
+- Level 4: mixed-disorder interpretation and the highest overall reasoning complexity.
 
 ## 8. Frontend Architecture
 
@@ -428,7 +444,7 @@ Case data is loaded from:
 
 Frontend model:
 - `index.html` provides the static shell.
-- `app.js` fetches the generated JSON, manages session state, renders the case/question/result cards, and handles scoring and timing.
+- `app.js` fetches the generated JSON, manages SPA view state, renders cases dynamically, and handles scoring, timing, and case navigation.
 - `styles.css` controls layout and styling.
 
 Data flow:
@@ -437,7 +453,19 @@ Data flow:
 3. The app selects cases and walks the learner through the case's `questions_flow`.
 4. The frontend reads `answer_key` and progression metadata to score and display results.
 
-This means the web app is data-driven. Most educational logic is encoded in the generated case payload rather than hard-coded separately for each diagnosis.
+This means the web app is fully JSON-driven. Most educational logic is encoded in the generated case payload rather than hard-coded separately for each diagnosis.
+
+In practical frontend terms, `docs/app.js` is primarily responsible for:
+- session state
+- XP and level progression display
+- timing state
+- case selection and navigation
+- rendering dashboard, practice, results, learn, leaderboard, and profile views
+
+The educational reasoning itself still lives mainly in the generated payload:
+- `questions_flow` defines the learner's reasoning path
+- `answer_key` defines correctness and explanatory interpretation
+- progression metadata defines difficulty labels, unlocks, and XP behavior
 
 ## 9. Design Principles
 

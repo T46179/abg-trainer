@@ -1,76 +1,414 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>ABG Trainer Prototype</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ABG Master</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
-
 <body>
+  <div class="site-shell">
+    <header id="navBar" class="site-header">
+      <div class="header-panel shell-container">
+        <div class="header-row">
+          <div class="brand-block">
+            <div class="brand-mark" aria-hidden="true">AB</div>
+            <div class="brand-copy">
+              <div class="brand-title">ABG Master</div>
+            </div>
+          </div>
 
-<h1>ABG Trainer Prototype</h1>
+          <nav class="primary-nav" aria-label="Primary">
+            <button class="nav-tab" data-action="view" data-view="dashboard" type="button">Dashboard</button>
+            <button class="nav-tab" data-action="view" data-view="learn" type="button">Learn</button>
+            <button class="nav-tab" data-action="view" data-view="practice" type="button">Practice</button>
+            <button class="nav-tab" data-action="view" data-view="leaderboard" type="button">Leaderboard</button>
+            <button class="nav-tab" data-action="view" data-view="profile" type="button">Profile</button>
+          </nav>
 
-<div class="card">
-  <div class="row">
-    <div><span class="pill" id="modePill">Chill mode</span></div>
+          <div class="header-meta">
+            <div class="meta-pill">
+              <span class="meta-dot"></span>
+              <span id="navStreakValue">0</span>
+            </div>
+            <div id="navLevelPill" class="meta-pill">Level 1</div>
+            <label class="timed-toggle" aria-label="Timed mode">
+              <input id="timedModeToggle" type="checkbox" />
+              <span class="timed-toggle-track"></span>
+            </label>
+          </div>
+        </div>
+      </div>
 
-    <div>
-      <label class="muted">
-        Mode:
-        <select id="modeSelect">
-          <option value="chill" selected>Chill (timer hidden)</option>
-          <option value="speed">Speedrun (timer visible)</option>
-        </select>
-      </label>
-    </div>
+		<div class="header-progress shell-container">
+		  <div class="header-progress-row">
+			<span id="navProgressLabel" class="progress-label">0 / 0 XP</span>
+			<div class="progress-bar">
+			  <div id="navProgressFill" class="progress-fill"></div>
+			</div>
+		  </div>
+		</div>
+    </header>
 
-    <div class="muted" id="timerDisplay" style="display:none;">
-      Time: 0.0s
-    </div>
+    <main class="shell-container main-content">
+      <section id="dashboardView" class="app-view">
+        <div class="page-header">
+          <div>
+            <h1 id="dashboardHeading" class="page-title">Welcome back!</h1>
+            <p id="dashboardSubtitle" class="page-subtitle"></p>
+          </div>
+        </div>
 
+		<div class="stats-grid">
+		  <article class="stat-card">
+			<div class="stat-head">
+			  <span class="stat-label">Level</span>
+			  <span class="stat-icon">↗</span>
+			</div>
+			<div id="dashboardLevelValue" class="stat-value">1</div>
+			<div id="dashboardLevelSubcopy" class="stat-subcopy">0 / 0 XP</div>
+		  </article>
+
+		  <article class="stat-card">
+			<div class="stat-head">
+			  <span class="stat-label">Cases Completed</span>
+			  <span class="stat-icon">□</span>
+			</div>
+			<div id="dashboardCasesValue" class="stat-value">0</div>
+			<div id="dashboardCasesSubcopy" class="stat-subcopy">0 today</div>
+		  </article>
+
+		  <article class="stat-card">
+			<div class="stat-head">
+			  <span class="stat-label">Performance</span>
+			  <span class="stat-icon">◎</span>
+			</div>
+			<div id="dashboardAccuracyValue" class="stat-value">0%</div>
+			<div id="dashboardAccuracySubcopy" class="stat-subcopy">0 / 0</div>
+		  </article>
+
+		  <article class="stat-card">
+			<div class="stat-head">
+			  <span class="stat-label">Current Streak</span>
+			  <span class="stat-icon">◔</span>
+			</div>
+			<div id="dashboardStreakValue" class="stat-value">0</div>
+			<div id="dashboardStreakSubcopy" class="stat-subcopy"></div>
+		  </article>
+		</div>
+
+				<div class="dashboard-grid">
+		  <div class="dashboard-main">
+			<section class="fig-card">
+			  <div class="card-header">
+				<div>
+				  <h2 class="card-title">Continue Learning</h2>
+				  <p class="card-description">Practice ABG interpretation at your level</p>
+				</div>
+			  </div>
+
+			  <div class="card-progress">
+				<div class="progress-meta">
+				  <span id="dashboardProgressLabel" class="progress-label">0 / 0 XP</span>
+				  <span id="dashboardProgressValue" class="progress-value">0%</span>
+				</div>
+				<div class="progress-bar">
+				  <div id="dashboardProgressFill" class="progress-fill"></div>
+				</div>
+			  </div>
+
+				<div class="button-row results-actions">
+				  <button class="btn btn-primary" data-action="next-case" type="button">Next Case</button>
+				  <button class="btn btn-secondary" data-action="return-dashboard" type="button">Dashboard</button>
+				</div>
+
+			  <p id="dashboardCasesRemaining" class="card-footnote"></p>
+			</section>
+		  </div>
+
+		  <aside class="dashboard-side">
+			<section class="fig-card">
+			  <div class="card-header">
+				<div>
+				  <h2 class="card-title">Recent Badges</h2>
+				  <p class="card-description">Your latest achievements</p>
+				</div>
+			  </div>
+			  <div id="dashboardRecentBadges" class="badge-grid"></div>
+			  <button class="btn btn-secondary card-button" data-action="view" data-view="profile" type="button">View All Badges</button>
+			</section>
+		  </aside>
+		</div>
+
+		<section class="fig-card">
+		  <div class="card-header">
+			<div>
+			  <h2 class="card-title">Difficulty Levels</h2>
+			  <p class="card-description">Unlock new challenges as you progress</p>
+			</div>
+		  </div>
+		  <div id="dashboardDifficultyGrid" class="difficulty-grid"></div>
+		</section>
+		</section>
+
+      <section id="practiceView" class="app-view">
+        <div class="practice-header">
+          <div>
+            <h1 id="practiceTitle" class="page-title">Practice Mode</h1>
+            <p id="practiceLevelLine" class="page-subtitle"></p>
+          </div>
+
+          <div class="practice-control">
+            <label class="field-label" for="practiceDifficultySelect">Difficulty</label>
+            <select id="practiceDifficultySelect" class="field-select"></select>
+          </div>
+        </div>
+
+        <div id="practiceCasesAlert" class="alert-banner"></div>
+
+        <section class="fig-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Clinical Scenario</h2>
+            </div>
+          </div>
+          <p id="practiceStem" class="scenario-copy"></p>
+        </section>
+
+        <section class="fig-card values-card">
+          <div id="practiceMetrics" class="values-grid"></div>
+        </section>
+
+        <section class="fig-card">
+          <div class="card-header">
+            <div>
+              <h2 id="practiceQuestionLabel" class="card-title">Interpret the ABG</h2>
+              <p id="practiceQuestionMeta" class="card-description"></p>
+            </div>
+            <span id="practiceTimerValue" class="inline-chip">Timer hidden</span>
+          </div>
+
+          <p id="practicePrompt" class="question-prompt"></p>
+          <div id="practiceStepProgress" class="step-progress"></div>
+          <div id="practiceOptions" class="option-grid"></div>
+
+          <div id="practiceFeedback" class="practice-feedback is-hidden">
+            <div id="practiceFeedbackTitle" class="feedback-title"></div>
+            <div class="feedback-copy">
+              <p id="practiceFeedbackAnswer"></p>
+              <p id="practiceFeedbackCorrect"></p>
+              <p id="practiceFeedbackCopy"></p>
+            </div>
+            <button id="practiceContinueBtn" class="btn btn-primary" data-action="continue-step" type="button">Continue</button>
+          </div>
+        </section>
+      </section>
+
+      <section id="resultsView" class="app-view">
+        <div class="practice-header">
+          <div>
+            <h1 id="resultsTitle" class="page-title">Results</h1>
+            <p id="resultsObjective" class="page-subtitle"></p>
+          </div>
+          <div class="chip-row">
+            <span id="resultsDifficultyChip" class="inline-chip">Beginner</span>
+            <span id="resultsTimeChip" class="inline-chip">0.0s</span>
+          </div>
+        </div>
+
+        <section id="resultsSummaryCard" class="fig-card result-state-card">
+          <div class="card-header">
+            <div>
+              <h2 id="resultsOutcomeLabel" class="card-title">Results</h2>
+            </div>
+          </div>
+
+          <div class="result-metrics">
+            <div class="result-metric">
+              <span class="result-label">Accuracy</span>
+              <strong id="resultsAccuracyValue">0%</strong>
+            </div>
+            <div class="result-metric">
+              <span class="result-label">XP earned</span>
+              <strong id="resultsXpValue">+0</strong>
+            </div>
+            <div class="result-metric">
+              <span class="result-label">Correct answers</span>
+              <strong id="resultsCorrectValue">0 / 0</strong>
+            </div>
+            <div class="result-metric">
+              <span class="result-label">Level now</span>
+              <strong id="resultsLevelValue">1</strong>
+            </div>
+          </div>
+
+          <div class="feedback-copy">
+            <p id="resultsExplanation"></p>
+          </div>
+
+			<div class="button-row result-actions">
+			  <button class="btn btn-primary" data-action="next-case" type="button">Next Case</button>
+			  <button class="btn btn-secondary" data-action="return-dashboard" type="button">Dashboard</button>
+			</div>
+        </section>
+
+        <section class="fig-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Answer Review</h2>
+            </div>
+          </div>
+          <div id="resultsStepList" class="review-list"></div>
+        </section>
+      </section>
+
+      <section id="learnView" class="app-view">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Learn ABG Interpretation</h1>
+          </div>
+        </div>
+        <div id="learnGrid" class="learn-grid"></div>
+      </section>
+
+      <section id="leaderboardView" class="app-view">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Leaderboard</h1>
+            <p class="page-subtitle">See how you rank against other learners</p>
+          </div>
+        </div>
+
+        <section class="fig-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Your Ranking</h2>
+            </div>
+          </div>
+          <div class="leaderboard-user">
+            <div class="leaderboard-rank-number" id="leaderboardUserRank">#1</div>
+            <div class="leaderboard-user-copy">
+              <div class="leaderboard-user-name">You</div>
+              <div id="leaderboardUserLevel" class="leaderboard-user-meta">Level 1</div>
+            </div>
+            <div class="leaderboard-user-stats">
+              <div id="leaderboardUserXp">0 XP</div>
+              <div id="leaderboardUserAccuracy" class="leaderboard-user-meta">100% accuracy</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="fig-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Global Rankings</h2>
+              <p class="card-description">Filter by time period</p>
+            </div>
+          </div>
+          <div class="tab-row">
+            <button class="tab-chip is-active" type="button">All Time</button>
+            <button class="tab-chip" type="button">This Month</button>
+            <button class="tab-chip" type="button">This Week</button>
+            <button class="tab-chip" type="button">Today</button>
+          </div>
+          <div id="leaderboardList" class="leaderboard-list"></div>
+        </section>
+
+        <section class="fig-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Top Performers</h2>
+            </div>
+          </div>
+          <div id="leaderboardTopList" class="top-grid"></div>
+        </section>
+      </section>
+
+      <section id="profileView" class="app-view">
+        <div class="page-header profile-header">
+          <div>
+            <h1 class="page-title">Profile</h1>
+          </div>
+          <div id="profileMembershipPill" class="membership-pill is-hidden"></div>
+        </div>
+
+        <div class="profile-grid">
+          <div class="profile-column">
+            <section class="fig-card">
+              <div class="card-header">
+                <div>
+                  <h2 class="card-title">User Info</h2>
+                </div>
+              </div>
+              <div class="info-stack">
+                <div>
+                  <div class="info-label">Username</div>
+                  <div id="profileUsernameValue" class="info-value"></div>
+                </div>
+                <div>
+                  <div class="info-label">Specialty</div>
+                  <div id="profileSpecialtyValue" class="info-value"></div>
+                </div>
+              </div>
+            </section>
+
+            <section class="fig-card">
+              <div class="card-header">
+                <div>
+                  <h2 class="card-title">Statistics</h2>
+                </div>
+              </div>
+
+              <div class="profile-level">
+                <div class="info-label">Level</div>
+                <div id="profileLevelValue" class="profile-level-value">1</div>
+              </div>
+
+              <div class="card-progress">
+                <div class="progress-meta">
+                  <span class="progress-label">XP Progress</span>
+                  <span id="profileNextLevelValue" class="progress-value">0 / 0</span>
+                </div>
+                <div class="progress-bar">
+                  <div id="profileProgressFill" class="progress-fill"></div>
+                </div>
+              </div>
+
+              <div class="stats-mini-grid">
+                <div class="mini-stat">
+                  <span class="info-label">XP</span>
+                  <strong id="profileXpValue">0</strong>
+                </div>
+                <div class="mini-stat">
+                  <span class="info-label">Accuracy</span>
+                  <strong id="profileAccuracyValue">0%</strong>
+                </div>
+                <div class="mini-stat">
+                  <span class="info-label">Cases</span>
+                  <strong id="profileCasesValue">0</strong>
+                </div>
+                <div class="mini-stat">
+                  <span class="info-label">Streak</span>
+                  <strong id="profileStreakValue">0</strong>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <section class="fig-card">
+            <div class="card-header">
+              <div>
+                <h2 class="card-title">Achievements</h2>
+                <p id="profileBadgeCount" class="card-description">0 of 0 badges earned</p>
+              </div>
+            </div>
+            <div id="profileBadgeList" class="badge-grid"></div>
+          </section>
+        </div>
+      </section>
+    </main>
   </div>
-</div>
 
-<div id="progressionDebug"></div>
-<div class="card" id="startCard">
-
-<h2>ABG Practice</h2>
-
-<p>
-Practice interpreting arterial blood gases step-by-step.
-</p>
-
-<ul>
-<li>Identify acidemia or alkalemia</li>
-<li>Determine the acid–base disorder</li>
-<li>Assess compensation</li>
-<li>Recognise common clinical patterns</li>
-</ul>
-
-<button id="startBtn" type="button">Start practice</button>
-
-</div>
-
-
-<div class="card" id="caseCard" style="display:none;"></div>
-
-<div class="card" id="qaCard" style="display:none;"></div>
-
-<div class="card" id="resultCard" style="display:none;"></div>
-
-
-<div class="row">
-<button id="nextBtn" disabled>Next case</button>
-<button id="resetBtn">Reset session score</button>
-</div>
-
-
-<p class="muted">
-Tip: Keep <code>abg_cases.json</code> in the same folder as this HTML file.
-</p>
-
-
-<script src="app.js"></script>
-
+  <script src="app.js"></script>
 </body>
 </html>

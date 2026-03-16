@@ -1,975 +1,1133 @@
-/** ---- CONFIG (Option A time bonus; whole-case; timer hidden by default) ---- **/
-const SCORING = {
-  perStepCorrect: 10,
-  perfectCaseBonus: 30,
-  timeBonusTiers: [
-    { maxSeconds: 30, bonus: 20 },
-    { maxSeconds: 45, bonus: 15 },
-    { maxSeconds: 60, bonus: 10 },
-    { maxSeconds: 90, bonus: 5 },
-    { maxSeconds: Infinity, bonus: 0 },
-  ]
+const USER_STATE_STORAGE_KEY = "abgmaster_userState";
+
+const userState = {
+  xp: 0,
+  level: 1,
+  casesCompleted: 0,
+  correctAnswers: 0,
+  totalAnswers: 0,
+  streak: 0,
+  dailyCasesUsed: 0,
+  lastCaseDate: null,
+  unlockedDifficulties: ["beginner"],
+  isPremium: false,
+  badges: [],
+  recentResults: []
 };
 
-let allCases = [];
-let currentCase = null;
-let currentStepIndex = 0;
-let stepResults = []; // {key, correct, chosen, correctAnswer}
-let caseStartMs = null;
-let timerInterval = null;
+const sessionState = {
+  currentView: "dashboard",
+  currentCase: null,
+  currentDifficulty: "beginner",
+  currentStepIndex: 0,
+  stepResults: [],
+  caseStartMs: null,
+  timedMode: false
+};
 
-let sessionScore = 0;
-let sessionCasesCompleted = 0;
+const appData = {
+  cases: [],
+  progressionConfig: null,
+  dashboardState: null,
+  defaultUserState: null,
+  loadError: null,
+  isLoaded: false,
+  recentArchetypes: [],
+  timerInterval: null,
+  lastCaseSummary: null
+};
 
-let progressionConfig = null;
-let dashboardState = null;
-let userState = null;
-
-let recentArchetypes = [];
 const RECENT_ARCHETYPE_LIMIT = 2;
+const VIEW_IDS = [
+  "dashboardView",
+  "practiceView",
+  "resultsView",
+  "learnView",
+  "leaderboardView",
+  "profileView"
+];
+const VIEW_NAME_TO_ID = {
+  dashboard: "dashboardView",
+  practice: "practiceView",
+  results: "resultsView",
+  learn: "learnView",
+  leaderboard: "leaderboardView",
+  profile: "profileView"
+};
+const DIFFICULTY_ORDER = ["beginner", "intermediate", "advanced", "master"];
 
-/** Utility */
-function pickRandom(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
 }
-function calcAnionGap(na, cl, hco3) {
-  return na - (cl + hco3);
+
+function setText(id, value) {
+  const element = document.getElementById(id);
+  if (element) element.textContent = value;
 }
-function getTimeBonus(seconds) {
-  for (const t of SCORING.timeBonusTiers) {
-    if (seconds <= t.maxSeconds) return t.bonus;
+
+function setHtml(id, value) {
+  const element = document.getElementById(id);
+  if (element) element.innerHTML = value;
+}
+
+function setWidth(id, value) {
+  const element = document.getElementById(id);
+  if (element) element.style.width = value;
+}
+
+function clone(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function toTitleCase(value) {
+  return String(value ?? "")
+    .replaceAll("_", " ")
+    .replace(/\b\w/g, char => char.toUpperCase());
+}
+
+function nowMs() {
+  return Date.now();
+}
+
+function todayKey() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function yesterdayKey() {
+  const date = new Date();
+  date.setDate(date.getDate() - 1);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function calculateAccuracy(correctAnswers = userState.correctAnswers, totalAnswers = userState.totalAnswers) {
+  if (!totalAnswers) return 100;
+  return Math.round((correctAnswers / totalAnswers) * 100);
+}
+
+function getDifficultyLabel(level) {
+  const configured = appData.progressionConfig?.difficulty_labels?.[level];
+  return String(configured ?? DIFFICULTY_ORDER[level - 1] ?? `difficulty_${level}`).toLowerCase();
+}
+
+function getDifficultyLevel(label) {
+  const normalized = String(label ?? "").toLowerCase();
+  for (const [level, mappedLabel] of Object.entries(appData.progressionConfig?.difficulty_labels ?? {})) {
+    if (String(mappedLabel).toLowerCase() === normalized) {
+      return Number(level);
+    }
+  }
+
+  const fallbackIndex = DIFFICULTY_ORDER.indexOf(normalized);
+  return fallbackIndex >= 0 ? fallbackIndex + 1 : 1;
+}
+
+function getDifficultyMeta() {
+  return DIFFICULTY_ORDER.map((key, index) => {
+    const level = index + 1;
+    return {
+      key,
+      level,
+      label: toTitleCase(getDifficultyLabel(level)),
+      unlockLevel: Number(appData.progressionConfig?.difficulty_unlock_levels?.[level] ?? level),
+      availableCases: appData.cases.filter(caseItem => Number(caseItem.difficulty_level ?? 1) === level).length
+    };
+  });
+}
+
+function getUnlockedDifficultyKeys(level = userState.level) {
+  return getDifficultyMeta()
+    .filter(item => level >= item.unlockLevel)
+    .map(item => item.key);
+}
+
+function sanitizeUnlockedDifficulties(difficulties) {
+  const normalized = Array.isArray(difficulties)
+    ? difficulties.map(item => String(item).toLowerCase()).filter(Boolean)
+    : [];
+
+  const allowed = new Set(DIFFICULTY_ORDER);
+  const unique = normalized.filter((item, index) => allowed.has(item) && normalized.indexOf(item) === index);
+  return unique.length ? unique : ["beginner"];
+}
+
+function getXpRequiredForLevel(level) {
+  return Number(appData.progressionConfig?.xp_required_per_level?.[level] ?? 0);
+}
+
+function getLevelFromXp(xp) {
+  const configured = appData.progressionConfig?.xp_required_per_level;
+  if (!configured) return Math.max(1, userState.level);
+
+  let runningTotal = 0;
+  let currentLevel = 1;
+
+  while (true) {
+    const needed = getXpRequiredForLevel(currentLevel);
+    if (!needed) return currentLevel;
+    if (xp < runningTotal + needed) return currentLevel;
+    runningTotal += needed;
+    currentLevel += 1;
+  }
+}
+
+function getLevelProgress() {
+  let consumedXp = 0;
+  for (let level = 1; level < userState.level; level += 1) {
+    consumedXp += getXpRequiredForLevel(level);
+  }
+
+  const xpForNextLevel = getXpRequiredForLevel(userState.level);
+  const xpIntoLevel = Math.max(0, userState.xp - consumedXp);
+  const progressPercent = xpForNextLevel
+    ? Math.min(100, Math.round((xpIntoLevel / xpForNextLevel) * 100))
+    : 100;
+
+  return {
+    xpIntoLevel,
+    xpForNextLevel,
+    progressPercent
+  };
+}
+
+function getTimeBonus(secondsTaken) {
+  const tiers = appData.progressionConfig?.speed_bonus_tiers ?? [];
+  for (const tier of tiers) {
+    if (secondsTaken <= Number(tier.max_seconds ?? Number.POSITIVE_INFINITY)) {
+      return Number(tier.bonus ?? 0);
+    }
   }
   return 0;
 }
-function nowMs() { return Date.now(); }
 
-function getMode() {
-  return document.getElementById("modeSelect").value; // chill | speed
+function getPerfectBonus(difficultyLevel) {
+  const base = Number(appData.progressionConfig?.base_xp_by_difficulty?.[difficultyLevel] ?? 0);
+  const percentage = Number(appData.progressionConfig?.perfect_case_bonus_percent ?? 0);
+  return Math.round(base * percentage);
 }
-function updateModeUI() {
-  const mode = getMode();
-  const pill = document.getElementById("modePill");
-  const timer = document.getElementById("timerDisplay");
-  if (mode === "speed") {
-    pill.textContent = "Speedrun mode";
-    timer.style.display = "block";
-  } else {
-    pill.textContent = "Chill mode";
-    timer.style.display = "none";
+
+function getBaseXp(difficultyLevel) {
+  return Number(appData.progressionConfig?.base_xp_by_difficulty?.[difficultyLevel] ?? 10);
+}
+
+function getDailyLimit() {
+  return Number(appData.progressionConfig?.free_daily_case_limit ?? 0);
+}
+
+function getCasesRemainingToday() {
+  const dailyLimit = getDailyLimit();
+  if (userState.isPremium || !dailyLimit) return null;
+  return Math.max(0, dailyLimit - userState.dailyCasesUsed);
+}
+
+function mapDefaultUserState(source) {
+  const level = Number(source?.level ?? 1);
+  const unlockedFromSource = [];
+
+  if (source?.unlocked_difficulty_label) {
+    unlockedFromSource.push(String(source.unlocked_difficulty_label).toLowerCase());
   }
+
+  if (source?.unlocked_difficulty != null) {
+    unlockedFromSource.push(getDifficultyLabel(Number(source.unlocked_difficulty)));
+  }
+
+  return {
+    xp: Number(source?.total_xp ?? source?.xp ?? 0),
+    level,
+    casesCompleted: Number(appData.dashboardState?.stats?.cases_completed ?? source?.cases_completed ?? 0),
+    correctAnswers: Number(source?.correct_answers ?? 0),
+    totalAnswers: Number(source?.total_answers ?? 0),
+    streak: Number(source?.streak_days ?? source?.streak ?? 0),
+    dailyCasesUsed: Number(source?.cases_completed_today ?? source?.dailyCasesUsed ?? 0),
+    lastCaseDate: source?.lastCaseDate ?? null,
+    unlockedDifficulties: sanitizeUnlockedDifficulties([
+      ...unlockedFromSource,
+      ...getUnlockedDifficultyKeys(level)
+    ]),
+    isPremium: String(source?.subscription_tier ?? "").toLowerCase() === "premium" || Boolean(source?.isPremium),
+    badges: Array.isArray(appData.dashboardState?.stats?.recent_badges)
+      ? [...appData.dashboardState.stats.recent_badges]
+      : Array.isArray(source?.badges)
+        ? [...source.badges]
+        : []
+  };
+}
+
+function loadUserState() {
+  const fallbackState = mapDefaultUserState(appData.defaultUserState ?? appData.dashboardState?.user ?? {});
+
+  try {
+    const raw = window.localStorage.getItem(USER_STATE_STORAGE_KEY);
+    if (!raw) return fallbackState;
+
+    const parsed = JSON.parse(raw);
+    return {
+      ...fallbackState,
+      ...parsed,
+      unlockedDifficulties: sanitizeUnlockedDifficulties(parsed?.unlockedDifficulties ?? fallbackState.unlockedDifficulties),
+      badges: Array.isArray(parsed?.badges) ? parsed.badges : fallbackState.badges
+    };
+  } catch (error) {
+    console.warn("Failed to load persisted user state.", error);
+    return fallbackState;
+  }
+}
+
+function saveUserState() {
+  try {
+    window.localStorage.setItem(USER_STATE_STORAGE_KEY, JSON.stringify(userState));
+  } catch (error) {
+    console.warn("Failed to save persisted user state.", error);
+  }
+}
+
+function syncUserStateDerivedFields() {
+  userState.level = Math.max(1, getLevelFromXp(userState.xp));
+  userState.unlockedDifficulties = sanitizeUnlockedDifficulties([
+    ...userState.unlockedDifficulties,
+    ...getUnlockedDifficultyKeys(userState.level)
+  ]);
+}
+
+function addBadgeIfMissing(badge) {
+  if (!userState.badges.includes(badge)) {
+    userState.badges.push(badge);
+  }
+}
+
+function evaluateBadges() {
+  if (userState.casesCompleted >= 1) addBadgeIfMissing("First case complete");
+  if (userState.casesCompleted >= 10) addBadgeIfMissing("Ten-case round");
+  if (userState.streak >= 3) addBadgeIfMissing("Three-day streak");
+  if (userState.level >= 5) addBadgeIfMissing("Intermediate unlocked");
+}
+
+function showView(viewName) {
+  const nextView = VIEW_NAME_TO_ID[viewName] ? viewName : "dashboard";
+
+  if (nextView === "practice" && !sessionState.currentCase) {
+    startNewCase(sessionState.currentDifficulty);
+    return;
+  }
+
+  sessionState.currentView = nextView;
+
+  VIEW_IDS.forEach(viewId => {
+    const view = document.getElementById(viewId);
+    if (!view) return;
+    view.classList.toggle("is-active", viewId === VIEW_NAME_TO_ID[nextView]);
+  });
+}
+
+function pickRandom(items) {
+  if (!items.length) return null;
+  return items[Math.floor(Math.random() * items.length)];
+}
+
+function calcAnionGap(na, cl, hco3) {
+  return na - (cl + hco3);
 }
 
 function prettyStepLabel(stepKey) {
   const labels = {
-    ph_status: "pH",
+    ph_status: "pH status",
     primary_disorder: "Primary disorder",
     compensation: "Compensation",
     anion_gap: "Anion gap",
-    additional_metabolic_process: "Additional metabolic disorder",
+    additional_metabolic_process: "Additional process",
     final_diagnosis: "Diagnosis"
   };
-  return labels[stepKey] ?? stepKey;
+  return labels[stepKey] ?? toTitleCase(stepKey);
 }
 
-function showCaseMessage(title, message, details = "") {
-  const caseCard = document.getElementById("caseCard");
-  const qaCard = document.getElementById("qaCard");
-  const resultCard = document.getElementById("resultCard");
-  if (!caseCard) return;
-
-  if (qaCard) qaCard.style.display = "none";
-  if (resultCard) resultCard.style.display = "none";
-
-  caseCard.innerHTML = `
-    <div class="practice-header">
-      <div>
-        <div class="practice-title">${title}</div>
-      </div>
-    </div>
-    <div class="card-section">
-      <p>${message}</p>
-      ${details ? `<p class="muted">${details}</p>` : ""}
-    </div>
-  `;
-  caseCard.style.display = "block";
+function formatValue(value, decimals = 1) {
+  if (value == null || Number.isNaN(Number(value))) return "--";
+  return Number(value).toFixed(decimals);
 }
 
-window.addEventListener("error", (event) => {
-  console.error("GLOBAL FRONTEND ERROR:", event.error || event.message);
+function isCorrectAnswer(caseItem, stepKey, chosen) {
+  const answerKey = caseItem.answer_key ?? {};
 
-  const startCard = document.getElementById("startCard");
-  if (startCard?.style.display === "none") {
-    showCaseMessage(
-      "Frontend error",
-      "A frontend error interrupted the current case.",
-      event.error?.message ?? event.message ?? "Unknown error"
+  if (stepKey === "anion_gap") {
+    const gas = caseItem.inputs?.gas ?? {};
+    const electrolytes = caseItem.inputs?.electrolytes ?? {};
+    const gap = calcAnionGap(
+      Number(electrolytes.na_mmolL),
+      Number(electrolytes.cl_mmolL),
+      Number(gas.hco3_mmolL)
     );
+    return chosen === (gap > 16 ? "Raised" : "Normal");
   }
-});
 
-window.addEventListener("unhandledrejection", (event) => {
-  console.error("UNHANDLED PROMISE REJECTION:", event.reason);
+  return chosen === answerKey[stepKey];
+}
 
-  const startCard = document.getElementById("startCard");
-  if (startCard?.style.display === "none") {
-    showCaseMessage(
-      "Frontend error",
-      "An unexpected async error interrupted the current case.",
-      event.reason?.message ?? String(event.reason)
+function getCorrectAnswer(caseItem, stepKey) {
+  const answerKey = caseItem.answer_key ?? {};
+
+  if (stepKey === "anion_gap") {
+    const gas = caseItem.inputs?.gas ?? {};
+    const electrolytes = caseItem.inputs?.electrolytes ?? {};
+    const gap = calcAnionGap(
+      Number(electrolytes.na_mmolL),
+      Number(electrolytes.cl_mmolL),
+      Number(gas.hco3_mmolL)
     );
+    return gap > 16 ? "Raised" : "Normal";
   }
-});
 
+  if (answerKey[stepKey] != null) return answerKey[stepKey];
+  if (stepKey === "anion_gap" && answerKey.anion_gap_category) return answerKey.anion_gap_category;
+  return "Unknown";
+}
 
-/** Load JSON */
+function getCurrentElapsedSeconds() {
+  if (!sessionState.caseStartMs) return 0;
+  return (nowMs() - sessionState.caseStartMs) / 1000;
+}
+
+function stopTimer() {
+  if (appData.timerInterval) {
+    window.clearInterval(appData.timerInterval);
+    appData.timerInterval = null;
+  }
+}
+
+function updatePracticeTimer() {
+  const timerLabel = document.getElementById("practiceTimerValue");
+  if (!timerLabel) return;
+  if (!sessionState.caseStartMs || !sessionState.timedMode) {
+    timerLabel.textContent = "Timer hidden";
+    return;
+  }
+
+  timerLabel.textContent = `${getCurrentElapsedSeconds().toFixed(1)}s elapsed`;
+}
+
+function startTimer() {
+  stopTimer();
+  sessionState.caseStartMs = nowMs();
+  updatePracticeTimer();
+  appData.timerInterval = window.setInterval(updatePracticeTimer, 100);
+}
+
+function caseMatchesDifficulty(caseItem, difficultyKey) {
+  const level = getDifficultyLevel(difficultyKey);
+  const caseDifficultyLevel = Number(caseItem.difficulty_level ?? 1);
+  const caseDifficultyLabel = String(caseItem.difficulty_label ?? getDifficultyLabel(caseDifficultyLevel)).toLowerCase();
+  return caseDifficultyLevel === level || caseDifficultyLabel === difficultyKey;
+}
+
+function getEligibleCasesForDifficulty(difficultyKey) {
+  const exactMatches = appData.cases.filter(caseItem => caseMatchesDifficulty(caseItem, difficultyKey));
+  const pool = exactMatches.length ? exactMatches : [...appData.cases];
+
+  const withoutRecent = pool.filter(caseItem => !appData.recentArchetypes.includes(caseItem.archetype));
+  return withoutRecent.length ? withoutRecent : pool;
+}
+
+function rememberRecentArchetype(caseItem) {
+  if (!caseItem?.archetype) return;
+  appData.recentArchetypes.push(caseItem.archetype);
+  if (appData.recentArchetypes.length > RECENT_ARCHETYPE_LIMIT) {
+    appData.recentArchetypes.shift();
+  }
+}
+
+function resetPracticeSession() {
+  sessionState.currentCase = null;
+  sessionState.currentStepIndex = 0;
+  sessionState.stepResults = [];
+  sessionState.caseStartMs = null;
+  stopTimer();
+}
+
+function startNewCase(difficultyKey = sessionState.currentDifficulty) {
+  if (!appData.cases.length) {
+    appData.loadError = "Cases are unavailable. Check that abg_cases.json is present in the same folder.";
+    renderApp();
+    return;
+  }
+
+  appData.loadError = null;
+  sessionState.currentDifficulty = difficultyKey;
+  sessionState.currentStepIndex = 0;
+  sessionState.stepResults = [];
+  sessionState.currentView = "practice";
+  appData.lastCaseSummary = null;
+
+  const selectedCase = pickRandom(getEligibleCasesForDifficulty(difficultyKey));
+  if (!selectedCase) {
+    appData.loadError = "No eligible case could be selected.";
+    renderApp();
+    return;
+  }
+
+  sessionState.currentCase = selectedCase;
+  rememberRecentArchetype(selectedCase);
+  startTimer();
+  renderApp();
+}
+
+function answerCurrentStep(choice) {
+  const caseItem = sessionState.currentCase;
+  if (!caseItem) return;
+
+  const step = caseItem.questions_flow?.[sessionState.currentStepIndex];
+  if (!step) return;
+  if (sessionState.stepResults[sessionState.currentStepIndex]) return;
+
+  sessionState.stepResults.push({
+    key: step.key,
+    label: step.label ?? prettyStepLabel(step.key),
+    prompt: step.prompt,
+    chosen: choice,
+    correctAnswer: getCorrectAnswer(caseItem, step.key),
+    correct: isCorrectAnswer(caseItem, step.key, choice)
+  });
+
+  renderPractice();
+  updatePracticeTimer();
+}
+
+function continuePracticeStep() {
+  if (!sessionState.currentCase) return;
+
+  if (sessionState.currentStepIndex < (sessionState.currentCase.questions_flow?.length ?? 0) - 1) {
+    sessionState.currentStepIndex += 1;
+    renderPractice();
+    return;
+  }
+
+  finishCase();
+}
+
+function updateDailyStreak() {
+  const today = todayKey();
+  if (userState.lastCaseDate === today) {
+    userState.dailyCasesUsed += 1;
+    return;
+  }
+
+  if (userState.lastCaseDate === yesterdayKey()) {
+    userState.streak += 1;
+  } else {
+    userState.streak = 1;
+  }
+
+  userState.lastCaseDate = today;
+  userState.dailyCasesUsed = 1;
+}
+
+function finishCase() {
+  const caseItem = sessionState.currentCase;
+  if (!caseItem) return;
+
+  const difficultyLevel = Number(caseItem.difficulty_level ?? getDifficultyLevel(sessionState.currentDifficulty));
+  const elapsedSeconds = getCurrentElapsedSeconds();
+  stopTimer();
+  const totalSteps = caseItem.questions_flow?.length ?? 0;
+  const correctSteps = sessionState.stepResults.filter(result => result.correct).length;
+  const accuracy = totalSteps ? Math.round((correctSteps / totalSteps) * 100) : 0;
+  const perfectCase = totalSteps > 0 && correctSteps === totalSteps;
+
+  const baseXp = getBaseXp(difficultyLevel);
+  const perfectBonus = perfectCase ? getPerfectBonus(difficultyLevel) : 0;
+  const speedBonus = sessionState.timedMode ? getTimeBonus(elapsedSeconds) : 0;
+  const totalXpAward = baseXp + perfectBonus + speedBonus;
+
+  userState.xp += totalXpAward;
+  userState.casesCompleted += 1;
+  userState.correctAnswers += correctSteps;
+  userState.totalAnswers += totalSteps;
+
+  const caseCorrect = correctSteps === totalSteps;
+  userState.recentResults.push(caseCorrect);
+
+  if (userState.recentResults.length > 20) {
+    userState.recentResults.shift();
+  }
+  updateDailyStreak();
+  syncUserStateDerivedFields();
+  evaluateBadges();
+  saveUserState();
+
+  appData.lastCaseSummary = {
+    caseId: caseItem.case_id,
+    title: caseItem.title ?? "ABG Case",
+    difficulty: toTitleCase(sessionState.currentDifficulty),
+    explanation: caseItem.explanation ?? "",
+    learningObjective: caseItem.learning_objective ?? "Review the reasoning steps and pattern recognition for this case.",
+    elapsedSeconds,
+    accuracy,
+    correctSteps,
+    totalSteps,
+    totalXpAward,
+    baseXp,
+    perfectBonus,
+    speedBonus,
+    level: userState.level,
+    stepResults: clone(sessionState.stepResults),
+    caseData: clone(caseItem)
+  };
+
+  sessionState.currentView = "results";
+  renderApp();
+}
+
 async function loadCases() {
-  const res = await fetch("./abg_cases.json", { cache: "no-store" });
-  if (!res.ok) throw new Error(`Failed to load JSON: ${res.status}`);
+  const response = await fetch("./abg_cases.json", { cache: "no-store" });
+  if (!response.ok) {
+    throw new Error(`Failed to load JSON: ${response.status}`);
+  }
 
-  const data = await res.json();
-
-  // Legacy format support (old JSON with only cases)
-  if (Array.isArray(data)) {
+  const payload = await response.json();
+  if (Array.isArray(payload)) {
     return {
-      cases: data,
+      cases: payload,
       progressionConfig: null,
       dashboardState: null,
-      userState: null
+      defaultUserState: null
     };
   }
 
-  // New structured format
-  if (data && Array.isArray(data.cases)) {
+  if (payload && Array.isArray(payload.cases)) {
     return {
-      cases: data.cases,
-      progressionConfig: data.progression_config ?? null,
-      dashboardState: data.dashboard_state ?? null,
-      userState: data.default_user_state ?? null
+      cases: payload.cases,
+      progressionConfig: payload.progression_config ?? null,
+      dashboardState: payload.dashboard_state ?? null,
+      defaultUserState: payload.default_user_state ?? null
     };
   }
 
   throw new Error("JSON format not recognized.");
 }
 
-/** Render case header */
-function renderCaseCard(c) {
-  if (!c || !c.inputs) {
-    throw new Error("renderCaseCard received an invalid case object");
-  }
+function renderNavbar() {
+  const levelProgress = getLevelProgress();
+  const nav = document.getElementById("navBar");
+  if (!nav) return;
 
-  const gas = c.inputs?.gas ?? {};
-  const ely = c.inputs?.electrolytes ?? {};
-  const lact = c.inputs?.lactate_mmolL;
+  setText("navStreakValue", String(userState.streak));
+  setText("navLevelPill", `Level ${userState.level}`);
+  setText(
+    "navProgressLabel",
+    levelProgress.xpForNextLevel
+      ? `${levelProgress.xpIntoLevel} / ${levelProgress.xpForNextLevel} XP`
+      : `${userState.xp} XP`
+  );
+  setWidth("navProgressFill", `${levelProgress.progressPercent}%`);
 
-  const sessionText = `Session: ${sessionCasesCompleted} cases • Score: ${sessionScore}`;
+  const timedToggle = document.getElementById("timedModeToggle");
+  if (timedToggle) timedToggle.checked = sessionState.timedMode;
 
-  function isAbnormal(value, low, high) {
-    if (value == null) return false;
-    return value < low || value > high;
-  }
-
-  function formatValue(value, decimals = 1) {
-    if (value == null) return "—";
-    return Number(value).toFixed(decimals);
-  }
-
-  function resultRow(label, rangeText, valueText, abnormal) {
-    return `
-      <div class="abg-row">
-        <div class="abg-row-left">
-          <div class="abg-label">${label}</div>
-          <div class="abg-range">${rangeText}</div>
-        </div>
-        <div class="abg-value ${abnormal ? "abnormal" : ""}">
-          ${valueText}
-        </div>
-      </div>
-    `;
-  }
-
-  const ph = gas.ph;
-  const paco2 = gas.paco2_mmHg;
-  const hco3 = gas.hco3_mmolL;
-  const pao2 = gas.pao2_mmHg;
-  const baseExcess = gas.base_excess_mEqL;
-
-  document.getElementById("caseCard").innerHTML = `
-    <div class="practice-header">
-      <div>
-        <div class="practice-title">Practice Mode</div>
-        <div class="practice-subtitle">${sessionText}</div>
-      </div>
-    </div>
-
-    <div class="card-section">
-      <div class="section-title">Clinical Scenario</div>
-      <p class="scenario-text">${c.clinical_stem ?? ""}</p>
-    </div>
-
-    <div class="card-section">
-      <div class="section-title">ABG Results</div>
-
-      <div class="abg-panel">
-        ${resultRow(
-          "pH",
-          "Normal: 7.35 - 7.45",
-          formatValue(ph, 2),
-          isAbnormal(ph, 7.35, 7.45)
-        )}
-
-        ${resultRow(
-          "PaCO₂",
-          "Normal: 35 - 45 mmHg",
-          `${formatValue(paco2, 1)} mmHg`,
-          isAbnormal(paco2, 35, 45)
-        )}
-
-        ${resultRow(
-          "HCO₃⁻",
-          "Normal: 22 - 26 mmol/L",
-          `${formatValue(hco3, 1)} mmol/L`,
-          isAbnormal(hco3, 22, 26)
-        )}
-
-        ${pao2 != null ? resultRow(
-          "PaO₂",
-          "Normal: 80 - 100 mmHg",
-          `${formatValue(pao2, 1)} mmHg`,
-          isAbnormal(pao2, 80, 100)
-        ) : ""}
-
-        ${baseExcess != null ? resultRow(
-          "Base Excess",
-          "Normal: -2 to +2 mEq/L",
-          `${formatValue(baseExcess, 1)} mEq/L`,
-          isAbnormal(baseExcess, -2, 2)
-        ) : ""}
-
-        ${ely.na_mmolL != null ? resultRow(
-          "Na⁺",
-          "Normal: 135 - 145 mmol/L",
-          `${formatValue(ely.na_mmolL, 0)} mmol/L`,
-          isAbnormal(ely.na_mmolL, 135, 145)
-        ) : ""}
-
-        ${ely.cl_mmolL != null ? resultRow(
-          "Cl⁻",
-          "Normal: 98 - 106 mmol/L",
-          `${formatValue(ely.cl_mmolL, 0)} mmol/L`,
-          isAbnormal(ely.cl_mmolL, 98, 106)
-        ) : ""}
-
-        ${lact != null ? resultRow(
-          "Lactate",
-          "Normal: < 2.0 mmol/L",
-          `${formatValue(lact, 1)} mmol/L`,
-          lact >= 2.0
-        ) : ""}
-      </div>
-    </div>
-  `;
-}
-
-
-/** Render current step question */
-function renderStep() {
-  if (!currentCase) {
-    throw new Error("renderStep called without a currentCase");
-  }
-  if (!Array.isArray(currentCase.questions_flow)) {
-    throw new Error("currentCase.questions_flow is missing or invalid");
-  }
-  if (!currentCase.questions_flow[currentStepIndex]) {
-    throw new Error(`No question found at step index ${currentStepIndex}`);
-  }
-
-  const qaCard = document.getElementById("qaCard");
-  const resultCard = document.getElementById("resultCard");
-  resultCard.style.display = "none";
-  qaCard.style.display = "block";
-
-  const flow = currentCase.questions_flow;
-  const step = flow[currentStepIndex];
-
-	qaCard.innerHTML = `
-	  <h3>${step.label ?? step.prompt ?? `Question ${currentStepIndex + 1}`}</h3>
-	  <div class="step-meta">Question ${currentStepIndex + 1} of ${flow.length}</div>
-	  <p><b>${step.prompt}</b></p>
-	  <div id="options" class="option-grid"></div>
-	`;
-
-  const optionsDiv = document.getElementById("options");
-
-  step.options.forEach(opt => {
-    const btn = document.createElement("button");
-    btn.textContent = opt;
-    btn.className = "option-btn";
-
-    btn.onclick = () => {
-      const buttons = optionsDiv.querySelectorAll("button");
-      buttons.forEach(b => {
-        b.disabled = true;
-        b.classList.remove("selected");
-      });
-
-      btn.classList.add("selected");
-      handleAnswer(step.key, opt);
-    };
-
-    optionsDiv.appendChild(btn);
+  nav.querySelectorAll(".nav-tab").forEach(link => {
+    link.classList.toggle("is-active", link.dataset.view === sessionState.currentView);
   });
-
-  document.getElementById("nextBtn").disabled = true;
 }
 
+function renderDashboard() {
+  const levelProgress = getLevelProgress();
+  const recent = userState.recentResults ?? [];
+  const accuracy = recent.length
+    ? Math.round((recent.filter(result => result).length / recent.length) * 100)
+    : 100;
+  const casesRemaining = getCasesRemainingToday();
+  const difficultyCards = getDifficultyMeta()
+    .map(item => {
+      const unlocked = userState.unlockedDifficulties.includes(item.key);
 
-/** Check answer against answer_key */
-function isCorrect(stepKey, chosen) {
-  const ak = currentCase.answer_key ?? {};
+      return `
+        <button
+          class="difficulty-card ${unlocked ? "is-unlocked" : "is-locked"}"
+          type="button"
+          data-action="start-case"
+          data-difficulty="${item.key}"
+          ${unlocked ? "" : "disabled"}
+        >
+          <div class="difficulty-head">
+            <div class="difficulty-name">${escapeHtml(item.label)}</div>
+            <span class="difficulty-badge">
+              ${unlocked ? "Unlocked" : "Locked"}
+            </span>
+          </div>
 
-  if (stepKey === "anion_gap") {
-    // Accept "Raised"/"Normal" based on computed AG threshold
-    const gas = currentCase.inputs?.gas ?? {};
-    const ely = currentCase.inputs?.electrolytes ?? {};
-    const ag = calcAnionGap(ely.na_mmolL, ely.cl_mmolL, gas.hco3_mmolL);
-    const category = ag > 16 ? "Raised" : "Normal";
-    return chosen === category;
+          ${unlocked ? "" : `<div class="difficulty-meta">Unlock at Level ${item.unlockLevel}</div>`}
+        </button>
+      `;
+    })
+    .join("");
+  const recentBadges = userState.badges.slice(-3).reverse();
+  const recentBadgeMarkup = recentBadges.length
+    ? recentBadges.map(badge => `
+        <div class="badge-card">
+          <strong>${escapeHtml(badge)}</strong>
+        </div>
+      `).join("")
+    : "";
+
+  const practiceBtn = document.getElementById("dashboardPracticeBtn");
+  if (practiceBtn) {
+    practiceBtn.dataset.difficulty = sessionState.currentDifficulty;
   }
 
-  return chosen === ak[stepKey];
-}
+  setText("dashboardHeading", "Welcome back, Guest User!");
+  setText("dashboardSubtitle", "Medical Student");
+  setText("dashboardProgressLabel", "Progress to Next Level");
+  setText(
+    "dashboardProgressValue",
+    levelProgress.xpForNextLevel
+      ? `${levelProgress.xpIntoLevel} / ${levelProgress.xpForNextLevel} XP`
+      : `${userState.xp} XP`
+  );
+  setWidth("dashboardProgressFill", `${levelProgress.progressPercent}%`);
 
-function correctAnswerFor(stepKey) {
-  const ak = currentCase.answer_key ?? {};
+  setText("dashboardLevelValue", String(userState.level));
+  setText(
+    "dashboardLevelSubcopy",
+    `${userState.xp} / ${getXpRequiredForLevel(userState.level)} XP`
+  );
+  setText("dashboardCasesValue", String(userState.casesCompleted));
+  setText("dashboardCasesSubcopy", "Total interpretations");
+  setText("dashboardAccuracyValue", `${accuracy}%`);
+  setText("dashboardAccuracySubcopy", "Recent performance");
+  setText("dashboardStreakValue", String(userState.streak));
+  const longest = userState.longestStreak ?? userState.streak ?? 0;
 
-  if (stepKey === "anion_gap") {
-    const gas = currentCase.inputs?.gas ?? {};
-    const ely = currentCase.inputs?.electrolytes ?? {};
-    const ag = calcAnionGap(ely.na_mmolL, ely.cl_mmolL, gas.hco3_mmolL);
-    return (ag > 16 ? "Raised" : "Normal");
-  }
-
-  return ak[stepKey];
-}
-
-function handleAnswer(stepKey, chosen) {
-  const correct = isCorrect(stepKey, chosen);
-  const correctAns = correctAnswerFor(stepKey);
-
-  stepResults.push({ key: stepKey, correct, chosen, correctAnswer: correctAns });
-
-  // Show immediate feedback, then enable “Next case” only if finished, otherwise proceed
-  const qaCard = document.getElementById("qaCard");
-  const resultCard = document.getElementById("resultCard");
-
-  qaCard.style.display = "none";
-  resultCard.style.display = "block";
-
-let extraFeedback = "";
-
-if (stepKey === "anion_gap" && (currentCase.difficulty_level ?? 1) >= 3) {
-  const gas = currentCase.inputs?.gas ?? {};
-  const ely = currentCase.inputs?.electrolytes ?? {};
-
-  if (
-    ely.na_mmolL != null &&
-    ely.cl_mmolL != null &&
-    gas.hco3_mmolL != null
-  ) {
-    const ag = ely.na_mmolL - (ely.cl_mmolL + gas.hco3_mmolL);
-
-    extraFeedback = `
-      <p><b>Anion gap:</b> ${ag.toFixed(1)}</p>
-      <p class="muted">Reference range: 8–12 mmol/L</p>
-    `;
-  }
-}
-
-
-resultCard.innerHTML = `
-  <div class="result-box ${correct ? "result-correct" : "result-incorrect"}">
-
-    <div class="result-title">
-      ${correct ? "Correct ✓" : "Incorrect"}
-    </div>
-
-    <div class="result-details">
-      <p><b>Your answer:</b> ${chosen}</p>
-      <p><b>Correct answer:</b> ${correctAns}</p>
-${extraFeedback}
-    </div>
-
-    <button id="continueBtn">
-      ${currentStepIndex < currentCase.questions_flow.length - 1 ? "Continue" : "Finish case"}
-    </button>
-
-  </div>
-`;
-
-
-  document.getElementById("continueBtn").onclick = () => {
-    if (currentStepIndex < currentCase.questions_flow.length - 1) {
-      currentStepIndex++;
-      renderStep();
-    } else {
-      finishCase();
-    }
-  };
-}
-
-function finishCase() {
-  stopTimer();
-
-  const elapsedSeconds = (nowMs() - caseStartMs) / 1000;
-  const timeBonus = getTimeBonus(elapsedSeconds);
-
-  const correctSteps = stepResults.filter(s => s.correct).length;
-  const baseScore = correctSteps * SCORING.perStepCorrect;
-  const perfect = (correctSteps === currentCase.questions_flow.length);
-  const perfectBonus = perfect ? SCORING.perfectCaseBonus : 0;
-
-  const caseScore = baseScore + perfectBonus + timeBonus;
-
-  sessionScore += caseScore;
-  sessionCasesCompleted += 1;
-
-  const xpResult = applyCaseXp(
-    currentCase.difficulty_level ?? 1,
-    perfect,
-    elapsedSeconds
+  setText(
+    "dashboardStreakSubcopy",
+    `Longest: ${longest} day${longest === 1 ? "" : "s"}`
   );
 
-  const resultCard = document.getElementById("resultCard");
-  const qaCard = document.getElementById("qaCard");
-  qaCard.style.display = "none";
-  resultCard.style.display = "block";
+  setText(
+    "dashboardCasesRemaining",
+    casesRemaining == null ? "" : `${casesRemaining} case${casesRemaining === 1 ? "" : "s"} remaining today`
+  );
+  setHtml("dashboardDifficultyGrid", difficultyCards);
+  setHtml("dashboardRecentBadges", recentBadgeMarkup);
+}
 
-  const breakdownRows = stepResults.map(s =>
-    `<li><b>${prettyStepLabel(s.key)}</b>: ${s.correct ? "✅" : "❌"} (you: ${s.chosen} | correct: ${s.correctAnswer})</li>`
-  ).join("");
+function renderAbgMetrics(caseItem) {
+  const gas = caseItem.inputs?.gas ?? {};
+  const electrolytes = caseItem.inputs?.electrolytes ?? {};
+  const lactate = caseItem.inputs?.lactate_mmolL;
 
-const xpBlock = xpResult ? `
-  <hr>
-  <h4>XP earned</h4>
-  <p><b>+${xpResult.totalXpAward} XP</b></p>
-  ${
-    xpResult.leveledUp
-      ? `<p><b>Level up!</b></p>`
-      : ""
+  const metrics = [
+    ["pH", formatValue(gas.ph, 2)],
+    ["PaCO2", gas.paco2_mmHg != null ? `${formatValue(gas.paco2_mmHg, 1)} mmHg` : "--"],
+    ["HCO3", gas.hco3_mmolL != null ? `${formatValue(gas.hco3_mmolL, 1)} mmol/L` : "--"],
+    ["PaO2", gas.pao2_mmHg != null ? `${formatValue(gas.pao2_mmHg, 1)} mmHg` : "--"],
+    ["Base excess", gas.base_excess_mEqL != null ? `${formatValue(gas.base_excess_mEqL, 1)} mEq/L` : "--"],
+    ["Na", electrolytes.na_mmolL != null ? `${formatValue(electrolytes.na_mmolL, 0)} mmol/L` : "--"],
+    ["Cl", electrolytes.cl_mmolL != null ? `${formatValue(electrolytes.cl_mmolL, 0)} mmol/L` : "--"],
+    ["Lactate", lactate != null ? `${formatValue(lactate, 1)} mmol/L` : "--"]
+  ];
+
+  return metrics
+    .filter(([, value]) => value !== "--")
+    .map(([label, value]) => {
+      let abnormal = false;
+
+      if (label === "pH") abnormal = gas.ph < 7.35 || gas.ph > 7.45;
+      if (label === "PaCO2") abnormal = gas.paco2_mmHg < 35 || gas.paco2_mmHg > 45;
+      if (label === "HCO3") abnormal = gas.hco3_mmolL < 22 || gas.hco3_mmolL > 26;
+      if (label === "Na") abnormal = electrolytes.na_mmolL < 135 || electrolytes.na_mmolL > 145;
+      if (label === "Cl") abnormal = electrolytes.cl_mmolL < 98 || electrolytes.cl_mmolL > 106;
+      if (label === "Lactate") abnormal = lactate > 2;
+
+      return `
+        <div class="value-item">
+          <span class="value-label">${label}</span>
+          <strong class="value-number ${abnormal ? "value-abnormal" : ""}">
+            ${escapeHtml(value)}
+          </strong>
+        </div>
+      `;
+    })
+    .join("");
+}
+
+function renderPractice() {
+  setText("practiceTitle", "Practice Mode");
+  const levelProgress = getLevelProgress();
+  setText(
+    "practiceLevelLine",
+    levelProgress.xpForNextLevel
+      ? `Level ${userState.level} • ${levelProgress.xpIntoLevel} / ${levelProgress.xpForNextLevel} XP`
+      : `Level ${userState.level}`
+  );
+
+  const difficultySelect = document.getElementById("practiceDifficultySelect");
+  if (difficultySelect) {
+    difficultySelect.innerHTML = userState.unlockedDifficulties.map(diff => `
+      <option
+        value="${escapeHtml(diff)}"
+        ${(diff === "master" && !userState.isPremium) ? "disabled" : ""}
+      >
+        ${escapeHtml(toTitleCase(diff))}
+      </option>
+    `).join("");
+    difficultySelect.value = sessionState.currentDifficulty;
   }
-  ${
-    xpResult.difficultyUnlocked
-      ? `<p><b>New difficulty unlocked:</b> ${getDifficultyLabel(xpResult.newUnlockedDifficulty)}</p>`
-      : ""
+
+  const casesRemaining = getCasesRemainingToday();
+  const alert = document.getElementById("practiceCasesAlert");
+  if (alert) {
+    if (casesRemaining == null) {
+      alert.classList.add("is-hidden");
+      alert.textContent = "";
+    } else {
+      alert.classList.remove("is-hidden");
+      alert.textContent = `${casesRemaining} case${casesRemaining === 1 ? "" : "s"} remaining today`;
+    }
   }
-` : "";
 
-  resultCard.innerHTML = `
-    <h3>Case complete</h3>
-
-    ${xpBlock}
-
-    <p><b>Explanation</b><br/>${currentCase.explanation ?? ""}</p>
-
-    <details>
-      <summary>Show step breakdown</summary>
-      <ul>${breakdownRows}</ul>
-    </details>
-
-  `;
-
-  document.getElementById("nextBtn").disabled = false;
-}
-
-
-function startTimer() {
-  caseStartMs = nowMs();
-  const timerEl = document.getElementById("timerDisplay");
-
-  timerInterval = setInterval(() => {
-    const elapsed = (nowMs() - caseStartMs) / 1000;
-    if (getMode() === "speed") {
-      timerEl.textContent = `Time: ${elapsed.toFixed(1)}s`;
-    }
-  }, 100);
-}
-
-function stopTimer() {
-  if (timerInterval) clearInterval(timerInterval);
-  timerInterval = null;
-}
-
-function startPractice() {
-  console.log("Start practice clicked");
-  console.log("Total case count:", Array.isArray(allCases) ? allCases.length : 0);
-
-  const startCard = document.getElementById("startCard");
-  const caseCard = document.getElementById("caseCard");
-  const resultCard = document.getElementById("resultCard");
-  const qaCard = document.getElementById("qaCard");
-
-  try {
-    if (!Array.isArray(allCases) || allCases.length === 0) {
-      console.warn("Start practice blocked: cases are not ready or failed to load.");
-      showCaseMessage(
-        "Cases not ready",
-        "Cases are still loading or could not be loaded.",
-        "Check that abg_cases.json is available and wait a moment before trying again."
-      );
-      return;
-    }
-
-    if (startCard) startCard.style.display = "none";
-    if (caseCard) caseCard.style.display = "block";
-    if (resultCard) resultCard.style.display = "none";
-    if (qaCard) qaCard.style.display = "none";
-
-    const selectedCase = loadNextCase();
-    console.log("Case selected on start:", !!selectedCase);
-
-    if (!selectedCase) {
-      showCaseMessage(
-        "Could not start practice",
-        "No eligible case could be opened right now.",
-        "See console logs for case-selection details."
-      );
-    }
-  } catch (error) {
-    console.error("START PRACTICE ERROR:", error);
-    if (startCard) startCard.style.display = "block";
-    if (caseCard) caseCard.style.display = "block";
-    showCaseMessage(
-      "Could not start practice",
-      "A frontend error occurred while starting the case.",
-      error.message
-    );
-  }
-}
-
-// Robust start-practice binding: keep this outside async init so the button never appears dead.
-function bindStartButton() {
-  const startBtn = document.getElementById("startBtn");
-  console.log("bindStartButton invoked");
-  console.log("Binding start button:", startBtn);
-
-  if (!startBtn) {
-    console.warn("Start button not found.");
+  if (!sessionState.currentCase) {
+    setText("practiceStem", "");
+    setHtml("practiceMetrics", "");
+    setText("practiceQuestionLabel", "Interpret the ABG");
+    setText("practiceQuestionMeta", "");
+    setText("practicePrompt", "");
+    setHtml("practiceStepProgress", "");
+    setHtml("practiceOptions", "");
+    setText("practiceTimerValue", sessionState.timedMode ? "0.0s elapsed" : "Timer hidden");
+    const feedback = document.getElementById("practiceFeedback");
+    if (feedback) feedback.className = "practice-feedback is-hidden";
     return;
   }
 
-  if (startBtn.dataset.bound === "true") {
-    console.log("Start button already bound.");
+  const caseItem = sessionState.currentCase;
+  const totalSteps = caseItem.questions_flow?.length ?? 0;
+  const currentStep = caseItem.questions_flow?.[sessionState.currentStepIndex];
+  const currentResult = sessionState.stepResults[sessionState.currentStepIndex] ?? null;
+  const stepPills = (caseItem.questions_flow ?? [])
+    .map((step, index) => {
+      const done = index < sessionState.stepResults.length;
+      const current = index === sessionState.currentStepIndex;
+      return `
+        <span class="step-pill ${done ? "is-done" : ""} ${current ? "is-current" : ""}">
+          ${index + 1}. ${escapeHtml(step.label ?? prettyStepLabel(step.key))}
+        </span>
+      `;
+    })
+    .join("");
+  setText("practiceStem", caseItem.clinical_stem ?? "");
+  setText(
+    "practiceQuestionLabel",
+    currentStep?.label ?? "Interpret the ABG"
+  );
+  setText(
+    "practiceQuestionMeta",
+    `Question ${sessionState.currentStepIndex + 1} of ${totalSteps}`
+  );
+  setText("practicePrompt", currentStep?.prompt ?? "");
+  setHtml("practiceStepProgress", stepPills);
+  setHtml("practiceMetrics", renderAbgMetrics(caseItem));
+  setHtml(
+    "practiceOptions",
+    currentResult ? "" : (currentStep?.options ?? []).map(option => `
+      <button
+        class="option-btn"
+        type="button"
+        data-action="answer"
+        data-option="${escapeHtml(option)}"
+      >
+        ${escapeHtml(option)}
+      </button>
+    `).join("")
+  );
+
+  const feedback = document.getElementById("practiceFeedback");
+  if (feedback) {
+    if (currentResult) {
+      feedback.className = `practice-feedback ${currentResult.correct ? "is-correct" : "is-incorrect"}`;
+      setText("practiceFeedbackTitle", currentResult.correct ? "Correct!" : "Incorrect");
+      setText("practiceFeedbackAnswer", `Your answer: ${currentResult.chosen}`);
+      setText("practiceFeedbackCorrect", `Correct answer: ${currentResult.correctAnswer}`);
+      setText("practiceFeedbackCopy", "");
+      setText(
+        "practiceContinueBtn",
+        sessionState.currentStepIndex < totalSteps - 1 ? "Continue" : "Finish case"
+      );
+    } else {
+      feedback.className = "practice-feedback is-hidden";
+      setText("practiceFeedbackTitle", "");
+      setText("practiceFeedbackAnswer", "");
+      setText("practiceFeedbackCorrect", "");
+      setText("practiceFeedbackCopy", "");
+      setText("practiceContinueBtn", "Continue");
+    }
+  }
+  updatePracticeTimer();
+}
+
+function renderResults() {
+  if (!appData.lastCaseSummary) {
+    setText("resultsTitle", "Results");
+    setText("resultsObjective", "");
+    setText("resultsDifficultyChip", toTitleCase(sessionState.currentDifficulty));
+    setText("resultsTimeChip", "0.0s");
+    setText("resultsOutcomeLabel", "Results");
+    setText("resultsAccuracyValue", "0%");
+    setText("resultsXpValue", "+0");
+    setText("resultsCorrectValue", "0 / 0");
+    setText("resultsLevelValue", String(userState.level));
+    setText("resultsExplanation", "");
+    setHtml("resultsStepList", "");
     return;
   }
 
-  startBtn.addEventListener("click", startPractice);
-  startBtn.dataset.bound = "true";
-}
+  const summary = appData.lastCaseSummary;
+  const perfectCase = summary.correctSteps === summary.totalSteps && summary.totalSteps > 0;
+  const resultRows = summary.stepResults
+    .map(stepResult => `
+      <div class="review-item ${stepResult.correct ? "is-correct" : "is-incorrect"}">
+        <div class="review-step">${escapeHtml(stepResult.label)}</div>
+        <div class="review-answer">You chose ${escapeHtml(stepResult.chosen)}. Correct answer: ${escapeHtml(stepResult.correctAnswer)}.</div>
+      </div>
+    `)
+    .join("");
 
-window.startPractice = startPractice;
+  const resultTitle = summary.title || "";
 
-/** Load next random case */
-function loadNextCase() {
-  try {
-    stepResults = [];
-    currentStepIndex = 0;
-
-    if (!Array.isArray(allCases) || allCases.length === 0) {
-      console.warn("loadNextCase: no cases loaded.");
-      showCaseMessage(
-        "No cases available",
-        "No case data is currently loaded.",
-        "Check that abg_cases.json was generated and loaded successfully."
-      );
-      return null;
-    }
-
-    const subscriptionTier =
-      dashboardState?.user?.subscription_tier ??
-      userState?.subscription_tier ??
-      "free";
-
-    // TESTING MODE: progression lock disabled
-    // This allows testers to experience intermediate-master cases.
-    // Revert before production release.
-    const maxDifficulty = 4;
-
-    let availableCases = allCases.filter(
-      c => {
-        const difficultyLevel = c.difficulty_level ?? 1;
-        return difficultyLevel >= 2 && difficultyLevel <= maxDifficulty;
-      }
+  if (resultTitle.includes("(")) {
+    const [mainTitle, rest] = resultTitle.split("(");
+    setHtml(
+      "resultsTitle",
+      `${escapeHtml(mainTitle.trim())}<br><span class="case-subtitle">${escapeHtml(rest.replace(")", "").trim())}</span>`
     );
+  } else {
+    setText("resultsTitle", resultTitle);
+  }
+  setText("resultsObjective", "");
+  setText("resultsDifficultyChip", summary.difficulty);
+  setText("resultsTimeChip", `${summary.elapsedSeconds.toFixed(1)}s`);
+  setText("resultsOutcomeLabel", perfectCase ? "Correct!" : "Incorrect");
+  setText("resultsAccuracyValue", `${summary.accuracy}%`);
+  setText("resultsXpValue", `+${summary.totalXpAward}`);
+  setText("resultsCorrectValue", `${summary.correctSteps} / ${summary.totalSteps}`);
+  setText("resultsLevelValue", String(summary.level));
+  setText("resultsExplanation", "");
+  setHtml("resultsStepList", resultRows);
 
-    if (!availableCases.length) {
-      // Testing mode may widen the eligible pool; always fall back to allCases if filtering becomes empty.
-      console.warn("loadNextCase: no cases matched the testing difficulty filter, falling back to all cases.");
-      availableCases = [...allCases];
-    }
-
-    let filteredCases = availableCases.filter(
-      c => !recentArchetypes.includes(c.archetype)
-    );
-
-    if (!filteredCases.length) {
-      console.warn("loadNextCase: recent-archetype exclusion emptied the pool, retrying without that exclusion.");
-      filteredCases = availableCases;
-    }
-
-    if (!filteredCases.length) {
-      console.warn("loadNextCase: available case pool is still empty, falling back to all cases.");
-      filteredCases = [...allCases];
-    }
-
-    console.log(
-      "loadNextCase counts",
-      {
-        totalCases: allCases.length,
-        availableCases: availableCases.length,
-        filteredCases: filteredCases.length,
-        subscriptionTier,
-        maxDifficulty,
-      }
-    );
-
-    currentCase = pickRandom(filteredCases);
-
-    if (!currentCase) {
-      console.error("loadNextCase: failed to select a case.");
-      showCaseMessage(
-        "No eligible case found",
-        "A case could not be selected from the current pool.",
-        "Check the console logs for filtering details."
-      );
-      return null;
-    }
-
-    if (!currentCase.inputs) {
-      console.error("loadNextCase: selected case is missing inputs.", {
-        caseId: currentCase.case_id,
-        archetype: currentCase.archetype,
-      });
-      showCaseMessage(
-        "Invalid case data",
-        "The selected case is missing expected ABG input data.",
-        `${currentCase.case_id ?? "Unknown case"} (${currentCase.archetype ?? "unknown archetype"})`
-      );
-      return null;
-    }
-
-    if (!Array.isArray(currentCase.questions_flow) || currentCase.questions_flow.length === 0) {
-      console.error("loadNextCase: selected case has invalid questions_flow.", {
-        caseId: currentCase.case_id,
-        archetype: currentCase.archetype,
-      });
-      showCaseMessage(
-        "Invalid case data",
-        "The selected case is missing a usable question flow.",
-        `${currentCase.case_id ?? "Unknown case"} (${currentCase.archetype ?? "unknown archetype"})`
-      );
-      return null;
-    }
-
-    console.log("Selected case:", {
-      archetype: currentCase.archetype,
-      difficulty: currentCase.difficulty_level ?? 1,
-      caseId: currentCase.case_id,
-    });
-
-    if (currentCase?.archetype) {
-      recentArchetypes.push(currentCase.archetype);
-      if (recentArchetypes.length > RECENT_ARCHETYPE_LIMIT) {
-        recentArchetypes.shift();
-      }
-    }
-
-    renderCaseCard(currentCase);
-    renderStep();
-    stopTimer();
-    startTimer();
-
-    document.getElementById("nextBtn").disabled = true;
-    return currentCase;
-  } catch (error) {
-    console.error("LOAD NEXT CASE ERROR:", error, currentCase);
-    showCaseMessage(
-      "Case rendering error",
-      "A case was selected but could not be rendered.",
-      error.message
-    );
-    return null;
+  const resultsSummaryCard = document.getElementById("resultsSummaryCard");
+  if (resultsSummaryCard) {
+    resultsSummaryCard.className = `fig-card result-state-card ${perfectCase ? "is-correct" : "is-incorrect"}`;
   }
 }
 
-
-/** UI wiring */
-document.getElementById("nextBtn").onclick = loadNextCase;
-document.getElementById("resetBtn").onclick = () => {
-  sessionScore = 0;
-  sessionCasesCompleted = 0;
-  if (currentCase) renderCaseCard(currentCase);
-};
-document.getElementById("modeSelect").onchange = updateModeUI;
-
-
-function renderProgression() {
-  const el = document.getElementById("progressionDebug");
-  if (!el) return;
-
-  if (!userState) {
-    el.innerHTML = `<strong>Level 1</strong><br>XP: 0 total<br>Unlocked: Beginner`;
-    return;
-  }
-
-  const level = userState.level ?? 1;
-  const xpInto = userState.level_progress?.xp_into_level ?? 0;
-  const xpNeeded = userState.level_progress?.xp_needed_for_next_level;
-  const unlockedLabel = userState.unlocked_difficulty_label ?? "Beginner";
-  const totalXp = userState.total_xp ?? 0;
-
-  el.innerHTML = `
-    <strong>Level ${level}</strong><br>
-    XP: ${xpNeeded == null ? `${totalXp} total` : `${xpInto} / ${xpNeeded}`}<br>
-    Unlocked: ${unlockedLabel}
-  `;
-}
-
-
-function getBaseXpForDifficulty(difficultyLevel) {
-  if (!progressionConfig?.base_xp_by_difficulty) return 0;
-  return progressionConfig.base_xp_by_difficulty[difficultyLevel] ?? 0;
-}
-
-function getPerfectXpBonus(difficultyLevel, perfectCase) {
-  if (!perfectCase) return 0;
-
-  const baseXp = getBaseXpForDifficulty(difficultyLevel);
-  const percent = progressionConfig?.perfect_case_bonus_percent ?? 0;
-  return Math.round(baseXp * percent);
-}
-
-function getSpeedXpBonus(secondsTaken) {
-  const tiers = progressionConfig?.speed_bonus_tiers ?? [];
-  for (const tier of tiers) {
-    if (secondsTaken <= tier.max_seconds) return tier.bonus;
-  }
-  return 0;
-}
-
-function getStreakXpBonus(streakDays) {
-  const tiers = progressionConfig?.streak_bonus_tiers ?? [];
-  let bonus = 0;
-
-  for (const tier of tiers) {
-    if (streakDays >= tier.min_days) {
-      bonus = tier.bonus;
+function renderLearn() {
+  const objectives = new Map();
+  for (const caseItem of appData.cases) {
+    const difficultyKey = getDifficultyLabel(Number(caseItem.difficulty_level ?? 1));
+    if (!objectives.has(difficultyKey)) objectives.set(difficultyKey, []);
+    if (objectives.get(difficultyKey).length < 3 && caseItem.learning_objective) {
+      objectives.get(difficultyKey).push(caseItem.learning_objective);
     }
   }
 
-  return bonus;
+  setHtml("learnGrid", getDifficultyMeta().map(item => `
+    <article class="learn-card">
+      <h2>${escapeHtml(item.label)}</h2>
+      <p>${item.availableCases} cases available</p>
+      <div class="learn-points">
+        ${(objectives.get(item.key) ?? []).map(objective => `
+          <div class="learn-point">${escapeHtml(objective)}</div>
+        `).join("")}
+      </div>
+    </article>
+  `).join(""));
 }
 
-function getXpRequiredForLevel(level) {
-  return progressionConfig?.xp_required_per_level?.[level] ?? null;
-}
-
-function getLevelFromTotalXp(totalXp) {
-  let level = 1;
-
-  while (true) {
-    const xpNeeded = getXpRequiredForLevel(level);
-    if (xpNeeded == null) return level;
-
-    let thresholdForNext = 0;
-    for (let l = 1; l <= level; l++) {
-      thresholdForNext += progressionConfig?.xp_required_per_level?.[l] ?? 0;
-    }
-
-    if (totalXp < thresholdForNext) return level;
-    level++;
-  }
-}
-
-function getDifficultyLabel(difficultyLevel) {
-  return progressionConfig?.difficulty_labels?.[difficultyLevel] ?? `Difficulty ${difficultyLevel}`;
-}
-
-function getUnlockedDifficultyForLevel(level) {
-  const unlocks = progressionConfig?.difficulty_unlock_levels ?? {};
-  let unlocked = 1;
-
-  for (const [difficulty, requiredLevel] of Object.entries(unlocks)) {
-    if (level >= requiredLevel) {
-      unlocked = Number(difficulty);
-    }
-  }
-
-  return unlocked;
-}
-
-function getLevelProgressFromXp(totalXp) {
-  const level = getLevelFromTotalXp(totalXp);
-
-  let currentLevelStartXp = 0;
-  for (let l = 1; l < level; l++) {
-    currentLevelStartXp += progressionConfig?.xp_required_per_level?.[l] ?? 0;
-  }
-
-  const xpNeededForNextLevel = getXpRequiredForLevel(level);
-
-  return {
-    level,
-    xp_into_level: totalXp - currentLevelStartXp,
-    xp_needed_for_next_level: xpNeededForNextLevel,
-    current_level_start_xp: currentLevelStartXp,
-    next_level_total_xp:
-      xpNeededForNextLevel == null ? null : currentLevelStartXp + xpNeededForNextLevel
+function renderLeaderboard() {
+  const localPlayer = {
+    name: "You",
+    xp: userState.xp,
+    accuracy: calculateAccuracy(),
+    level: userState.level
   };
+
+  const leaderboard = [
+    { name: "Dr. Rivera", xp: 720, accuracy: 92, level: 8 },
+    { name: "Triage Fox", xp: 610, accuracy: 88, level: 7 },
+    { name: "You", xp: localPlayer.xp, accuracy: localPlayer.accuracy, level: localPlayer.level },
+    { name: "Ward Eight", xp: 280, accuracy: 76, level: 4 }
+  ]
+    .sort((left, right) => right.xp - left.xp)
+    .map((entry, index) => ({ ...entry, rank: index + 1 }));
+  const userEntry = leaderboard.find(entry => entry.name === "You") ?? leaderboard[0];
+
+  setText("leaderboardUserRank", `#${userEntry.rank}`);
+  setText("leaderboardUserLevel", `Level ${userEntry.level}`);
+  setText("leaderboardUserXp", `${userEntry.xp} XP`);
+  setText("leaderboardUserAccuracy", `${userEntry.accuracy}% accuracy`);
+
+  setHtml("leaderboardList", leaderboard.map(entry => `
+    <div class="leaderboard-row">
+      <span class="leaderboard-rank">${entry.rank}</span>
+      <div class="leaderboard-main">
+        <div class="leaderboard-name">${escapeHtml(entry.name)}</div>
+        <div class="leaderboard-meta">Level ${entry.level} • ${entry.accuracy}% accuracy</div>
+      </div>
+      <div class="leaderboard-xp">${entry.xp} XP</div>
+    </div>
+  `).join(""));
+
+  setHtml("leaderboardTopList", leaderboard.slice(0, 3).map(entry => `
+    <div class="top-card">
+      <div class="top-rank">#${entry.rank}</div>
+      <div class="top-name">${escapeHtml(entry.name)}</div>
+      <div class="top-meta">Level ${entry.level}</div>
+      <div class="top-meta">${entry.accuracy}% accuracy</div>
+    </div>
+  `).join(""));
 }
 
-function applyCaseXp(difficultyLevel, perfectCase, secondsTaken) {
-  if (!userState || !progressionConfig) return null;
+function renderProfile() {
+  const progress = getLevelProgress();
+  const badges = userState.badges.length
+    ? userState.badges.map(badge => `
+      <div class="badge-card">
+        <strong>${escapeHtml(badge)}</strong>
+      </div>
+    `).join("")
+    : `<div class="badge-card"><strong></strong></div>`;
 
-  const baseXp = getBaseXpForDifficulty(difficultyLevel);
-  const perfectBonus = getPerfectXpBonus(difficultyLevel, perfectCase);
-  const speedBonus = getSpeedXpBonus(secondsTaken);
-  const streakBonus = getStreakXpBonus(userState.streak_days ?? 0);
+  setText("profileUsernameValue", "");
+  setText("profileSpecialtyValue", "");
+  setText("profileXpValue", String(userState.xp));
+  setText("profileLevelValue", String(userState.level));
+  setText("profileAccuracyValue", `${calculateAccuracy()}%`);
+  setText(
+    "profileNextLevelValue",
+    progress.xpForNextLevel ? `${progress.xpIntoLevel}/${progress.xpForNextLevel}` : `${userState.xp}`
+  );
+  setWidth("profileProgressFill", `${progress.progressPercent}%`);
+  setText("profileCasesValue", String(userState.casesCompleted));
+  setText("profileStreakValue", String(userState.streak));
+  setText("profileBadgeCount", `${userState.badges.length} of 4 badges earned`);
+  const membershipPill = document.getElementById("profileMembershipPill");
+  if (membershipPill) {
+    if (userState.isPremium) {
+      membershipPill.classList.remove("is-hidden");
+      membershipPill.textContent = "Premium Member";
+    } else {
+      membershipPill.classList.add("is-hidden");
+      membershipPill.textContent = "";
+    }
+  }
+  setHtml("profileBadgeList", badges);
+}
 
-  const totalXpAward = baseXp + perfectBonus + speedBonus + streakBonus;
+function renderApp() {
+  renderNavbar();
+  renderDashboard();
+  renderPractice();
+  renderResults();
+  renderLearn();
+  renderLeaderboard();
+  renderProfile();
+  showView(sessionState.currentView);
+}
 
-  const previousTotalXp = userState.total_xp ?? 0;
-  const previousLevel = userState.level ?? 1;
-  const previousUnlockedDifficulty = userState.unlocked_difficulty ?? 1;
+function returnToDashboard() {
+  resetPracticeSession();
+  sessionState.currentView = "dashboard";
+  renderApp();
+}
 
-  const newTotalXp = previousTotalXp + totalXpAward;
-  const newLevel = getLevelFromTotalXp(newTotalXp);
-  const newUnlockedDifficulty = getUnlockedDifficultyForLevel(newLevel);
-  const newLevelProgress = getLevelProgressFromXp(newTotalXp);
+function handleDocumentClick(event) {
+  const actionTarget = event.target.closest("[data-action]");
+  if (!actionTarget) return;
 
-  userState.total_xp = newTotalXp;
-  userState.level = newLevel;
-  userState.level_progress = newLevelProgress;
-  userState.unlocked_difficulty = newUnlockedDifficulty;
-  userState.unlocked_difficulty_label = getDifficultyLabel(newUnlockedDifficulty);
-  userState.cases_completed_today = (userState.cases_completed_today ?? 0) + 1;
+  const { action } = actionTarget.dataset;
 
-  if (userState.daily_case_limit != null) {
-    userState.cases_remaining_today = Math.max(
-      0,
-      userState.daily_case_limit - userState.cases_completed_today
-    );
+  if (action === "view") {
+    showView(actionTarget.dataset.view);
+    renderNavbar();
+    return;
   }
 
-  renderProgression();
+  if (action === "start-case") {
+    startNewCase(actionTarget.dataset.difficulty || sessionState.currentDifficulty);
+    return;
+  }
 
-  return {
-    baseXp,
-    perfectBonus,
-    speedBonus,
-    streakBonus,
-    totalXpAward,
-    previousLevel,
-    newLevel,
-    leveledUp: newLevel > previousLevel,
-    previousUnlockedDifficulty,
-    newUnlockedDifficulty,
-    difficultyUnlocked: newUnlockedDifficulty > previousUnlockedDifficulty
-  };
+  if (action === "answer") {
+    answerCurrentStep(actionTarget.dataset.option ?? "");
+    return;
+  }
+
+  if (action === "continue-step") {
+    continuePracticeStep();
+    return;
+  }
+
+  if (action === "next-case") {
+    startNewCase(sessionState.currentDifficulty);
+    return;
+  }
+
+  if (action === "return-dashboard") {
+    returnToDashboard();
+  }
 }
 
-/** Init */
+function handleDocumentChange(event) {
+  if (event.target.id === "timedModeToggle") {
+    sessionState.timedMode = Boolean(event.target.checked);
+    renderNavbar();
+    renderPractice();
+    return;
+  }
+
+  if (event.target.id === "practiceDifficultySelect") {
+    sessionState.currentDifficulty = event.target.value || sessionState.currentDifficulty;
+    startNewCase(sessionState.currentDifficulty);
+  }
+}
+
+window.addEventListener("error", event => {
+  console.error("GLOBAL FRONTEND ERROR:", event.error || event.message);
+});
+
+window.addEventListener("unhandledrejection", event => {
+  console.error("UNHANDLED PROMISE REJECTION:", event.reason);
+});
+
+document.addEventListener("click", handleDocumentClick);
+document.addEventListener("change", handleDocumentChange);
+
 (async function init() {
-  updateModeUI();
-  bindStartButton();
-  renderProgression();
-
   try {
     const data = await loadCases();
+    appData.cases = data.cases ?? [];
+    appData.progressionConfig = data.progressionConfig ?? null;
+    appData.dashboardState = data.dashboardState ?? null;
+    appData.defaultUserState = data.defaultUserState ?? null;
+    appData.loadError = null;
+    appData.isLoaded = true;
 
-    allCases = data?.cases ?? [];
-    progressionConfig = data?.progressionConfig ?? null;
-    dashboardState = data?.dashboardState ?? null;
-    userState = data?.userState ?? {
-      level: 1,
-      unlocked_difficulty: 1,
-      unlocked_difficulty_label: "Beginner",
-      total_xp: 0,
-      level_progress: {
-        level: 1,
-        xp_into_level: 0,
-        xp_needed_for_next_level: null,
-        current_level_start_xp: 0,
-        next_level_total_xp: null,
-      },
-      streak_days: 0,
-      subscription_tier: "free",
-    };
-
-    // TESTING MODE: progression lock disabled
-    // This allows testers to experience intermediate-master cases.
-    // Revert before production release.
-    const testingCurrentLevel = 3;
-    const testingUnlockedLevels = [1, 2, 3, 4];
-    const testingUnlockedDifficulty = testingUnlockedLevels[testingUnlockedLevels.length - 1];
-    const testingTotalXp =
-      (progressionConfig?.xp_required_per_level?.[1] ?? 0) +
-      (progressionConfig?.xp_required_per_level?.[2] ?? 0);
-    const testingLevelProgress = getLevelProgressFromXp(testingTotalXp);
-
-    userState = {
-      ...(userState ?? {}),
-      total_xp: testingTotalXp,
-      level: testingCurrentLevel,
-      level_progress: testingLevelProgress,
-      unlocked_difficulty: testingUnlockedDifficulty,
-      unlocked_difficulty_label: getDifficultyLabel(testingUnlockedDifficulty),
-    };
-
-    if (dashboardState?.user) {
-      dashboardState.user = {
-        ...dashboardState.user,
-        total_xp: testingTotalXp,
-        level: testingCurrentLevel,
-        level_progress: testingLevelProgress,
-        unlocked_difficulty: testingUnlockedDifficulty,
-        unlocked_difficulty_label: getDifficultyLabel(testingUnlockedDifficulty),
-      };
-    }
-
-    renderProgression();
-
-    console.log("allCases =", allCases);
-    console.log("firstCase =", allCases[0]);
-
-    if (!Array.isArray(allCases) || !allCases.length) {
-      console.warn("Init completed but no cases were found in JSON.");
-    }
-  } catch (e) {
-    console.error("INIT ERROR:", e);
-    allCases = [];
-    progressionConfig = progressionConfig ?? null;
-    dashboardState = dashboardState ?? null;
-    userState = userState ?? {
-      level: 1,
-      unlocked_difficulty: 1,
-      unlocked_difficulty_label: "Beginner",
-      total_xp: 0,
-      level_progress: {
-        level: 1,
-        xp_into_level: 0,
-        xp_needed_for_next_level: null,
-        current_level_start_xp: 0,
-        next_level_total_xp: null,
-      },
-      streak_days: 0,
-      subscription_tier: "free",
-    };
-    renderProgression();
-    showCaseMessage(
-      "Error loading cases",
-      e.message,
-      "Check that abg_cases.json exists in the same folder as the live site files."
-    );
+    Object.assign(userState, loadUserState());
+    syncUserStateDerivedFields();
+    saveUserState();
+  } catch (error) {
+    appData.loadError = error.message;
+    appData.isLoaded = true;
+    console.error("INIT ERROR:", error);
   }
-})();
 
+  renderApp();
+})();
