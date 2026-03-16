@@ -23,7 +23,7 @@ def generate_salicylate_case(case_id):
     na = random.randint(136, 142)
     target_ag = random.randint(20, 28)
     cl = na - (hco3 + target_ag)
-    ag = na - (cl + hco3)
+    ag = calc_anion_gap(na, cl, hco3)
     lactate = round(random.uniform(1.0, 2.5), 1)
 
     stem_options = [
@@ -35,7 +35,7 @@ def generate_salicylate_case(case_id):
     explanation = (
         f"Both PaCO2 and HCO3 are low. This is not explained by a single primary disorder alone. "
         f"The low PaCO2 indicates a respiratory alkalosis, while the low HCO3 with raised anion gap "
-        f"({na} - ({cl} + {hco3}) = {ag}) indicates a high anion gap metabolic acidosis. "
+        f"({ag:.1f}) indicates a high anion gap metabolic acidosis. "
         f"This is a mixed respiratory alkalosis and metabolic acidosis, classic for salicylate toxicity."
     )
 

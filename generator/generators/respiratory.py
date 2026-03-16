@@ -57,6 +57,90 @@ ACUTE_COPD_VARIATION_BANDS = [
     },
 ]
 
+SIMPLE_RESPIRATORY_ACIDOSIS_VARIATION_BANDS = [
+    {
+        "name": "mild",
+        "paco2_range": (50, 56),
+        "hco3_delta_range": (-0.6, 0.6),
+        "sodium_range": (136, 142),
+        "anion_gap_range": (8, 12),
+        "lactate_range": (0.8, 1.4),
+        "stem_options": [
+            "42-year-old is drowsy with mildly reduced respiratory effort after taking sedating medication.",
+            "54-year-old becomes sleepy with shallow breathing after a sedating treatment.",
+            "39-year-old presents with mild hypoventilation and reduced alertness without focal findings.",
+        ],
+    },
+    {
+        "name": "moderate",
+        "paco2_range": (56, 63),
+        "hco3_delta_range": (-0.8, 0.8),
+        "sodium_range": (136, 142),
+        "anion_gap_range": (8, 12),
+        "lactate_range": (0.8, 1.6),
+        "stem_options": [
+            "46-year-old is drowsy with shallow breathing after taking multiple sedating medications.",
+            "59-year-old becomes progressively somnolent with slow respirations after sedation.",
+            "37-year-old presents with reduced consciousness and hypoventilation without focal findings.",
+        ],
+    },
+    {
+        "name": "severe",
+        "paco2_range": (63, 70),
+        "hco3_delta_range": (-1.2, 1.2),
+        "sodium_range": (136, 142),
+        "anion_gap_range": (8, 12),
+        "lactate_range": (0.8, 1.8),
+        "stem_options": [
+            "52-year-old is difficult to rouse with shallow respirations after multiple sedating medications.",
+            "61-year-old becomes markedly somnolent with slow breathing after procedural sedation.",
+            "39-year-old presents with reduced consciousness and marked hypoventilation after multiple sedating agents.",
+        ],
+    },
+]
+
+SIMPLE_RESPIRATORY_ALKALOSIS_VARIATION_BANDS = [
+    {
+        "name": "mild",
+        "paco2_range": (30, 32),
+        "hco3_delta_range": (-0.6, 0.6),
+        "sodium_range": (136, 142),
+        "anion_gap_range": (8, 12),
+        "lactate_range": (0.8, 1.4),
+        "stem_options": [
+            "28-year-old presents with rapid breathing and light-headedness while visibly distressed.",
+            "31-year-old presents tachypnoeic with dizziness and transient hand tingling.",
+            "35-year-old presents with fast breathing and visible distress after sudden pain.",
+        ],
+    },
+    {
+        "name": "moderate",
+        "paco2_range": (27, 30),
+        "hco3_delta_range": (-0.8, 0.8),
+        "sodium_range": (136, 142),
+        "anion_gap_range": (8, 12),
+        "lactate_range": (0.8, 1.6),
+        "stem_options": [
+            "29-year-old presents with rapid breathing, light-headedness, and tingling around the mouth during acute distress.",
+            "33-year-old presents tachypnoeic with pleuritic discomfort and tingling in the hands.",
+            "25-year-old presents with fast breathing and hand tingling while visibly distressed.",
+        ],
+    },
+    {
+        "name": "severe",
+        "paco2_range": (24, 27),
+        "hco3_delta_range": (-1.2, 1.2),
+        "sodium_range": (136, 142),
+        "anion_gap_range": (8, 12),
+        "lactate_range": (0.8, 1.8),
+        "stem_options": [
+            "24-year-old presents with marked hyperventilation, perioral tingling, and dizziness during acute distress.",
+            "33-year-old presents with very rapid breathing, pleuritic discomfort, and worsening light-headedness.",
+            "24-year-old presents with fast breathing, hand tingling, and escalating distress without focal findings.",
+        ],
+    },
+]
+
 
 def generate_opioid_case(case_id):
     paco2 = random.randint(55, 75)
@@ -66,7 +150,7 @@ def generate_opioid_case(case_id):
     na = random.randint(136, 142)
     target_ag = random.randint(8, 14)
     cl = na - (hco3 + target_ag)
-    ag = round(na - (cl + hco3), 1)
+    ag = calc_anion_gap(na, cl, hco3)
     lactate = round(random.uniform(0.8, 2.0), 1)
 
     stem_options = [
@@ -119,21 +203,16 @@ def generate_opioid_case(case_id):
 
 
 def generate_simple_respiratory_acidosis_case(case_id):
-    paco2 = random.randint(50, 70)
+    band = random.choice(SIMPLE_RESPIRATORY_ACIDOSIS_VARIATION_BANDS)
+    paco2 = random.randint(*band["paco2_range"])
     expected_hco3 = 24 + ((paco2 - 40) / 10)
-    hco3 = round(expected_hco3 + random.uniform(-1.0, 1.0), 1)
+    hco3 = round(expected_hco3 + random.uniform(*band["hco3_delta_range"]), 1)
     ph = estimate_ph(hco3, paco2)
-    na = random.randint(136, 142)
-    target_ag = random.randint(8, 12)
+    na = random.randint(*band["sodium_range"])
+    target_ag = random.randint(*band["anion_gap_range"])
     cl = na - (hco3 + target_ag)
-    ag = round(na - (cl + hco3), 1)
-    lactate = round(random.uniform(0.8, 1.8), 1)
-
-    stem_options = [
-        "46-year-old is drowsy with shallow breathing after taking multiple sedating medications.",
-        "59-year-old becomes progressively somnolent with slow respirations after sedation.",
-        "37-year-old presents with reduced consciousness and hypoventilation without focal findings.",
-    ]
+    ag = calc_anion_gap(na, cl, hco3)
+    lactate = round(random.uniform(*band["lactate_range"]), 1)
 
     explanation = (
         f"Low pH indicates acidaemia. High PaCO2 indicates a primary respiratory acidosis. "
@@ -147,7 +226,7 @@ def generate_simple_respiratory_acidosis_case(case_id):
         category="respiratory_acidosis",
         learning_objective="Recognise acute respiratory acidosis with appropriate metabolic compensation",
         tags=["respiratory_acidosis", "hypoventilation", "acute"],
-        clinical_stem=random.choice(stem_options),
+        clinical_stem=random.choice(band["stem_options"]),
         inputs=build_inputs(ph, paco2, hco3, na, cl, lactate=lactate),
         questions_flow=shuffle_question_options(
             beginner_question_flow([
@@ -186,7 +265,7 @@ def generate_copd_case(case_id):
     na = random.randint(136, 142)
     target_ag = random.randint(8, 14)
     cl = na - (hco3 + target_ag)
-    ag = round(na - (cl + hco3), 1)
+    ag = calc_anion_gap(na, cl, hco3)
     lactate = round(random.uniform(0.8, 2.0), 1)
 
     stem_options = [
@@ -247,7 +326,7 @@ def generate_panic_case(case_id):
     na = random.randint(136, 141)
     target_ag = random.randint(8, 14)
     cl = na - (hco3 + target_ag)
-    ag = round(na - (cl + hco3), 1)
+    ag = calc_anion_gap(na, cl, hco3)
     lactate = round(random.uniform(0.6, 1.8), 1)
 
     stem_options = [
@@ -300,21 +379,16 @@ def generate_panic_case(case_id):
 
 
 def generate_simple_respiratory_alkalosis_case(case_id):
-    paco2 = random.randint(24, 32)
+    band = random.choice(SIMPLE_RESPIRATORY_ALKALOSIS_VARIATION_BANDS)
+    paco2 = random.randint(*band["paco2_range"])
     expected_hco3 = respiratory_alkalosis_expected_hco3_acute(paco2)
-    hco3 = round(expected_hco3 + random.uniform(-0.8, 0.8), 1)
+    hco3 = round(expected_hco3 + random.uniform(*band["hco3_delta_range"]), 1)
     ph = estimate_ph(hco3, paco2)
-    na = random.randint(136, 142)
-    target_ag = random.randint(8, 12)
+    na = random.randint(*band["sodium_range"])
+    target_ag = random.randint(*band["anion_gap_range"])
     cl = na - (hco3 + target_ag)
-    ag = round(na - (cl + hco3), 1)
-    lactate = round(random.uniform(0.8, 1.8), 1)
-
-    stem_options = [
-        "29-year-old presents with rapid breathing, light-headedness, and tingling around the mouth during acute distress.",
-        "34-year-old presents tachypnoeic with pleuritic discomfort and dizziness.",
-        "25-year-old presents with fast breathing and hand tingling while visibly distressed.",
-    ]
+    ag = calc_anion_gap(na, cl, hco3)
+    lactate = round(random.uniform(*band["lactate_range"]), 1)
 
     explanation = (
         f"High pH indicates alkalaemia. Low PaCO2 indicates a primary respiratory alkalosis. "
@@ -328,7 +402,7 @@ def generate_simple_respiratory_alkalosis_case(case_id):
         category="respiratory_alkalosis",
         learning_objective="Recognise acute respiratory alkalosis with appropriate metabolic compensation",
         tags=["respiratory_alkalosis", "hyperventilation", "acute"],
-        clinical_stem=random.choice(stem_options),
+        clinical_stem=random.choice(band["stem_options"]),
         inputs=build_inputs(ph, paco2, hco3, na, cl, lactate=lactate),
         questions_flow=shuffle_question_options(
             beginner_question_flow([

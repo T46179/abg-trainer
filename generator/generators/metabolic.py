@@ -56,18 +56,102 @@ DKA_VARIATION_BANDS = [
     },
 ]
 
+DIURETIC_ALKALOSIS_VARIATION_BANDS = [
+    {
+        "name": "subtle",
+        "hco3_range": (30, 32),
+        "anion_gap_range": (8, 12),
+        "lactate_range": (0.8, 1.4),
+        "sodium_range": (136, 142),
+        "compensation_delta_range": (-1.0, 1.0),
+        "stem_options": [
+            "79-year-old on regular frusemide presents with light-headedness and recent poor oral intake after a small increase in diuretic use.",
+            "69-year-old taking loop diuretics reports postural dizziness and fatigue after several days of reduced intake.",
+            "74-year-old on diuretics presents with cramps and mild volume depletion after recent escalation of therapy for ankle swelling.",
+        ],
+    },
+    {
+        "name": "moderate",
+        "hco3_range": (32, 35),
+        "anion_gap_range": (8, 13),
+        "lactate_range": (0.8, 1.6),
+        "sodium_range": (134, 141),
+        "compensation_delta_range": (-1.5, 1.5),
+        "stem_options": [
+            "81-year-old on regular frusemide presents with dizziness, weakness, and poor oral intake after several days of increased diuretic use.",
+            "72-year-old with heart failure reports cramps and light-headedness after escalating loop diuretics for ankle swelling.",
+            "68-year-old taking loop diuretics presents with postural symptoms, dry mucous membranes, and fatigue after recent volume depletion.",
+        ],
+    },
+    {
+        "name": "severe",
+        "hco3_range": (35, 38),
+        "anion_gap_range": (8, 14),
+        "lactate_range": (0.8, 1.8),
+        "sodium_range": (134, 140),
+        "compensation_delta_range": (-2.0, 2.0),
+        "stem_options": [
+            "76-year-old on high-dose loop diuretics presents markedly volume depleted with weakness and worsening postural symptoms after several days of increased diuresis.",
+            "83-year-old with heart failure presents with cramps, lethargy, and dry mucous membranes after recent aggressive diuretic escalation.",
+            "71-year-old taking loop diuretics presents with fatigue, dizziness, and clear contraction symptoms after ongoing fluid loss.",
+        ],
+    },
+]
+
+URAEMIA_VARIATION_BANDS = [
+    {
+        "name": "mild",
+        "hco3_range": (15, 18),
+        "anion_gap_range": (18, 22),
+        "lactate_range": (0.8, 1.6),
+        "sodium_range": (136, 140),
+        "compensation_delta_range": (-1.0, 1.0),
+        "stem_options": [
+            "66-year-old on haemodialysis presents with malaise and nausea after missing a recent dialysis session.",
+            "72-year-old with advanced CKD presents with reduced appetite and progressive fatigue over several days.",
+            "61-year-old with renal impairment presents with weakness and poor intake after worsening uraemic symptoms.",
+        ],
+    },
+    {
+        "name": "moderate",
+        "hco3_range": (12, 15),
+        "anion_gap_range": (22, 26),
+        "lactate_range": (0.8, 1.8),
+        "sodium_range": (134, 139),
+        "compensation_delta_range": (-1.4, 1.4),
+        "stem_options": [
+            "64-year-old on haemodialysis presents lethargic and nauseated after missing recent dialysis sessions.",
+            "71-year-old with advanced CKD presents with malaise, reduced urine output, and progressive weakness over several days.",
+            "58-year-old with renal failure presents with poor appetite and increasing drowsiness after worsening oliguria.",
+        ],
+    },
+    {
+        "name": "severe",
+        "hco3_range": (10, 12),
+        "anion_gap_range": (26, 30),
+        "lactate_range": (0.8, 2.2),
+        "sodium_range": (132, 138),
+        "compensation_delta_range": (-1.8, 1.8),
+        "stem_options": [
+            "59-year-old with renal failure presents with fluid overload, lethargy, and worsening oliguria after missing dialysis.",
+            "68-year-old with advanced kidney disease presents drowsy with nausea, reduced urine output, and progressive weakness.",
+            "63-year-old with uraemia presents increasingly somnolent with poor intake and signs of volume overload.",
+        ],
+    },
+]
+
 
 def generate_dka_case(case_id):
     band = random.choice(DKA_VARIATION_BANDS)
     hco3 = random.randint(*band["hco3_range"])
     expected_paco2 = winters_expected_paco2(hco3)
     compensation_midpoint = expected_paco2 + random.uniform(*band["compensation_delta_range"])
-    paco2 = round(random.uniform(compensation_midpoint - 0.4, compensation_midpoint + 0.4), 1)
+    paco2 = round(random.uniform(compensation_midpoint - 0.8, compensation_midpoint + 0.8), 1)
     ph = estimate_ph(hco3, paco2)
     na = random.randint(*band["sodium_range"])
     target_ag = random.randint(*band["anion_gap_range"])
     cl = na - (hco3 + target_ag)
-    ag = na - (cl + hco3)
+    ag = calc_anion_gap(na, cl, hco3)
     lactate = round(random.uniform(*band["lactate_range"]), 1)
 
     explanation = (
@@ -124,7 +208,7 @@ def generate_vomiting_case(case_id):
     na = random.randint(136, 142)
     target_ag = random.randint(8, 14)
     cl = na - (hco3 + target_ag)
-    ag = round(na - (cl + hco3), 1)
+    ag = calc_anion_gap(na, cl, hco3)
     lactate = round(random.uniform(0.8, 1.8), 1)
 
     stem_options = [
@@ -177,21 +261,17 @@ def generate_vomiting_case(case_id):
 
 
 def generate_diuretic_alkalosis_case(case_id):
-    hco3 = random.randint(30, 38)
+    band = random.choice(DIURETIC_ALKALOSIS_VARIATION_BANDS)
+    hco3 = random.randint(*band["hco3_range"])
     expected_paco2 = metabolic_alkalosis_expected_paco2(hco3)
-    paco2 = round(random.uniform(expected_paco2 - 2.5, expected_paco2 + 2.5), 1)
+    compensation_midpoint = expected_paco2 + random.uniform(*band["compensation_delta_range"])
+    paco2 = round(random.uniform(compensation_midpoint - 0.8, compensation_midpoint + 0.8), 1)
     ph = estimate_ph(hco3, paco2)
-    na = random.randint(134, 142)
-    target_ag = random.randint(8, 14)
+    na = random.randint(*band["sodium_range"])
+    target_ag = random.randint(*band["anion_gap_range"])
     cl = na - (hco3 + target_ag)
-    ag = round(na - (cl + hco3), 1)
-    lactate = round(random.uniform(0.8, 1.8), 1)
-
-    stem_options = [
-        "81-year-old on regular frusemide presents with dizziness, weakness, and poor oral intake after several days of increased diuretic use.",
-        "72-year-old with heart failure reports cramps and light-headedness after escalating loop diuretics for ankle swelling.",
-        "68-year-old taking loop diuretics presents with postural symptoms, dry mucous membranes, and fatigue after recent volume depletion.",
-    ]
+    ag = calc_anion_gap(na, cl, hco3)
+    lactate = round(random.uniform(*band["lactate_range"]), 1)
 
     ph_status = derived_ph_status(ph)
     if ph_status == "Alkalaemia":
@@ -215,7 +295,7 @@ def generate_diuretic_alkalosis_case(case_id):
         category="metabolic_alkalosis",
         learning_objective="Recognise chloride-responsive metabolic alkalosis from diuretic-associated volume depletion",
         tags=["diuretics", "metabolic_alkalosis", "chloride_responsive"],
-        clinical_stem=random.choice(stem_options),
+        clinical_stem=random.choice(band["stem_options"]),
         inputs=build_inputs(ph, paco2, hco3, na, cl, lactate=lactate),
         questions_flow=shuffle_question_options(
             intermediate_question_flow([
@@ -254,7 +334,7 @@ def generate_diarrhoea_case(case_id):
     na = random.randint(136, 142)
     target_ag = random.randint(8, 12)
     cl = na - (hco3 + target_ag)
-    ag = na - (cl + hco3)
+    ag = calc_anion_gap(na, cl, hco3)
     lactate = round(random.uniform(0.8, 1.8), 1)
 
     stem_options = [
@@ -315,21 +395,17 @@ def generate_diarrhoea_case(case_id):
 
 
 def generate_uraemia_case(case_id):
-    hco3 = random.randint(10, 18)
+    band = random.choice(URAEMIA_VARIATION_BANDS)
+    hco3 = random.randint(*band["hco3_range"])
     expected_paco2 = winters_expected_paco2(hco3)
-    paco2 = round(random.uniform(expected_paco2 - 2, expected_paco2 + 2), 1)
+    compensation_midpoint = expected_paco2 + random.uniform(*band["compensation_delta_range"])
+    paco2 = round(random.uniform(compensation_midpoint - 0.8, compensation_midpoint + 0.8), 1)
     ph = estimate_ph(hco3, paco2)
-    na = random.randint(132, 140)
-    target_ag = random.randint(18, 28)
+    na = random.randint(*band["sodium_range"])
+    target_ag = random.randint(*band["anion_gap_range"])
     cl = na - (hco3 + target_ag)
-    ag = round(na - (cl + hco3), 1)
-    lactate = round(random.uniform(0.8, 2.2), 1)
-
-    stem_options = [
-        "64-year-old on haemodialysis presents lethargic and nauseated after missing recent dialysis sessions.",
-        "71-year-old with advanced CKD presents with malaise, reduced urine output, and progressive weakness over several days.",
-        "58-year-old with renal failure presents with fluid overload, poor appetite, and increasing drowsiness after worsening oliguria.",
-    ]
+    ag = calc_anion_gap(na, cl, hco3)
+    lactate = round(random.uniform(*band["lactate_range"]), 1)
 
     ph_status = derived_ph_status(ph)
     if ph_status == "Acidaemia":
@@ -352,7 +428,7 @@ def generate_uraemia_case(case_id):
         category="metabolic_acidosis_hagma",
         learning_objective="Recognise high anion gap metabolic acidosis from uraemia with appropriate respiratory compensation",
         tags=["uraemia", "renal_failure", "hagma", "metabolic_acidosis"],
-        clinical_stem=random.choice(stem_options),
+        clinical_stem=random.choice(band["stem_options"]),
         inputs=build_inputs(ph, paco2, hco3, na, cl, lactate=lactate),
         questions_flow=shuffle_question_options(
             advanced_question_flow([

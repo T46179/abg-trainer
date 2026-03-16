@@ -235,6 +235,40 @@ def validate_case(case):
                 f"{case_id}: panic HCO3 outside acute respiratory alkalosis range ({hco3} not in {low}-{high})"
             )
 
+    elif archetype == "simple_respiratory_alkalosis":
+        expected_hco3 = round(respiratory_alkalosis_expected_hco3_acute(paco2), 1)
+        low = round(expected_hco3 - 2, 1)
+        high = round(expected_hco3 + 2, 1)
+
+        if answer_key.get("primary_disorder") != "Respiratory alkalosis":
+            errors.append(f"{case_id}: simple respiratory alkalosis case should be respiratory alkalosis")
+        if answer_key.get("final_diagnosis") != "Hyperventilation":
+            errors.append(f"{case_id}: simple respiratory alkalosis final diagnosis mismatch")
+        if paco2 >= 40:
+            errors.append(f"{case_id}: simple respiratory alkalosis case should have low PaCO2")
+        if ph <= 7.45:
+            errors.append(f"{case_id}: simple respiratory alkalosis case should be alkalemic")
+        if not in_range(hco3, low, high):
+            errors.append(
+                f"{case_id}: simple respiratory alkalosis HCO3 outside acute respiratory alkalosis range ({hco3} not in {low}-{high})"
+            )
+
+    elif archetype == "simple_respiratory_acidosis":
+        expected_hco3 = round(24 + ((paco2 - 40) / 10), 1)
+        low = round(expected_hco3 - 2, 1)
+        high = round(expected_hco3 + 2, 1)
+
+        if answer_key.get("primary_disorder") != "Respiratory acidosis":
+            errors.append(f"{case_id}: simple respiratory acidosis case should be respiratory acidosis")
+        if answer_key.get("final_diagnosis") != "Hypoventilation":
+            errors.append(f"{case_id}: simple respiratory acidosis final diagnosis mismatch")
+        if paco2 <= 40:
+            errors.append(f"{case_id}: simple respiratory acidosis case should have elevated PaCO2")
+        if not in_range(hco3, low, high):
+            errors.append(
+                f"{case_id}: simple respiratory acidosis HCO3 outside acute respiratory acidosis range ({hco3} not in {low}-{high})"
+            )
+
     elif archetype == "salicylate_toxicity":
         if answer_key.get("primary_disorder") != "Metabolic acidosis":
             errors.append(

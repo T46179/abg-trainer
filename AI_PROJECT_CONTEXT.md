@@ -148,6 +148,8 @@ Each case generator typically:
 7. Attaches a question flow.
 8. Returns a complete case via `build_case()`.
 
+Several archetypes also use variation bands. These bands widen replay variety by changing severity or subtlety ranges while preserving the same core physiological pattern, diagnosis family, and question flow.
+
 Standard case shape:
 
 ```python
@@ -338,6 +340,9 @@ Archetypes are organized by module. They represent acid-base patterns first, and
 Design interpretation:
 - An archetype is not just a diagnosis label.
 - It is a reusable physiological pattern with a consistent compensation profile, diagnostic explanation, and question structure.
+- Some archetypes now include mild/moderate/severe or subtle/moderate/severe variation bands to improve replay variety without changing the underlying acid-base pattern.
+- This now includes `simple_respiratory_alkalosis` and `simple_respiratory_acidosis`, where bands vary severity and subtlety while preserving the same beginner single-process respiratory pattern.
+- Respiratory generators also standardize anion gap calculation through the shared physiology helper, and the severe bands in the simple respiratory archetypes allow slightly broader acute-compensation variability for replay realism without changing the intended disorder pattern.
 
 ## Current Case Pool Size
 
