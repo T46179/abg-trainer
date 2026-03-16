@@ -71,6 +71,24 @@ function prettyStepLabel(stepKey) {
   return labels[stepKey] ?? stepKey;
 }
 
+function showCaseMessage(title, message, details = "") {
+  const caseCard = document.getElementById("caseCard");
+  if (!caseCard) return;
+
+  caseCard.innerHTML = `
+    <div class="practice-header">
+      <div>
+        <div class="practice-title">${title}</div>
+      </div>
+    </div>
+    <div class="card-section">
+      <p>${message}</p>
+      ${details ? `<p class="muted">${details}</p>` : ""}
+    </div>
+  `;
+  caseCard.style.display = "block";
+}
+
 
 /** Load JSON */
 async function loadCases() {
@@ -436,10 +454,63 @@ function stopTimer() {
   timerInterval = null;
 }
 
+function startPractice() {
+  console.log("Start practice clicked");
+  console.log("Cases loaded:", Array.isArray(allCases), "count:", allCases?.length ?? 0);
+
+  if (!Array.isArray(allCases) || allCases.length === 0) {
+    console.warn("Start practice blocked: cases are not ready or failed to load.");
+    showCaseMessage(
+      "Cases not ready",
+      "Cases are still loading or could not be loaded.",
+      "Check that abg_cases.json is available and wait a moment before trying again."
+    );
+    return;
+  }
+
+  const startCard = document.getElementById("startCard");
+  const caseCard = document.getElementById("caseCard");
+
+  if (startCard) startCard.style.display = "none";
+  if (caseCard) caseCard.style.display = "block";
+
+  const selectedCase = loadNextCase();
+  console.log("Case selected on start:", !!selectedCase);
+}
+
+// Robust start-practice binding: keep this outside async init so the button never appears dead.
+function bindStartButton() {
+  const startBtn = document.getElementById("startBtn");
+  console.log("Binding start button:", startBtn);
+
+  if (!startBtn) {
+    console.warn("Start button not found.");
+    return;
+  }
+
+  if (startBtn.dataset.bound === "true") {
+    console.log("Start button already bound.");
+    return;
+  }
+
+  startBtn.addEventListener("click", startPractice);
+  startBtn.dataset.bound = "true";
+}
+
 /** Load next random case */
 function loadNextCase() {
   stepResults = [];
   currentStepIndex = 0;
+
+  if (!Array.isArray(allCases) || allCases.length === 0) {
+    console.warn("loadNextCase: no cases loaded.");
+    showCaseMessage(
+      "No cases available",
+      "No case data is currently loaded.",
+      "Check that abg_cases.json was generated and loaded successfully."
+    );
+    return null;
+  }
 
   const subscriptionTier =
     dashboardState?.user?.subscription_tier ??
@@ -459,9 +530,9 @@ function loadNextCase() {
   );
 
   if (!availableCases.length) {
-    availableCases = allCases.filter(
-      c => (c.difficulty_level ?? 1) <= maxDifficulty
-    );
+    // Testing mode may widen the eligible pool; always fall back to allCases if filtering becomes empty.
+    console.warn("loadNextCase: no cases matched the testing difficulty filter, falling back to all cases.");
+    availableCases = [...allCases];
   }
 
   let filteredCases = availableCases.filter(
@@ -469,10 +540,43 @@ function loadNextCase() {
   );
 
   if (!filteredCases.length) {
+    console.warn("loadNextCase: recent-archetype exclusion emptied the pool, retrying without that exclusion.");
     filteredCases = availableCases;
   }
 
+  if (!filteredCases.length) {
+    console.warn("loadNextCase: available case pool is still empty, falling back to all cases.");
+    filteredCases = [...allCases];
+  }
+
+  console.log(
+    "loadNextCase counts",
+    {
+      totalCases: allCases.length,
+      availableCases: availableCases.length,
+      filteredCases: filteredCases.length,
+      subscriptionTier,
+      maxDifficulty,
+    }
+  );
+
   currentCase = pickRandom(filteredCases);
+
+  if (!currentCase) {
+    console.error("loadNextCase: failed to select a case.");
+    showCaseMessage(
+      "No eligible case found",
+      "A case could not be selected from the current pool.",
+      "Check the console logs for filtering details."
+    );
+    return null;
+  }
+
+  console.log("Selected case:", {
+    archetype: currentCase.archetype,
+    difficulty: currentCase.difficulty_level ?? 1,
+    caseId: currentCase.case_id,
+  });
 
   if (currentCase?.archetype) {
     recentArchetypes.push(currentCase.archetype);
@@ -487,6 +591,7 @@ function loadNextCase() {
   startTimer();
 
   document.getElementById("nextBtn").disabled = true;
+  return currentCase;
 }
 
 
@@ -501,19 +606,23 @@ document.getElementById("modeSelect").onchange = updateModeUI;
 
 
 function renderProgression() {
-  if (!userState) return;
-
-  const level = userState.level;
-  const xpInto = userState.level_progress?.xp_into_level ?? 0;
-  const xpNeeded = userState.level_progress?.xp_needed_for_next_level;
-  const unlockedLabel = userState.unlocked_difficulty_label ?? "Beginner";
-
   const el = document.getElementById("progressionDebug");
   if (!el) return;
 
+  if (!userState) {
+    el.innerHTML = `<strong>Level 1</strong><br>XP: 0 total<br>Unlocked: Beginner`;
+    return;
+  }
+
+  const level = userState.level ?? 1;
+  const xpInto = userState.level_progress?.xp_into_level ?? 0;
+  const xpNeeded = userState.level_progress?.xp_needed_for_next_level;
+  const unlockedLabel = userState.unlocked_difficulty_label ?? "Beginner";
+  const totalXp = userState.total_xp ?? 0;
+
   el.innerHTML = `
     <strong>Level ${level}</strong><br>
-    XP: ${xpNeeded == null ? `${userState.total_xp} total` : `${xpInto} / ${xpNeeded}`}<br>
+    XP: ${xpNeeded == null ? `${totalXp} total` : `${xpInto} / ${xpNeeded}`}<br>
     Unlocked: ${unlockedLabel}
   `;
 }
@@ -664,14 +773,30 @@ function applyCaseXp(difficultyLevel, perfectCase, secondsTaken) {
 /** Init */
 (async function init() {
   updateModeUI();
+  bindStartButton();
+  renderProgression();
 
   try {
     const data = await loadCases();
 
-    allCases = data.cases;
-    progressionConfig = data.progressionConfig;
-    dashboardState = data.dashboardState;
-    userState = data.userState;
+    allCases = data?.cases ?? [];
+    progressionConfig = data?.progressionConfig ?? null;
+    dashboardState = data?.dashboardState ?? null;
+    userState = data?.userState ?? {
+      level: 1,
+      unlocked_difficulty: 1,
+      unlocked_difficulty_label: "Beginner",
+      total_xp: 0,
+      level_progress: {
+        level: 1,
+        xp_into_level: 0,
+        xp_needed_for_next_level: null,
+        current_level_start_xp: 0,
+        next_level_total_xp: null,
+      },
+      streak_days: 0,
+      subscription_tier: "free",
+    };
 
     // TESTING MODE: progression lock disabled
     // This allows testers to experience intermediate-master cases.
@@ -682,12 +807,13 @@ function applyCaseXp(difficultyLevel, perfectCase, secondsTaken) {
     const testingTotalXp =
       (progressionConfig?.xp_required_per_level?.[1] ?? 0) +
       (progressionConfig?.xp_required_per_level?.[2] ?? 0);
+    const testingLevelProgress = getLevelProgressFromXp(testingTotalXp);
 
     userState = {
       ...(userState ?? {}),
       total_xp: testingTotalXp,
       level: testingCurrentLevel,
-      level_progress: getLevelProgress(testingTotalXp),
+      level_progress: testingLevelProgress,
       unlocked_difficulty: testingUnlockedDifficulty,
       unlocked_difficulty_label: getDifficultyLabel(testingUnlockedDifficulty),
     };
@@ -697,7 +823,7 @@ function applyCaseXp(difficultyLevel, perfectCase, secondsTaken) {
         ...dashboardState.user,
         total_xp: testingTotalXp,
         level: testingCurrentLevel,
-        level_progress: getLevelProgress(testingTotalXp),
+        level_progress: testingLevelProgress,
         unlocked_difficulty: testingUnlockedDifficulty,
         unlocked_difficulty_label: getDifficultyLabel(testingUnlockedDifficulty),
       };
@@ -709,33 +835,34 @@ function applyCaseXp(difficultyLevel, perfectCase, secondsTaken) {
     console.log("firstCase =", allCases[0]);
 
     if (!Array.isArray(allCases) || !allCases.length) {
-      throw new Error("No cases found in JSON.");
+      console.warn("Init completed but no cases were found in JSON.");
     }
-
-    const startBtn = document.getElementById("startBtn");
-    console.log("binding startBtn =", startBtn);
-
-    if (startBtn) {
-      startBtn.onclick = () => {
-        console.log("Start button clicked");
-
-        document.getElementById("startCard").style.display = "none";
-        document.getElementById("caseCard").style.display = "block";
-
-        console.log("About to load next case");
-        console.log("allCases =", allCases);
-
-        loadNextCase();
-      };
-    }
-
   } catch (e) {
     console.error("INIT ERROR:", e);
-    document.getElementById("caseCard").innerHTML = `
-      <p class="incorrect">Error loading cases.</p>
-      <pre>${e.message}</pre>
-      <p class="muted">Check that <code>abg_cases.json</code> exists in the same folder as the live site files.</p>
-    `;
+    allCases = [];
+    progressionConfig = progressionConfig ?? null;
+    dashboardState = dashboardState ?? null;
+    userState = userState ?? {
+      level: 1,
+      unlocked_difficulty: 1,
+      unlocked_difficulty_label: "Beginner",
+      total_xp: 0,
+      level_progress: {
+        level: 1,
+        xp_into_level: 0,
+        xp_needed_for_next_level: null,
+        current_level_start_xp: 0,
+        next_level_total_xp: null,
+      },
+      streak_days: 0,
+      subscription_tier: "free",
+    };
+    renderProgression();
+    showCaseMessage(
+      "Error loading cases",
+      e.message,
+      "Check that abg_cases.json exists in the same folder as the live site files."
+    );
   }
 })();
 
