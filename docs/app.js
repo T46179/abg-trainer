@@ -73,7 +73,12 @@ function prettyStepLabel(stepKey) {
 
 function showCaseMessage(title, message, details = "") {
   const caseCard = document.getElementById("caseCard");
+  const qaCard = document.getElementById("qaCard");
+  const resultCard = document.getElementById("resultCard");
   if (!caseCard) return;
+
+  if (qaCard) qaCard.style.display = "none";
+  if (resultCard) resultCard.style.display = "none";
 
   caseCard.innerHTML = `
     <div class="practice-header">
@@ -88,6 +93,32 @@ function showCaseMessage(title, message, details = "") {
   `;
   caseCard.style.display = "block";
 }
+
+window.addEventListener("error", (event) => {
+  console.error("GLOBAL FRONTEND ERROR:", event.error || event.message);
+
+  const startCard = document.getElementById("startCard");
+  if (startCard?.style.display === "none") {
+    showCaseMessage(
+      "Frontend error",
+      "A frontend error interrupted the current case.",
+      event.error?.message ?? event.message ?? "Unknown error"
+    );
+  }
+});
+
+window.addEventListener("unhandledrejection", (event) => {
+  console.error("UNHANDLED PROMISE REJECTION:", event.reason);
+
+  const startCard = document.getElementById("startCard");
+  if (startCard?.style.display === "none") {
+    showCaseMessage(
+      "Frontend error",
+      "An unexpected async error interrupted the current case.",
+      event.reason?.message ?? String(event.reason)
+    );
+  }
+});
 
 
 /** Load JSON */
@@ -122,6 +153,10 @@ async function loadCases() {
 
 /** Render case header */
 function renderCaseCard(c) {
+  if (!c || !c.inputs) {
+    throw new Error("renderCaseCard received an invalid case object");
+  }
+
   const gas = c.inputs?.gas ?? {};
   const ely = c.inputs?.electrolytes ?? {};
   const lact = c.inputs?.lactate_mmolL;
@@ -238,6 +273,16 @@ function renderCaseCard(c) {
 
 /** Render current step question */
 function renderStep() {
+  if (!currentCase) {
+    throw new Error("renderStep called without a currentCase");
+  }
+  if (!Array.isArray(currentCase.questions_flow)) {
+    throw new Error("currentCase.questions_flow is missing or invalid");
+  }
+  if (!currentCase.questions_flow[currentStepIndex]) {
+    throw new Error(`No question found at step index ${currentStepIndex}`);
+  }
+
   const qaCard = document.getElementById("qaCard");
   const resultCard = document.getElementById("resultCard");
   resultCard.style.display = "none";
@@ -456,31 +501,55 @@ function stopTimer() {
 
 function startPractice() {
   console.log("Start practice clicked");
-  console.log("Cases loaded:", Array.isArray(allCases), "count:", allCases?.length ?? 0);
-
-  if (!Array.isArray(allCases) || allCases.length === 0) {
-    console.warn("Start practice blocked: cases are not ready or failed to load.");
-    showCaseMessage(
-      "Cases not ready",
-      "Cases are still loading or could not be loaded.",
-      "Check that abg_cases.json is available and wait a moment before trying again."
-    );
-    return;
-  }
+  console.log("Total case count:", Array.isArray(allCases) ? allCases.length : 0);
 
   const startCard = document.getElementById("startCard");
   const caseCard = document.getElementById("caseCard");
+  const resultCard = document.getElementById("resultCard");
+  const qaCard = document.getElementById("qaCard");
 
-  if (startCard) startCard.style.display = "none";
-  if (caseCard) caseCard.style.display = "block";
+  try {
+    if (!Array.isArray(allCases) || allCases.length === 0) {
+      console.warn("Start practice blocked: cases are not ready or failed to load.");
+      showCaseMessage(
+        "Cases not ready",
+        "Cases are still loading or could not be loaded.",
+        "Check that abg_cases.json is available and wait a moment before trying again."
+      );
+      return;
+    }
 
-  const selectedCase = loadNextCase();
-  console.log("Case selected on start:", !!selectedCase);
+    if (startCard) startCard.style.display = "none";
+    if (caseCard) caseCard.style.display = "block";
+    if (resultCard) resultCard.style.display = "none";
+    if (qaCard) qaCard.style.display = "none";
+
+    const selectedCase = loadNextCase();
+    console.log("Case selected on start:", !!selectedCase);
+
+    if (!selectedCase) {
+      showCaseMessage(
+        "Could not start practice",
+        "No eligible case could be opened right now.",
+        "See console logs for case-selection details."
+      );
+    }
+  } catch (error) {
+    console.error("START PRACTICE ERROR:", error);
+    if (startCard) startCard.style.display = "block";
+    if (caseCard) caseCard.style.display = "block";
+    showCaseMessage(
+      "Could not start practice",
+      "A frontend error occurred while starting the case.",
+      error.message
+    );
+  }
 }
 
 // Robust start-practice binding: keep this outside async init so the button never appears dead.
 function bindStartButton() {
   const startBtn = document.getElementById("startBtn");
+  console.log("bindStartButton invoked");
   console.log("Binding start button:", startBtn);
 
   if (!startBtn) {
@@ -497,101 +566,139 @@ function bindStartButton() {
   startBtn.dataset.bound = "true";
 }
 
+window.startPractice = startPractice;
+
 /** Load next random case */
 function loadNextCase() {
-  stepResults = [];
-  currentStepIndex = 0;
+  try {
+    stepResults = [];
+    currentStepIndex = 0;
 
-  if (!Array.isArray(allCases) || allCases.length === 0) {
-    console.warn("loadNextCase: no cases loaded.");
+    if (!Array.isArray(allCases) || allCases.length === 0) {
+      console.warn("loadNextCase: no cases loaded.");
+      showCaseMessage(
+        "No cases available",
+        "No case data is currently loaded.",
+        "Check that abg_cases.json was generated and loaded successfully."
+      );
+      return null;
+    }
+
+    const subscriptionTier =
+      dashboardState?.user?.subscription_tier ??
+      userState?.subscription_tier ??
+      "free";
+
+    // TESTING MODE: progression lock disabled
+    // This allows testers to experience intermediate-master cases.
+    // Revert before production release.
+    const maxDifficulty = 4;
+
+    let availableCases = allCases.filter(
+      c => {
+        const difficultyLevel = c.difficulty_level ?? 1;
+        return difficultyLevel >= 2 && difficultyLevel <= maxDifficulty;
+      }
+    );
+
+    if (!availableCases.length) {
+      // Testing mode may widen the eligible pool; always fall back to allCases if filtering becomes empty.
+      console.warn("loadNextCase: no cases matched the testing difficulty filter, falling back to all cases.");
+      availableCases = [...allCases];
+    }
+
+    let filteredCases = availableCases.filter(
+      c => !recentArchetypes.includes(c.archetype)
+    );
+
+    if (!filteredCases.length) {
+      console.warn("loadNextCase: recent-archetype exclusion emptied the pool, retrying without that exclusion.");
+      filteredCases = availableCases;
+    }
+
+    if (!filteredCases.length) {
+      console.warn("loadNextCase: available case pool is still empty, falling back to all cases.");
+      filteredCases = [...allCases];
+    }
+
+    console.log(
+      "loadNextCase counts",
+      {
+        totalCases: allCases.length,
+        availableCases: availableCases.length,
+        filteredCases: filteredCases.length,
+        subscriptionTier,
+        maxDifficulty,
+      }
+    );
+
+    currentCase = pickRandom(filteredCases);
+
+    if (!currentCase) {
+      console.error("loadNextCase: failed to select a case.");
+      showCaseMessage(
+        "No eligible case found",
+        "A case could not be selected from the current pool.",
+        "Check the console logs for filtering details."
+      );
+      return null;
+    }
+
+    if (!currentCase.inputs) {
+      console.error("loadNextCase: selected case is missing inputs.", {
+        caseId: currentCase.case_id,
+        archetype: currentCase.archetype,
+      });
+      showCaseMessage(
+        "Invalid case data",
+        "The selected case is missing expected ABG input data.",
+        `${currentCase.case_id ?? "Unknown case"} (${currentCase.archetype ?? "unknown archetype"})`
+      );
+      return null;
+    }
+
+    if (!Array.isArray(currentCase.questions_flow) || currentCase.questions_flow.length === 0) {
+      console.error("loadNextCase: selected case has invalid questions_flow.", {
+        caseId: currentCase.case_id,
+        archetype: currentCase.archetype,
+      });
+      showCaseMessage(
+        "Invalid case data",
+        "The selected case is missing a usable question flow.",
+        `${currentCase.case_id ?? "Unknown case"} (${currentCase.archetype ?? "unknown archetype"})`
+      );
+      return null;
+    }
+
+    console.log("Selected case:", {
+      archetype: currentCase.archetype,
+      difficulty: currentCase.difficulty_level ?? 1,
+      caseId: currentCase.case_id,
+    });
+
+    if (currentCase?.archetype) {
+      recentArchetypes.push(currentCase.archetype);
+      if (recentArchetypes.length > RECENT_ARCHETYPE_LIMIT) {
+        recentArchetypes.shift();
+      }
+    }
+
+    renderCaseCard(currentCase);
+    renderStep();
+    stopTimer();
+    startTimer();
+
+    document.getElementById("nextBtn").disabled = true;
+    return currentCase;
+  } catch (error) {
+    console.error("LOAD NEXT CASE ERROR:", error, currentCase);
     showCaseMessage(
-      "No cases available",
-      "No case data is currently loaded.",
-      "Check that abg_cases.json was generated and loaded successfully."
+      "Case rendering error",
+      "A case was selected but could not be rendered.",
+      error.message
     );
     return null;
   }
-
-  const subscriptionTier =
-    dashboardState?.user?.subscription_tier ??
-    userState?.subscription_tier ??
-    "free";
-
-  // TESTING MODE: progression lock disabled
-  // This allows testers to experience intermediate-master cases.
-  // Revert before production release.
-  const maxDifficulty = 4;
-
-  let availableCases = allCases.filter(
-    c => {
-      const difficultyLevel = c.difficulty_level ?? 1;
-      return difficultyLevel >= 2 && difficultyLevel <= maxDifficulty;
-    }
-  );
-
-  if (!availableCases.length) {
-    // Testing mode may widen the eligible pool; always fall back to allCases if filtering becomes empty.
-    console.warn("loadNextCase: no cases matched the testing difficulty filter, falling back to all cases.");
-    availableCases = [...allCases];
-  }
-
-  let filteredCases = availableCases.filter(
-    c => !recentArchetypes.includes(c.archetype)
-  );
-
-  if (!filteredCases.length) {
-    console.warn("loadNextCase: recent-archetype exclusion emptied the pool, retrying without that exclusion.");
-    filteredCases = availableCases;
-  }
-
-  if (!filteredCases.length) {
-    console.warn("loadNextCase: available case pool is still empty, falling back to all cases.");
-    filteredCases = [...allCases];
-  }
-
-  console.log(
-    "loadNextCase counts",
-    {
-      totalCases: allCases.length,
-      availableCases: availableCases.length,
-      filteredCases: filteredCases.length,
-      subscriptionTier,
-      maxDifficulty,
-    }
-  );
-
-  currentCase = pickRandom(filteredCases);
-
-  if (!currentCase) {
-    console.error("loadNextCase: failed to select a case.");
-    showCaseMessage(
-      "No eligible case found",
-      "A case could not be selected from the current pool.",
-      "Check the console logs for filtering details."
-    );
-    return null;
-  }
-
-  console.log("Selected case:", {
-    archetype: currentCase.archetype,
-    difficulty: currentCase.difficulty_level ?? 1,
-    caseId: currentCase.case_id,
-  });
-
-  if (currentCase?.archetype) {
-    recentArchetypes.push(currentCase.archetype);
-    if (recentArchetypes.length > RECENT_ARCHETYPE_LIMIT) {
-      recentArchetypes.shift();
-    }
-  }
-
-  renderCaseCard(currentCase);
-  renderStep();
-  stopTimer();
-  startTimer();
-
-  document.getElementById("nextBtn").disabled = true;
-  return currentCase;
 }
 
 
