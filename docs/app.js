@@ -81,17 +81,25 @@ function setText(id, value) {
 }
 
 function trackEvent(name, params = {}) {
+  console.log("trackEvent:", name, params);
+
   if (typeof window.gtag === "function") {
     window.gtag("event", name, params);
+  } else {
+    console.warn("window.gtag is not available");
   }
 }
 
 function trackPageView(viewName) {
+  console.log("trackPageView:", viewName);
+
   if (typeof window.gtag === "function") {
     window.gtag("event", "page_view", {
       page_title: viewName,
       page_path: "/" + viewName
     });
+  } else {
+    console.warn("window.gtag is not available");
   }
 }
 

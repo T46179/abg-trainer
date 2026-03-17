@@ -4,10 +4,13 @@
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-9ZE6K68YGV"></script>
 <script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-9ZE6K68YGV', { debug_mode: true });
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function () {
+    window.dataLayer.push(arguments);
+    console.log("gtag fired:", arguments);
+  };
+  window.gtag("js", new Date());
+  window.gtag("config", "G-9ZE6K68YGV", { debug_mode: true });
 </script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
