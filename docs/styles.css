@@ -526,10 +526,63 @@ button {
   background: #f8fafc;
 }
 
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  background: rgba(15, 23, 42, 0.58);
+}
+
+.modal-card {
+  width: min(560px, calc(100vw - 32px));
+  overflow-y: auto;
+  margin: auto;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.22);
+  position: relative;
+  z-index: 1001;
+  height: auto;
+  min-height: 0;
+}
+
+.practice-intro-copy hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  width: 85%;
+  margin: 12px auto 8px auto;
+}
+
 .difficulty-grid {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
+.practice-intro-title {
+  font-size: 26px;
+  font-weight: 700;
+  text-align: center;
+  margin: 0 auto 18px auto;
+  max-width: 85%;
+  line-height: 1.25;
+}
+
+.practice-intro-list {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.6;
+}
+
+.practice-intro-copy hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 6px 0 2px;
+}
 .difficulty-card {
   padding: 12px 16px;
   display: grid;
@@ -682,8 +735,19 @@ button {
   padding: 18px 20px;
 }
 
+.value-copy {
+  display: grid;
+  gap: 4px;
+}
+
 .value-label {
   font-size: 13px;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.value-reference {
+  font-size: 12px;
   color: var(--muted-foreground);
 }
 
@@ -719,6 +783,12 @@ button {
 .step-pill.is-done {
   background: rgba(22, 163, 74, 0.1);
   color: var(--success);
+}
+
+.step-pill.is-incorrect {
+  background: rgba(220, 38, 38, 0.12);
+  color: var(--danger);
+  border: 1px solid rgba(220, 38, 38, 0.25);
 }
 
 .question-prompt {
@@ -807,6 +877,40 @@ button {
 
 .result-actions {
   margin-top: 28px;
+}
+
+.results-values-section {
+  margin-bottom: 16px;
+}
+
+#resultsExplanationSection {
+  margin-bottom: 16px;
+}
+
+.results-values-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.results-value-tile {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.8);
+  padding: 14px 16px;
+}
+
+.results-value-label {
+  display: block;
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+
+.results-value-number {
+  display: block;
+  margin-top: 6px;
+  font-size: 18px;
+  line-height: 1.2;
 }
 
 .bonus-grid {
@@ -1174,4 +1278,51 @@ button {
 
 #leaderboardView .fig-card + .fig-card {
   margin-top: 32px;
+}
+
+.site-footer {
+  margin-top: 60px;
+  padding: 40px 0 50px;
+  border-top: 1px solid var(--border);
+  background: #fafafa;
+  text-align: center;
+}
+
+.footer-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  font-size: 14px;
+  color: var(--muted-foreground);
+  line-height: 1.7;
+}
+
+.footer-disclaimer {
+  font-size: 12px;
+  margin-top: 3px;
+  opacity: 0.8;
+}
+
+.footer-version {
+  font-size: 11px;
+  margin-top: 10px;
+  opacity: 0.6;
+}
+
+.footer-reset {
+  margin-top: 18px;
+}
+
+.nav-tab.is-disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.footer-feedback {
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--primary);
+}
+
+.footer-feedback:hover {
+  text-decoration: underline;
 }

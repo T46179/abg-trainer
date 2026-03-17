@@ -1,5 +1,6 @@
 const USER_STATE_STORAGE_KEY = "abgmaster_userState";
 const USER_STATE_MODE_STORAGE_KEY = "abgmaster_userState_mode";
+const PRACTICE_INTRO_SEEN_STORAGE_KEY = "practiceIntroSeen";
 
 const userState = {
   xp: 0,
@@ -36,7 +37,8 @@ const appData = {
   isLoaded: false,
   recentArchetypes: [],
   timerInterval: null,
-  lastCaseSummary: null
+  lastCaseSummary: null,
+  practiceIntroContinue: null
 };
 
 const RECENT_ARCHETYPE_LIMIT = 2;
@@ -407,6 +409,60 @@ function saveUserState() {
   }
 }
 
+function hasSeenPracticeIntro() {
+  try {
+    return window.localStorage.getItem(PRACTICE_INTRO_SEEN_STORAGE_KEY) === "true";
+  } catch (error) {
+    console.warn("Failed to read practice intro state.", error);
+    return false;
+  }
+}
+
+function markPracticeIntroSeen() {
+  try {
+    window.localStorage.setItem(PRACTICE_INTRO_SEEN_STORAGE_KEY, "true");
+  } catch (error) {
+    console.warn("Failed to persist practice intro state.", error);
+  }
+}
+
+function closePracticeIntroModal() {
+  const modal = document.getElementById("practiceIntroModal");
+  if (!modal) return;
+
+  modal.classList.add("is-hidden");
+  modal.setAttribute("aria-hidden", "true");
+}
+
+function continueFromPracticeIntro() {
+  markPracticeIntroSeen();
+  closePracticeIntroModal();
+
+  const onContinue = appData.practiceIntroContinue;
+  appData.practiceIntroContinue = null;
+
+  if (typeof onContinue === "function") {
+    onContinue();
+  }
+}
+
+function maybeShowPracticeIntro(onContinue) {
+  if (hasSeenPracticeIntro()) {
+    onContinue();
+    return;
+  }
+
+  const modal = document.getElementById("practiceIntroModal");
+  if (!modal) {
+    onContinue();
+    return;
+  }
+
+  appData.practiceIntroContinue = onContinue;
+  modal.classList.remove("is-hidden");
+  modal.setAttribute("aria-hidden", "false");
+}
+
 function syncUserStateDerivedFields() {
   userState.level = Math.max(1, getLevelFromXp(userState.xp));
   userState.unlockedDifficulties = sanitizeUnlockedDifficulties([
@@ -565,8 +621,8 @@ function buildStepOptionOverrides(caseItem) {
   const overrides = {};
 
   (caseItem?.questions_flow ?? []).forEach((step, index) => {
-    if (step?.key === "primary_disorder") {
-      overrides[index] = shuffleArray(step.options ?? []);
+    if (step?.key === "final_diagnosis" && Array.isArray(step.options)) {
+      overrides[index] = shuffleArray(step.options);
     }
   });
 
@@ -725,6 +781,19 @@ function finishCase() {
   renderApp();
 }
 
+function openCaseFeedbackForm() {
+  const caseItem = appData.lastCaseSummary?.caseData;
+  const gas = caseItem?.inputs?.gas;
+  const caseId = caseItem?.case_id;
+
+  if (!caseId || gas?.ph == null || gas?.paco2_mmHg == null || gas?.hco3_mmolL == null) return;
+
+  const valuesSummary = `pH ${gas.ph} / PaCO2 ${gas.paco2_mmHg} / HCO3 ${gas.hco3_mmolL}`;
+  const formUrl = `https://docs.google.com/forms/d/e/1FAIpQLScrfFqV6EwEDzIWkYcfFrUw4L-zjmwj0aIDg2bwNPwMYBTz6Q/viewform?usp=pp_url&entry.2070020822=${encodeURIComponent(caseId)}&entry.134622764=${encodeURIComponent(valuesSummary)}`;
+
+  window.open(formUrl, "_blank");
+}
+
 async function loadCases() {
   const response = await fetch("./abg_cases.json", { cache: "no-store" });
   if (!response.ok) {
@@ -816,13 +885,26 @@ function renderDashboard() {
       `).join("")
     : "";
 
+
+	const resetBtn = document.getElementById("resetProgressBtn");
+
+	if (resetBtn) {
+	  resetBtn.onclick = () => {
+		const confirmed = confirm("Reset all progress? This will clear XP, level, and streak.");
+
+		if (confirmed) {
+		  localStorage.clear();
+		  location.reload();
+		}
+	  };
+	}
   const practiceBtn = document.getElementById("dashboardPracticeBtn");
   if (practiceBtn) {
     practiceBtn.dataset.difficulty = sessionState.currentDifficulty;
   }
 
   setText("dashboardHeading", "Welcome back, Guest User!");
-  setText("dashboardSubtitle", "Medical Student");
+  setText("dashboardSubtitle", "");
   setText("dashboardProgressLabel", "Progress to Next Level");
   setText(
     "dashboardProgressValue",
@@ -861,35 +943,72 @@ function renderAbgMetrics(caseItem) {
   const gas = caseItem.inputs?.gas ?? {};
   const electrolytes = caseItem.inputs?.electrolytes ?? {};
   const lactate = caseItem.inputs?.lactate_mmolL;
+  const difficultyLevel = Number(caseItem.difficulty_level ?? 1);
+  const showReferences = difficultyLevel <= 2;
+  const showAbnormalHighlighting = difficultyLevel <= 3;
 
   const metrics = [
-    ["pH", formatValue(gas.ph, 2)],
-    ["PaCO2", gas.paco2_mmHg != null ? `${formatValue(gas.paco2_mmHg, 1)} mmHg` : "--"],
-    ["HCO3", gas.hco3_mmolL != null ? `${formatValue(gas.hco3_mmolL, 1)} mmol/L` : "--"],
-    ["PaO2", gas.pao2_mmHg != null ? `${formatValue(gas.pao2_mmHg, 1)} mmHg` : "--"],
-    ["Base excess", gas.base_excess_mEqL != null ? `${formatValue(gas.base_excess_mEqL, 1)} mEq/L` : "--"],
-    ["Na", electrolytes.na_mmolL != null ? `${formatValue(electrolytes.na_mmolL, 0)} mmol/L` : "--"],
-    ["Cl", electrolytes.cl_mmolL != null ? `${formatValue(electrolytes.cl_mmolL, 0)} mmol/L` : "--"],
-    ["Lactate", lactate != null ? `${formatValue(lactate, 1)} mmol/L` : "--"]
+    {
+      label: "pH",
+      reference: "Normal: 7.35 - 7.45",
+      value: formatValue(gas.ph, 2),
+      abnormal: gas.ph < 7.35 || gas.ph > 7.45
+    },
+    {
+      label: "PaCO2",
+      reference: "Normal: 35 - 45 mmHg",
+      value: gas.paco2_mmHg != null ? `${formatValue(gas.paco2_mmHg, 1)} mmHg` : "--",
+      abnormal: gas.paco2_mmHg < 35 || gas.paco2_mmHg > 45
+    },
+    {
+      label: "HCO3",
+      reference: "Normal: 22 - 26 mmol/L",
+      value: gas.hco3_mmolL != null ? `${formatValue(gas.hco3_mmolL, 1)} mmol/L` : "--",
+      abnormal: gas.hco3_mmolL < 22 || gas.hco3_mmolL > 26
+    },
+    {
+      label: "PaO2",
+      reference: "Normal: 80 - 100 mmHg",
+      value: gas.pao2_mmHg != null ? `${formatValue(gas.pao2_mmHg, 1)} mmHg` : "--",
+      abnormal: gas.pao2_mmHg < 80 || gas.pao2_mmHg > 100
+    },
+    {
+      label: "Base excess",
+      reference: "Normal: -2 to +2 mEq/L",
+      value: gas.base_excess_mEqL != null ? `${formatValue(gas.base_excess_mEqL, 1)} mEq/L` : "--",
+      abnormal: gas.base_excess_mEqL < -2 || gas.base_excess_mEqL > 2
+    },
+    {
+      label: "Na",
+      reference: "Normal: 135 - 145 mmol/L",
+      value: electrolytes.na_mmolL != null ? `${formatValue(electrolytes.na_mmolL, 0)} mmol/L` : "--",
+      abnormal: electrolytes.na_mmolL < 135 || electrolytes.na_mmolL > 145
+    },
+    {
+      label: "Cl",
+      reference: "Normal: 98 - 106 mmol/L",
+      value: electrolytes.cl_mmolL != null ? `${formatValue(electrolytes.cl_mmolL, 0)} mmol/L` : "--",
+      abnormal: electrolytes.cl_mmolL < 98 || electrolytes.cl_mmolL > 106
+    },
+    {
+      label: "Lactate",
+      reference: "Normal: 0.5 - 2.0 mmol/L",
+      value: lactate != null ? `${formatValue(lactate, 1)} mmol/L` : "--",
+      abnormal: lactate < 0.5 || lactate > 2
+    }
   ];
 
   return metrics
-    .filter(([, value]) => value !== "--")
-    .map(([label, value]) => {
-      let abnormal = false;
-
-      if (label === "pH") abnormal = gas.ph < 7.35 || gas.ph > 7.45;
-      if (label === "PaCO2") abnormal = gas.paco2_mmHg < 35 || gas.paco2_mmHg > 45;
-      if (label === "HCO3") abnormal = gas.hco3_mmolL < 22 || gas.hco3_mmolL > 26;
-      if (label === "Na") abnormal = electrolytes.na_mmolL < 135 || electrolytes.na_mmolL > 145;
-      if (label === "Cl") abnormal = electrolytes.cl_mmolL < 98 || electrolytes.cl_mmolL > 106;
-      if (label === "Lactate") abnormal = lactate > 2;
-
+    .filter(metric => metric.value !== "--")
+    .map(metric => {
       return `
         <div class="value-item">
-          <span class="value-label">${label}</span>
-          <strong class="value-number ${abnormal ? "value-abnormal" : ""}">
-            ${escapeHtml(value)}
+          <div class="value-copy">
+            <span class="value-label">${metric.label}</span>
+            ${showReferences ? `<span class="value-reference">${metric.reference}</span>` : ""}
+          </div>
+          <strong class="value-number ${showAbnormalHighlighting && metric.abnormal ? "value-abnormal" : ""}">
+            ${escapeHtml(metric.value)}
           </strong>
         </div>
       `;
@@ -952,16 +1071,23 @@ function renderPractice() {
   const currentResult = sessionState.stepResults[sessionState.currentStepIndex] ?? null;
   const currentOptions = sessionState.stepOptionOverrides[sessionState.currentStepIndex] ?? currentStep?.options ?? [];
   const stepPills = (caseItem.questions_flow ?? [])
-    .map((step, index) => {
-      const done = index < sessionState.stepResults.length;
-      const current = index === sessionState.currentStepIndex;
-      return `
-        <span class="step-pill ${done ? "is-done" : ""} ${current ? "is-current" : ""}">
-          ${index + 1}. ${escapeHtml(step.label ?? prettyStepLabel(step.key))}
-        </span>
-      `;
-    })
-    .join("");
+  .map((step, index) => {
+
+    const result = sessionState.stepResults[index];
+    const done = index < sessionState.stepResults.length;
+    const incorrect = result && !result.correct;
+    const current = index === sessionState.currentStepIndex;
+
+    return `
+      <span class="step-pill 
+        ${done && !incorrect ? "is-done" : ""}
+        ${incorrect ? "is-incorrect" : ""}
+        ${current ? "is-current" : ""}">
+        ${index + 1}. ${escapeHtml(step.label ?? prettyStepLabel(step.key))}
+      </span>
+    `;
+  })
+  .join("");
   setText("practiceStem", caseItem.clinical_stem ?? "");
   setText(
     "practiceQuestionLabel",
@@ -1013,6 +1139,8 @@ function renderPractice() {
 }
 
 function renderResults() {
+  const resultsExplanationSection = document.getElementById("resultsExplanationSection");
+
   if (!appData.lastCaseSummary) {
     setText("resultsTitle", "Results");
     setText("resultsObjective", "");
@@ -1024,7 +1152,9 @@ function renderResults() {
     setText("resultsCorrectValue", "0 / 0");
     setText("resultsLevelValue", String(userState.level));
     setText("resultsExplanation", "");
+    setHtml("resultsValuesGrid", "");
     setHtml("resultsStepList", "");
+    if (resultsExplanationSection) resultsExplanationSection.classList.add("is-hidden");
     return;
   }
 
@@ -1058,13 +1188,43 @@ function renderResults() {
   setText("resultsXpValue", `+${summary.totalXpAward}`);
   setText("resultsCorrectValue", `${summary.correctSteps} / ${summary.totalSteps}`);
   setText("resultsLevelValue", String(summary.level));
-  setText("resultsExplanation", "");
+  setText("resultsExplanation", summary.explanation ?? "");
+  setHtml("resultsValuesGrid", renderResultsValues(summary.caseData));
   setHtml("resultsStepList", resultRows);
+
+  if (resultsExplanationSection) {
+    resultsExplanationSection.classList.toggle("is-hidden", !summary.explanation);
+  }
 
   const resultsSummaryCard = document.getElementById("resultsSummaryCard");
   if (resultsSummaryCard) {
     resultsSummaryCard.className = `fig-card result-state-card ${perfectCase ? "is-correct" : "is-incorrect"}`;
   }
+}
+
+function renderResultsValues(caseItem) {
+  const gas = caseItem?.inputs?.gas ?? {};
+  const electrolytes = caseItem?.inputs?.electrolytes ?? {};
+  const lactate = caseItem?.inputs?.lactate_mmolL;
+
+  const metrics = [
+    ["pH", formatValue(gas.ph, 2)],
+    ["PaCO2", gas.paco2_mmHg != null ? `${formatValue(gas.paco2_mmHg, 1)} mmHg` : "--"],
+    ["HCO3", gas.hco3_mmolL != null ? `${formatValue(gas.hco3_mmolL, 1)} mmol/L` : "--"],
+    ["Na", electrolytes.na_mmolL != null ? `${formatValue(electrolytes.na_mmolL, 0)} mmol/L` : "--"],
+    ["Cl", electrolytes.cl_mmolL != null ? `${formatValue(electrolytes.cl_mmolL, 0)} mmol/L` : "--"],
+    ["Lactate", lactate != null ? `${formatValue(lactate, 1)} mmol/L` : "--"]
+  ];
+
+  return metrics
+    .filter(([, value]) => value !== "--")
+    .map(([label, value]) => `
+      <div class="results-value-tile">
+        <span class="results-value-label">${label}</span>
+        <strong class="results-value-number">${escapeHtml(value)}</strong>
+      </div>
+    `)
+    .join("");
 }
 
 function renderLearn() {
@@ -1200,13 +1360,22 @@ function handleDocumentClick(event) {
   const { action } = actionTarget.dataset;
 
   if (action === "view") {
-    showView(actionTarget.dataset.view);
-    renderNavbar();
+    if (actionTarget.dataset.view === "practice") {
+      maybeShowPracticeIntro(() => {
+        showView("practice");
+        renderNavbar();
+      });
+    } else {
+      showView(actionTarget.dataset.view);
+      renderNavbar();
+    }
     return;
   }
 
   if (action === "start-case") {
-    startNewCase(actionTarget.dataset.difficulty || sessionState.currentDifficulty);
+    maybeShowPracticeIntro(() => {
+      startNewCase(actionTarget.dataset.difficulty || sessionState.currentDifficulty);
+    });
     return;
   }
 
@@ -1221,7 +1390,9 @@ function handleDocumentClick(event) {
   }
 
   if (action === "next-case") {
-    startNewCase(sessionState.currentDifficulty);
+    maybeShowPracticeIntro(() => {
+      startNewCase(sessionState.currentDifficulty);
+    });
     return;
   }
 
@@ -1254,6 +1425,16 @@ window.addEventListener("unhandledrejection", event => {
 
 document.addEventListener("click", handleDocumentClick);
 document.addEventListener("change", handleDocumentChange);
+
+const reportCaseBtn = document.getElementById("reportCaseBtn");
+if (reportCaseBtn) {
+  reportCaseBtn.addEventListener("click", openCaseFeedbackForm);
+}
+
+const practiceIntroStartBtn = document.getElementById("practiceIntroStartBtn");
+if (practiceIntroStartBtn) {
+  practiceIntroStartBtn.addEventListener("click", continueFromPracticeIntro);
+}
 
 (async function init() {
   try {
