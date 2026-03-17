@@ -1,6 +1,74 @@
 """Shared helper builders for archetype generator modules."""
 
+import re
+
 from ..progression import attach_progression_metadata
+
+
+DIAGNOSIS_DISTRACTOR_POOL = [
+    "Opioid toxicity",
+    "Hypoventilation",
+    "COPD",
+    "COPD exacerbation",
+    "Pneumonia",
+    "Neuromuscular weakness",
+    "Sedative overdose",
+    "Hyperventilation",
+    "Panic attack / hyperventilation",
+    "Panic attack",
+    "Pulmonary embolism",
+    "Vomiting",
+    "Vomiting metabolic alkalosis",
+    "Diuretic use",
+    "DKA",
+    "DKA with vomiting",
+    "Salicylate toxicity",
+    "Diarrhoea",
+    "Renal failure",
+    "Renal failure (uraemia)",
+    "Toxic alcohol",
+    "Lactic acidosis",
+    "Sepsis",
+    "Asthma",
+    "Pain",
+    "Pregnancy",
+]
+
+DIAGNOSIS_CANONICAL_LABELS = {
+    "acute copd": "copd exacerbation",
+    "aspirin overdose": "salicylate toxicity",
+    "benzodiazepine overdose": "sedative overdose",
+    "diabetic ketoacidosis": "dka",
+    "opioid overdose": "opioid toxicity",
+    "panic hyperventilation": "panic attack / hyperventilation",
+    "uraemia": "renal failure (uraemia)",
+}
+
+DIAGNOSIS_CONFLICT_GROUPS = (
+    frozenset({"copd", "copd exacerbation"}),
+    frozenset({"dka", "dka with vomiting"}),
+    frozenset({"hyperventilation", "panic attack", "panic attack / hyperventilation"}),
+    frozenset({"hypoventilation", "opioid toxicity", "sedative overdose"}),
+    frozenset({"lactic acidosis", "sepsis"}),
+    frozenset({"renal failure", "renal failure (uraemia)"}),
+    frozenset({"vomiting", "vomiting metabolic alkalosis"}),
+)
+
+MECHANISM_LABELS = {
+    "hypoventilation",
+    "hyperventilation",
+}
+
+CAUSE_LABELS = {
+    "opioid toxicity",
+    "sedative overdose",
+    "panic attack",
+    "sepsis",
+    "copd",
+    "copd exacerbation",
+}
+
+GENERIC_MECHANISM_KEYWORDS = {"ventilation", "ventilatory"}
 
 
 def build_inputs(ph, paco2, hco3, na, cl, lactate=None):
@@ -41,6 +109,98 @@ def build_answer_key(
     return answer_key
 
 
+def normalize_diagnosis_option(label):
+    normalized = re.sub(r"[\/\-,()]", " ", str(label or "").lower())
+    normalized = re.sub(r"\s+", " ", normalized).strip()
+    return DIAGNOSIS_CANONICAL_LABELS.get(normalized, normalized)
+
+
+def diagnosis_labels_conflict(left, right):
+    left_normalized = normalize_diagnosis_option(left)
+    right_normalized = normalize_diagnosis_option(right)
+
+    if not left_normalized or not right_normalized:
+        return False
+
+    if left_normalized == right_normalized:
+        return True
+
+    return any(
+        left_normalized in group and right_normalized in group
+        for group in DIAGNOSIS_CONFLICT_GROUPS
+    ) or _diagnosis_labels_conflict_by_tokens(left_normalized, right_normalized)
+
+
+def _diagnosis_labels_conflict_by_tokens(left_normalized, right_normalized):
+    if (
+        left_normalized in MECHANISM_LABELS and right_normalized in CAUSE_LABELS
+    ) or (
+        right_normalized in MECHANISM_LABELS and left_normalized in CAUSE_LABELS
+    ):
+        return True
+
+    if any(word in left_normalized for word in GENERIC_MECHANISM_KEYWORDS) and right_normalized in CAUSE_LABELS:
+        return True
+
+    if any(word in right_normalized for word in GENERIC_MECHANISM_KEYWORDS) and left_normalized in CAUSE_LABELS:
+        return True
+
+    left_tokens = set(left_normalized.split())
+    right_tokens = set(right_normalized.split())
+
+    if not left_tokens or not right_tokens:
+        return False
+
+    if left_tokens.issubset(right_tokens) or right_tokens.issubset(left_tokens):
+        return True
+
+    overlap_ratio = len(left_tokens & right_tokens) / max(len(left_tokens), len(right_tokens))
+    if overlap_ratio >= 0.5:
+        return True
+
+    return False
+
+
+def sanitize_final_diagnosis_options(questions_flow, answer_key):
+    final_diagnosis = answer_key.get("final_diagnosis")
+
+    for question in questions_flow:
+        if question.get("key") != "final_diagnosis":
+            continue
+
+        options = question.get("options")
+        if not isinstance(options, list):
+            continue
+
+        target_count = len(options)
+        sanitized_options = []
+
+        def try_add_option(option):
+            option_text = str(option or "").strip()
+            if not option_text:
+                return False
+
+            if any(diagnosis_labels_conflict(existing, option_text) for existing in sanitized_options):
+                return False
+
+            sanitized_options.append(option_text)
+            return True
+
+        try_add_option(final_diagnosis)
+
+        for option in options:
+            if len(sanitized_options) >= target_count:
+                break
+            try_add_option(option)
+
+        for option in DIAGNOSIS_DISTRACTOR_POOL:
+            if len(sanitized_options) >= target_count:
+                break
+            try_add_option(option)
+
+        question["options"] = sanitized_options
+
+
 def build_case(
     *,
     case_id,
@@ -69,6 +229,8 @@ def build_case(
         "questions_flow": questions_flow,
         "answer_key": answer_key,
     }
+
+    sanitize_final_diagnosis_options(case["questions_flow"], answer_key)
 
     if learning_objective is not None:
         case["learning_objective"] = learning_objective

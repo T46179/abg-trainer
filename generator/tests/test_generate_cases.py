@@ -16,6 +16,7 @@ GENERATOR_DIR = Path(__file__).resolve().parents[1]
 REPO_ROOT = GENERATOR_DIR.parent
 
 from generator import generate_cases
+from generator.generators.common import diagnosis_labels_conflict, normalize_diagnosis_option
 
 
 class GenerateCasesTests(unittest.TestCase):
@@ -189,6 +190,42 @@ class GenerateCasesTests(unittest.TestCase):
                     f"estimate {rounded_expected_ph}"
                 ),
             )
+
+    def test_final_diagnosis_options_are_unique_and_non_overlapping(self):
+        cases = generate_cases.generate_all_cases()
+
+        for case in cases:
+            final_diagnosis = case["answer_key"]["final_diagnosis"]
+            diagnosis_steps = [
+                question for question in case["questions_flow"]
+                if question.get("key") == "final_diagnosis"
+            ]
+
+            for question in diagnosis_steps:
+                options = question["options"]
+
+                self.assertIn(
+                    final_diagnosis,
+                    options,
+                    msg=f"{case['case_id']}: final diagnosis missing from options",
+                )
+
+                normalized_options = [normalize_diagnosis_option(option) for option in options]
+                self.assertEqual(
+                    len(normalized_options),
+                    len(set(normalized_options)),
+                    msg=f"{case['case_id']}: duplicate normalized diagnosis options {options}",
+                )
+
+                for index, option in enumerate(options):
+                    for other_option in options[index + 1:]:
+                        self.assertFalse(
+                            diagnosis_labels_conflict(option, other_option),
+                            msg=(
+                                f"{case['case_id']}: overlapping final diagnosis options "
+                                f"{option!r} and {other_option!r}"
+                            ),
+                        )
 
     def test_main_writes_valid_json_payload(self):
         with tempfile.TemporaryDirectory() as temp_dir:

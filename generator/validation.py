@@ -5,6 +5,7 @@ archetype-specific expectations, duplicate IDs, and retry logic for case
 generation until a valid case is produced.
 """
 
+from .generators.common import diagnosis_labels_conflict, normalize_diagnosis_option
 from .physiology import (
     anion_gap_category,
     calc_anion_gap,
@@ -51,6 +52,35 @@ def validate_question_flow(case):
         errors.append(
             f"questions_flow keys {keys} do not match expected flows {expected} for difficulty {difficulty}"
         )
+
+    return errors
+
+
+def validate_final_diagnosis_options(case):
+    errors = []
+    case_id = case.get("case_id", "<missing_case_id>")
+    final_diagnosis = case.get("answer_key", {}).get("final_diagnosis")
+
+    for question in case.get("questions_flow", []):
+        if question.get("key") != "final_diagnosis":
+            continue
+
+        options = question.get("options", [])
+        if final_diagnosis not in options:
+            errors.append(f"{case_id}: final_diagnosis options missing correct answer '{final_diagnosis}'")
+
+        for index, option in enumerate(options):
+            normalized_option = normalize_diagnosis_option(option)
+
+            for other_option in options[index + 1:]:
+                if diagnosis_labels_conflict(option, other_option):
+                    errors.append(
+                        f"{case_id}: overlapping final_diagnosis options '{option}' and '{other_option}'"
+                    )
+                elif normalized_option == normalize_diagnosis_option(other_option):
+                    errors.append(
+                        f"{case_id}: duplicate normalized final_diagnosis options '{option}' and '{other_option}'"
+                    )
 
     return errors
 
@@ -318,6 +348,7 @@ def validate_case(case):
             errors.append(f"{case_id}: uraemia expected rule should be Winter")
 
     errors.extend(validate_question_flow(case))
+    errors.extend(validate_final_diagnosis_options(case))
     return errors
 
 
