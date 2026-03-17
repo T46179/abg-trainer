@@ -6,6 +6,7 @@ const userState = {
   xp: 0,
   level: 1,
   casesCompleted: 0,
+  abandonedCases: 0,
   correctAnswers: 0,
   totalAnswers: 0,
   streak: 0,
@@ -368,6 +369,7 @@ function mapDefaultUserState(source) {
     xp: Number(source?.total_xp ?? source?.xp ?? 0),
     level,
     casesCompleted: Number(appData.dashboardState?.stats?.cases_completed ?? source?.cases_completed ?? 0),
+    abandonedCases: Number(source?.abandoned_cases ?? source?.abandonedCases ?? 0),
     correctAnswers: Number(source?.correct_answers ?? 0),
     totalAnswers: Number(source?.total_answers ?? 0),
     streak: Number(source?.streak_days ?? source?.streak ?? 0),
@@ -503,7 +505,7 @@ function showView(viewName) {
   const requestedView = VIEW_NAME_TO_ID[viewName] ? viewName : "dashboard";
   const nextView = requestedView === "learn" && !canAccessLearn() ? "dashboard" : requestedView;
 
-  if (nextView === "practice" && !sessionState.currentCase) {
+  if (nextView === "practice" && (!sessionState.currentCase || sessionState.currentView === "results")) {
     startNewCase(sessionState.currentDifficulty);
     return;
   }
@@ -1497,6 +1499,14 @@ function handleDocumentClick(event) {
   }
 
   if (action === "next-case") {
+    if (sessionState.currentCase && sessionState.currentView !== "results") {
+      const confirmed = confirm("Start a new case? Your current case progress will be lost.");
+      if (!confirmed) return;
+
+      userState.abandonedCases += 1;
+      saveUserState();
+    }
+
     maybeShowPracticeIntro(() => {
       startNewCase(sessionState.currentDifficulty);
     });
