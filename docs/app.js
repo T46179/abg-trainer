@@ -84,9 +84,10 @@ function trackEvent(name, params = {}) {
   console.log("trackEvent:", name, params);
 
   if (typeof window.gtag === "function") {
-    window.gtag("event", name, params);
-  } else {
-    console.warn("window.gtag is not available");
+    window.gtag("event", name, {
+      ...params,
+      send_to: "G-9ZE6K68YGV"
+    });
   }
 }
 
