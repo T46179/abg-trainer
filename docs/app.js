@@ -505,7 +505,7 @@ function showView(viewName) {
   const requestedView = VIEW_NAME_TO_ID[viewName] ? viewName : "dashboard";
   const nextView = requestedView === "learn" && !canAccessLearn() ? "dashboard" : requestedView;
 
-  if (nextView === "practice" && (!sessionState.currentCase || sessionState.currentView === "results")) {
+  if (nextView === "practice" && (!sessionState.currentCase || appData.lastCaseSummary)) {
     startNewCase(sessionState.currentDifficulty);
     return;
   }
@@ -1499,7 +1499,9 @@ function handleDocumentClick(event) {
   }
 
   if (action === "next-case") {
-    if (sessionState.currentCase && sessionState.currentView !== "results") {
+    const hasUnfinishedCase = Boolean(sessionState.currentCase && !appData.lastCaseSummary);
+
+    if (hasUnfinishedCase) {
       const confirmed = confirm("Start a new case? Your current case progress will be lost.");
       if (!confirmed) return;
 
