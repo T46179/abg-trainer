@@ -80,6 +80,21 @@ function setText(id, value) {
   if (element) element.textContent = value;
 }
 
+function trackEvent(name, params = {}) {
+  if (typeof window.gtag === "function") {
+    window.gtag("event", name, params);
+  }
+}
+
+function trackPageView(viewName) {
+  if (typeof window.gtag === "function") {
+    window.gtag("event", "page_view", {
+      page_title: viewName,
+      page_path: "/" + viewName
+    });
+  }
+}
+
 function setHtml(id, value) {
   const element = document.getElementById(id);
   if (element) element.innerHTML = value;
@@ -494,6 +509,7 @@ function showView(viewName) {
   }
 
   sessionState.currentView = nextView;
+  trackPageView(nextView);
 
   VIEW_IDS.forEach(viewId => {
     const view = document.getElementById(viewId);
@@ -617,12 +633,80 @@ function rememberRecentArchetype(caseItem) {
   }
 }
 
+function normalizeDiagnosisOption(value) {
+  return String(value ?? "")
+    .toLowerCase()
+    .replace(/[\/\-(),]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function diagnosisOptionsOverlap(left, right) {
+  const leftNormalized = normalizeDiagnosisOption(left);
+  const rightNormalized = normalizeDiagnosisOption(right);
+
+  if (!leftNormalized || !rightNormalized) return false;
+  if (leftNormalized === rightNormalized) return true;
+
+  const leftTokens = leftNormalized.split(" ");
+  const rightTokens = rightNormalized.split(" ");
+  const shorterTokens = leftTokens.length <= rightTokens.length ? leftTokens : rightTokens;
+  const longerTokens = leftTokens.length > rightTokens.length ? leftTokens : rightTokens;
+
+  return shorterTokens.every(token => longerTokens.includes(token));
+}
+
+function getDiagnosisOptionPool() {
+  return appData.cases.flatMap(item => {
+    const diagnosisStep = (item?.questions_flow ?? []).find(step => step?.key === "final_diagnosis");
+
+    return [
+      item?.answer_key?.final_diagnosis,
+      ...(Array.isArray(diagnosisStep?.options) ? diagnosisStep.options : [])
+    ];
+  });
+}
+
+function buildDiagnosisOptionOverride(caseItem, step) {
+  const targetCount = step.options.length;
+  const correctDiagnosis = caseItem?.answer_key?.final_diagnosis;
+  // Deduplicate diagnosis options to avoid duplicate or near-duplicate distractors.
+  const sanitizedOptions = [];
+
+  function tryAddOption(option) {
+    const trimmedOption = String(option ?? "").trim();
+    if (!trimmedOption) return false;
+
+    const duplicate = sanitizedOptions.some(existingOption =>
+      existingOption.trim() === trimmedOption ||
+      normalizeDiagnosisOption(existingOption) === normalizeDiagnosisOption(trimmedOption) ||
+      diagnosisOptionsOverlap(existingOption, trimmedOption)
+    );
+
+    if (duplicate) return false;
+
+    sanitizedOptions.push(trimmedOption);
+    return true;
+  }
+
+  tryAddOption(correctDiagnosis);
+  step.options.forEach(tryAddOption);
+
+  getDiagnosisOptionPool().forEach(option => {
+    if (sanitizedOptions.length < targetCount) {
+      tryAddOption(option);
+    }
+  });
+
+  return shuffleArray(sanitizedOptions);
+}
+
 function buildStepOptionOverrides(caseItem) {
   const overrides = {};
 
   (caseItem?.questions_flow ?? []).forEach((step, index) => {
     if (step?.key === "final_diagnosis" && Array.isArray(step.options)) {
-      overrides[index] = shuffleArray(step.options);
+      overrides[index] = buildDiagnosisOptionOverride(caseItem, step);
     }
   });
 
@@ -669,6 +753,12 @@ function startNewCase(difficultyKey = sessionState.currentDifficulty) {
   }
 
   sessionState.currentCase = selectedCase;
+  
+  trackEvent("case_started", {
+  case_id: selectedCase.case_id,
+  archetype: selectedCase.archetype,
+  difficulty: nextDifficulty
+});
   sessionState.stepOptionOverrides = buildStepOptionOverrides(selectedCase);
   rememberRecentArchetype(selectedCase);
   startTimer();
@@ -691,6 +781,12 @@ function answerCurrentStep(choice) {
     correctAnswer: getCorrectAnswer(caseItem, step.key),
     correct: isCorrectAnswer(caseItem, step.key, choice)
   });
+  
+  trackEvent("step_answered", {
+	  case_id: caseItem.case_id,
+	  step: step.key,
+	  correct: isCorrectAnswer(caseItem, step.key, choice)
+	});
 
   renderPractice();
   updatePracticeTimer();
@@ -776,6 +872,14 @@ function finishCase() {
     stepResults: clone(sessionState.stepResults),
     caseData: clone(caseItem)
   };
+  
+  trackEvent("case_completed", {
+  case_id: caseItem.case_id,
+  archetype: caseItem.archetype,
+  difficulty: sessionState.currentDifficulty,
+  accuracy: accuracy,
+  elapsed_seconds: Math.round(elapsedSeconds)
+});
 
   sessionState.currentView = "results";
   renderApp();
@@ -791,6 +895,9 @@ function openCaseFeedbackForm() {
   const valuesSummary = `pH ${gas.ph} / PaCO2 ${gas.paco2_mmHg} / HCO3 ${gas.hco3_mmolL}`;
   const formUrl = `https://docs.google.com/forms/d/e/1FAIpQLScrfFqV6EwEDzIWkYcfFrUw4L-zjmwj0aIDg2bwNPwMYBTz6Q/viewform?usp=pp_url&entry.2070020822=${encodeURIComponent(caseId)}&entry.134622764=${encodeURIComponent(valuesSummary)}`;
 
+	trackEvent("feedback_opened", {
+	  case_id: caseId
+	});
   window.open(formUrl, "_blank");
 }
 
