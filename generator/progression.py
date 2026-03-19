@@ -56,12 +56,15 @@ def case_pool_for_archetype(archetype):
         "dka": "core_metabolic",
         "diuretic_metabolic_alkalosis": "core_metabolic",
         "diarrhoea_nagma": "core_metabolic",
+        "simple_nagma": "core_metabolic",
+        "simple_metabolic_alkalosis": "core_metabolic",
         "uraemia": "core_metabolic",
         "vomiting_metabolic_alkalosis": "core_metabolic",
         "opioid_toxicity": "core_respiratory",
         "copd_chronic_retainer": "core_respiratory",
         "panic_hyperventilation": "core_respiratory",
         "salicylate_toxicity": "mixed_disorders",
+        "mixed_hagma_metabolic_alkalosis": "mixed_disorders",
     }
     return mapping.get(archetype, "core")
 

@@ -1,0 +1,1284 @@
+Group: Mixed high anion gap metabolic acidosis and metabolic alkalosis
+Number of cases: 8
+================================================================================
+
+{
+  "case_id": "MIXED_HAGMA_MET_ALK_006",
+  "title": "Mixed HAGMA and metabolic alkalosis",
+  "case_type": "ABG",
+  "category": "mixed_disorder",
+  "clinical_stem": "36M presents with prolonged vomiting and weakness during a febrile illness with poor oral tolerance.",
+  "inputs": {
+    "gas": {
+      "ph": 7.36,
+      "paco2_mmHg": 44.3,
+      "hco3_mmolL": 24
+    },
+    "electrolytes": {
+      "na_mmolL": 142,
+      "cl_mmolL": 96,
+      "glucose_mmolL": 4.8
+    },
+    "other": {
+      "lactate_mmolL": 3.2
+    },
+    "lactate_mmolL": 3.2
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "additional_metabolic_process",
+      "label": "Additional metabolic disorder",
+      "prompt": "Is an additional metabolic disorder present?",
+      "options": [
+        "None",
+        "Metabolic alkalosis",
+        "Non-anion gap metabolic acidosis"
+      ]
+    },
+    {
+      "step": 6,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Mixed high anion gap metabolic acidosis and metabolic alkalosis",
+        "High anion gap metabolic acidosis",
+        "DKA",
+        "Lactic acidosis",
+        "Alcoholic ketoacidosis"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Normal",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 22,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Mixed high anion gap metabolic acidosis and metabolic alkalosis",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 44.0,
+      "acceptable_range_mmHg": [
+        42.0,
+        46.0
+      ]
+    },
+    "additional_metabolic_process": "Metabolic alkalosis"
+  },
+  "learning_objective": "Recognise a mixed high anion gap metabolic acidosis with concurrent metabolic alkalosis",
+  "tags": [
+    "mixed_disorder",
+    "anion_gap",
+    "metabolic"
+  ],
+  "explanation": "1. The anion gap is 142 - (96 + 24) = 22, which is raised, so there is a high anion gap metabolic acidosis. 2. PaCO2 is 44.3, which is appropriate for the observed metabolic acidosis because Winter's formula predicts ~44.0 mmHg (+/-2). 3. The bicarbonate is 24, which is too high for an isolated HAGMA of this magnitude; The bicarbonate is relatively preserved for the size of the anion gap rise, making the second metabolic process more obvious. 4. Chloride is low at 96, which supports a concurrent chloride-responsive metabolic alkalosis rather than a single-process acidosis. Lactate is 3.2, so lactate contributes to the raised anion gap, but it does not fully explain the picture because the bicarbonate remains too preserved and the chloride is still low. 5. The overall pattern is a mixed high anion gap metabolic acidosis and metabolic alkalosis.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "mixed_hagma_metabolic_alkalosis",
+  "difficulty_level": 4,
+  "difficulty_label": "master",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "mixed_disorder_detection",
+    "final_diagnosis"
+  ],
+  "case_pool": "mixed_disorders",
+  "progression": {
+    "base_xp": 40
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "MIXED_HAGMA_MET_ALK_003",
+  "title": "Mixed HAGMA and metabolic alkalosis",
+  "case_type": "ABG",
+  "category": "mixed_disorder",
+  "clinical_stem": "40M presents with recurrent vomiting and reduced intake during a prolonged systemic illness with increasing lethargy.",
+  "inputs": {
+    "gas": {
+      "ph": 7.36,
+      "paco2_mmHg": 43.7,
+      "hco3_mmolL": 24
+    },
+    "electrolytes": {
+      "na_mmolL": 141,
+      "cl_mmolL": 93,
+      "glucose_mmolL": 5.0
+    },
+    "other": {
+      "lactate_mmolL": 1.6
+    },
+    "lactate_mmolL": 1.6
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "additional_metabolic_process",
+      "label": "Additional metabolic disorder",
+      "prompt": "Is an additional metabolic disorder present?",
+      "options": [
+        "None",
+        "Metabolic alkalosis",
+        "Non-anion gap metabolic acidosis"
+      ]
+    },
+    {
+      "step": 6,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Mixed high anion gap metabolic acidosis and metabolic alkalosis",
+        "High anion gap metabolic acidosis",
+        "DKA",
+        "Lactic acidosis",
+        "Alcoholic ketoacidosis"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Normal",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 24,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Mixed high anion gap metabolic acidosis and metabolic alkalosis",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 44.0,
+      "acceptable_range_mmHg": [
+        42.0,
+        46.0
+      ]
+    },
+    "additional_metabolic_process": "Metabolic alkalosis"
+  },
+  "learning_objective": "Recognise a mixed high anion gap metabolic acidosis with concurrent metabolic alkalosis",
+  "tags": [
+    "mixed_disorder",
+    "anion_gap",
+    "metabolic"
+  ],
+  "explanation": "1. The anion gap is 141 - (93 + 24) = 24, which is raised, so there is a high anion gap metabolic acidosis. 2. PaCO2 is 43.7, which is appropriate for the observed metabolic acidosis because Winter's formula predicts ~44.0 mmHg (+/-2). 3. The bicarbonate is 24, which is too high for an isolated HAGMA of this magnitude; The near-normal pH is a trap: the numbers still do not fit a single disorder because the bicarbonate is too high for the raised anion gap. 4. Chloride is low at 93, which supports a concurrent chloride-responsive metabolic alkalosis rather than a single-process acidosis. Lactate is only 1.6, so it does not fully account for the raised anion gap on its own. 5. The overall pattern is a mixed high anion gap metabolic acidosis and metabolic alkalosis.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "mixed_hagma_metabolic_alkalosis",
+  "difficulty_level": 4,
+  "difficulty_label": "master",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "mixed_disorder_detection",
+    "final_diagnosis"
+  ],
+  "case_pool": "mixed_disorders",
+  "progression": {
+    "base_xp": 40
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "MIXED_HAGMA_MET_ALK_005",
+  "title": "Mixed HAGMA and metabolic alkalosis",
+  "case_type": "ABG",
+  "category": "mixed_disorder",
+  "clinical_stem": "31F presents with persistent vomiting, postural dizziness, and dry mucous membranes after several days of gastroenteritis.",
+  "inputs": {
+    "gas": {
+      "ph": 7.36,
+      "paco2_mmHg": 40.5,
+      "hco3_mmolL": 22
+    },
+    "electrolytes": {
+      "na_mmolL": 139,
+      "cl_mmolL": 93,
+      "glucose_mmolL": 4.8
+    },
+    "other": {
+      "lactate_mmolL": 1.4
+    },
+    "lactate_mmolL": 1.4
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "additional_metabolic_process",
+      "label": "Additional metabolic disorder",
+      "prompt": "Is an additional metabolic disorder present?",
+      "options": [
+        "None",
+        "Metabolic alkalosis",
+        "Non-anion gap metabolic acidosis"
+      ]
+    },
+    {
+      "step": 6,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Mixed high anion gap metabolic acidosis and metabolic alkalosis",
+        "High anion gap metabolic acidosis",
+        "DKA",
+        "Lactic acidosis",
+        "Alcoholic ketoacidosis"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Normal",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 24,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Mixed high anion gap metabolic acidosis and metabolic alkalosis",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 41.0,
+      "acceptable_range_mmHg": [
+        39.0,
+        43.0
+      ]
+    },
+    "additional_metabolic_process": "Metabolic alkalosis"
+  },
+  "learning_objective": "Recognise a mixed high anion gap metabolic acidosis with concurrent metabolic alkalosis",
+  "tags": [
+    "mixed_disorder",
+    "anion_gap",
+    "metabolic"
+  ],
+  "explanation": "1. The anion gap is 139 - (93 + 22) = 24, which is raised, so there is a high anion gap metabolic acidosis. 2. PaCO2 is 40.5, which is appropriate for the observed metabolic acidosis because Winter's formula predicts ~41.0 mmHg (+/-2). 3. The bicarbonate is 22, which is too high for an isolated HAGMA of this magnitude; The bicarbonate is relatively preserved for the size of the anion gap rise, making the second metabolic process more obvious. 4. Chloride is low at 93, which supports a concurrent chloride-responsive metabolic alkalosis rather than a single-process acidosis. Lactate is only 1.4, so it does not fully account for the raised anion gap on its own. 5. The overall pattern is a mixed high anion gap metabolic acidosis and metabolic alkalosis.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "mixed_hagma_metabolic_alkalosis",
+  "difficulty_level": 4,
+  "difficulty_label": "master",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "mixed_disorder_detection",
+    "final_diagnosis"
+  ],
+  "case_pool": "mixed_disorders",
+  "progression": {
+    "base_xp": 40
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "MIXED_HAGMA_MET_ALK_008",
+  "title": "Mixed HAGMA and metabolic alkalosis",
+  "case_type": "ABG",
+  "category": "mixed_disorder",
+  "clinical_stem": "31M presents with persistent vomiting, postural dizziness, and dry mucous membranes after several days of gastroenteritis.",
+  "inputs": {
+    "gas": {
+      "ph": 7.35,
+      "paco2_mmHg": 41.6,
+      "hco3_mmolL": 22
+    },
+    "electrolytes": {
+      "na_mmolL": 138,
+      "cl_mmolL": 92,
+      "glucose_mmolL": 5.6
+    },
+    "other": {
+      "lactate_mmolL": 1.6
+    },
+    "lactate_mmolL": 1.6
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "additional_metabolic_process",
+      "label": "Additional metabolic disorder",
+      "prompt": "Is an additional metabolic disorder present?",
+      "options": [
+        "None",
+        "Metabolic alkalosis",
+        "Non-anion gap metabolic acidosis"
+      ]
+    },
+    {
+      "step": 6,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Mixed high anion gap metabolic acidosis and metabolic alkalosis",
+        "High anion gap metabolic acidosis",
+        "DKA",
+        "Lactic acidosis",
+        "Alcoholic ketoacidosis"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Normal",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 24,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Mixed high anion gap metabolic acidosis and metabolic alkalosis",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 41.0,
+      "acceptable_range_mmHg": [
+        39.0,
+        43.0
+      ]
+    },
+    "additional_metabolic_process": "Metabolic alkalosis"
+  },
+  "learning_objective": "Recognise a mixed high anion gap metabolic acidosis with concurrent metabolic alkalosis",
+  "tags": [
+    "mixed_disorder",
+    "anion_gap",
+    "metabolic"
+  ],
+  "explanation": "1. The anion gap is 138 - (92 + 22) = 24, which is raised, so there is a high anion gap metabolic acidosis. 2. PaCO2 is 41.6, which is appropriate for the observed metabolic acidosis because Winter's formula predicts ~41.0 mmHg (+/-2). 3. The bicarbonate is 22, which is too high for an isolated HAGMA of this magnitude; The bicarbonate is relatively preserved for the size of the anion gap rise, making the second metabolic process more obvious. 4. Chloride is low at 92, which supports a concurrent chloride-responsive metabolic alkalosis rather than a single-process acidosis. Lactate is only 1.6, so it does not fully account for the raised anion gap on its own. 5. The overall pattern is a mixed high anion gap metabolic acidosis and metabolic alkalosis.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "mixed_hagma_metabolic_alkalosis",
+  "difficulty_level": 4,
+  "difficulty_label": "master",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "mixed_disorder_detection",
+    "final_diagnosis"
+  ],
+  "case_pool": "mixed_disorders",
+  "progression": {
+    "base_xp": 40
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "MIXED_HAGMA_MET_ALK_004",
+  "title": "Mixed HAGMA and metabolic alkalosis",
+  "case_type": "ABG",
+  "category": "mixed_disorder",
+  "clinical_stem": "36M presents with prolonged vomiting and weakness during a febrile illness with poor oral tolerance.",
+  "inputs": {
+    "gas": {
+      "ph": 7.36,
+      "paco2_mmHg": 41.7,
+      "hco3_mmolL": 23
+    },
+    "electrolytes": {
+      "na_mmolL": 139,
+      "cl_mmolL": 94,
+      "glucose_mmolL": 5.8
+    },
+    "other": {
+      "lactate_mmolL": 1.2
+    },
+    "lactate_mmolL": 1.2
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "additional_metabolic_process",
+      "label": "Additional metabolic disorder",
+      "prompt": "Is an additional metabolic disorder present?",
+      "options": [
+        "None",
+        "Metabolic alkalosis",
+        "Non-anion gap metabolic acidosis"
+      ]
+    },
+    {
+      "step": 6,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Mixed high anion gap metabolic acidosis and metabolic alkalosis",
+        "High anion gap metabolic acidosis",
+        "DKA",
+        "Lactic acidosis",
+        "Alcoholic ketoacidosis"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Normal",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 22,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Mixed high anion gap metabolic acidosis and metabolic alkalosis",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 42.5,
+      "acceptable_range_mmHg": [
+        40.5,
+        44.5
+      ]
+    },
+    "additional_metabolic_process": "Metabolic alkalosis"
+  },
+  "learning_objective": "Recognise a mixed high anion gap metabolic acidosis with concurrent metabolic alkalosis",
+  "tags": [
+    "mixed_disorder",
+    "anion_gap",
+    "metabolic"
+  ],
+  "explanation": "1. The anion gap is 139 - (94 + 23) = 22, which is raised, so there is a high anion gap metabolic acidosis. 2. PaCO2 is 41.7, which is appropriate for the observed metabolic acidosis because Winter's formula predicts ~42.5 mmHg (+/-2). 3. The bicarbonate is 23, which is too high for an isolated HAGMA of this magnitude; The bicarbonate is relatively preserved for the size of the anion gap rise, making the second metabolic process more obvious. 4. Chloride is low at 94, which supports a concurrent chloride-responsive metabolic alkalosis rather than a single-process acidosis. Lactate is only 1.2, so it does not fully account for the raised anion gap on its own. 5. The overall pattern is a mixed high anion gap metabolic acidosis and metabolic alkalosis.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "mixed_hagma_metabolic_alkalosis",
+  "difficulty_level": 4,
+  "difficulty_label": "master",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "mixed_disorder_detection",
+    "final_diagnosis"
+  ],
+  "case_pool": "mixed_disorders",
+  "progression": {
+    "base_xp": 40
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "MIXED_HAGMA_MET_ALK_002",
+  "title": "Mixed HAGMA and metabolic alkalosis",
+  "case_type": "ABG",
+  "category": "mixed_disorder",
+  "clinical_stem": "38F is reviewed after several days of alcohol-related vomiting and weakness with poor nutrition.",
+  "inputs": {
+    "gas": {
+      "ph": 7.32,
+      "paco2_mmHg": 35.8,
+      "hco3_mmolL": 18
+    },
+    "electrolytes": {
+      "na_mmolL": 139,
+      "cl_mmolL": 92,
+      "glucose_mmolL": 4.9
+    },
+    "other": {
+      "lactate_mmolL": 1.4
+    },
+    "lactate_mmolL": 1.4
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "additional_metabolic_process",
+      "label": "Additional metabolic disorder",
+      "prompt": "Is an additional metabolic disorder present?",
+      "options": [
+        "None",
+        "Metabolic alkalosis",
+        "Non-anion gap metabolic acidosis"
+      ]
+    },
+    {
+      "step": 6,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Mixed high anion gap metabolic acidosis and metabolic alkalosis",
+        "High anion gap metabolic acidosis",
+        "DKA",
+        "Lactic acidosis",
+        "Alcoholic ketoacidosis"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 29,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Mixed high anion gap metabolic acidosis and metabolic alkalosis",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 35.0,
+      "acceptable_range_mmHg": [
+        33.0,
+        37.0
+      ]
+    },
+    "additional_metabolic_process": "Metabolic alkalosis"
+  },
+  "learning_objective": "Recognise a mixed high anion gap metabolic acidosis with concurrent metabolic alkalosis",
+  "tags": [
+    "mixed_disorder",
+    "anion_gap",
+    "metabolic"
+  ],
+  "explanation": "1. The anion gap is 139 - (92 + 18) = 29, which is raised, so there is a high anion gap metabolic acidosis. 2. PaCO2 is 35.8, which is appropriate for the observed metabolic acidosis because Winter's formula predicts ~35.0 mmHg (+/-2). 3. The bicarbonate is 18, which is too high for an isolated HAGMA of this magnitude; The mixed picture is more subtle here because the bicarbonate is still low, but it is not low enough for an isolated HAGMA of this size. 4. Chloride is low at 92, which supports a concurrent chloride-responsive metabolic alkalosis rather than a single-process acidosis. Lactate is only 1.4, so it does not fully account for the raised anion gap on its own. 5. The overall pattern is a mixed high anion gap metabolic acidosis and metabolic alkalosis.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "mixed_hagma_metabolic_alkalosis",
+  "difficulty_level": 4,
+  "difficulty_label": "master",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "mixed_disorder_detection",
+    "final_diagnosis"
+  ],
+  "case_pool": "mixed_disorders",
+  "progression": {
+    "base_xp": 40
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "MIXED_HAGMA_MET_ALK_001",
+  "title": "Mixed HAGMA and metabolic alkalosis",
+  "case_type": "ABG",
+  "category": "mixed_disorder",
+  "clinical_stem": "35M presents with reduced intake, intermittent vomiting, and increasing fatigue during a prolonged febrile illness.",
+  "inputs": {
+    "gas": {
+      "ph": 7.35,
+      "paco2_mmHg": 39.2,
+      "hco3_mmolL": 21
+    },
+    "electrolytes": {
+      "na_mmolL": 142,
+      "cl_mmolL": 95,
+      "glucose_mmolL": 4.4
+    },
+    "other": {
+      "lactate_mmolL": 1.6
+    },
+    "lactate_mmolL": 1.6
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "additional_metabolic_process",
+      "label": "Additional metabolic disorder",
+      "prompt": "Is an additional metabolic disorder present?",
+      "options": [
+        "None",
+        "Metabolic alkalosis",
+        "Non-anion gap metabolic acidosis"
+      ]
+    },
+    {
+      "step": 6,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Mixed high anion gap metabolic acidosis and metabolic alkalosis",
+        "High anion gap metabolic acidosis",
+        "DKA",
+        "Lactic acidosis",
+        "Alcoholic ketoacidosis"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Normal",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 26,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Mixed high anion gap metabolic acidosis and metabolic alkalosis",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 39.5,
+      "acceptable_range_mmHg": [
+        37.5,
+        41.5
+      ]
+    },
+    "additional_metabolic_process": "Metabolic alkalosis"
+  },
+  "learning_objective": "Recognise a mixed high anion gap metabolic acidosis with concurrent metabolic alkalosis",
+  "tags": [
+    "mixed_disorder",
+    "anion_gap",
+    "metabolic"
+  ],
+  "explanation": "1. The anion gap is 142 - (95 + 21) = 26, which is raised, so there is a high anion gap metabolic acidosis. 2. PaCO2 is 39.2, which is appropriate for the observed metabolic acidosis because Winter's formula predicts ~39.5 mmHg (+/-2). 3. The bicarbonate is 21, which is too high for an isolated HAGMA of this magnitude; The mixed picture is more subtle here because the bicarbonate is still low, but it is not low enough for an isolated HAGMA of this size. 4. Chloride is low at 95, which supports a concurrent chloride-responsive metabolic alkalosis rather than a single-process acidosis. Lactate is only 1.6, so it does not fully account for the raised anion gap on its own. 5. The overall pattern is a mixed high anion gap metabolic acidosis and metabolic alkalosis.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "mixed_hagma_metabolic_alkalosis",
+  "difficulty_level": 4,
+  "difficulty_label": "master",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "mixed_disorder_detection",
+    "final_diagnosis"
+  ],
+  "case_pool": "mixed_disorders",
+  "progression": {
+    "base_xp": 40
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "MIXED_HAGMA_MET_ALK_007",
+  "title": "Mixed HAGMA and metabolic alkalosis",
+  "case_type": "ABG",
+  "category": "mixed_disorder",
+  "clinical_stem": "46F attends ED with abdominal discomfort, recent emesis, and fever after several days of presumed infection.",
+  "inputs": {
+    "gas": {
+      "ph": 7.34,
+      "paco2_mmHg": 36.2,
+      "hco3_mmolL": 19
+    },
+    "electrolytes": {
+      "na_mmolL": 139,
+      "cl_mmolL": 95,
+      "glucose_mmolL": 5.7
+    },
+    "other": {
+      "lactate_mmolL": 1.2
+    },
+    "lactate_mmolL": 1.2
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "additional_metabolic_process",
+      "label": "Additional metabolic disorder",
+      "prompt": "Is an additional metabolic disorder present?",
+      "options": [
+        "None",
+        "Metabolic alkalosis",
+        "Non-anion gap metabolic acidosis"
+      ]
+    },
+    {
+      "step": 6,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Mixed high anion gap metabolic acidosis and metabolic alkalosis",
+        "High anion gap metabolic acidosis",
+        "DKA",
+        "Lactic acidosis",
+        "Alcoholic ketoacidosis"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 25,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Mixed high anion gap metabolic acidosis and metabolic alkalosis",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 36.5,
+      "acceptable_range_mmHg": [
+        34.5,
+        38.5
+      ]
+    },
+    "additional_metabolic_process": "Metabolic alkalosis"
+  },
+  "learning_objective": "Recognise a mixed high anion gap metabolic acidosis with concurrent metabolic alkalosis",
+  "tags": [
+    "mixed_disorder",
+    "anion_gap",
+    "metabolic"
+  ],
+  "explanation": "1. The anion gap is 139 - (95 + 19) = 25, which is raised, so there is a high anion gap metabolic acidosis. 2. PaCO2 is 36.2, which is appropriate for the observed metabolic acidosis because Winter's formula predicts ~36.5 mmHg (+/-2). 3. The bicarbonate is 19, which is too high for an isolated HAGMA of this magnitude; The mixed picture is more subtle here because the bicarbonate is still low, but it is not low enough for an isolated HAGMA of this size. 4. Chloride is low at 95, which supports a concurrent chloride-responsive metabolic alkalosis rather than a single-process acidosis. Lactate is only 1.2, so it does not fully account for the raised anion gap on its own. 5. The overall pattern is a mixed high anion gap metabolic acidosis and metabolic alkalosis.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "mixed_hagma_metabolic_alkalosis",
+  "difficulty_level": 4,
+  "difficulty_label": "master",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "mixed_disorder_detection",
+    "final_diagnosis"
+  ],
+  "case_pool": "mixed_disorders",
+  "progression": {
+    "base_xp": 40
+  }
+}
+
+--------------------------------------------------------------------------------
+

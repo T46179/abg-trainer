@@ -1,0 +1,296 @@
+Executive Summary
+
+The highest-risk issue is that the app ships the full answer bank to every browser. Each case includes `answer_key`, diagnosis, compensation data, and explanation, and the frontend preloads the entire dataset at startup. For an ABG trainer whose core value is stepwise interpretation, that makes answer extraction trivial.
+
+The second major issue is state trust. XP, level, streak, badges, recent results, and daily usage are loaded from and saved back to unsigned `localStorage`, with no validation beyond a few shape checks. A moderately technical user can self-award progression, fake stats, and bypass daily limits.
+
+The third major issue is reward duplication. `finishCase()` awards XP entirely client-side and is not idempotent. In a classic non-module script, that makes infinite XP farming from the same completed case realistically possible through DevTools.
+
+The fourth issue is entitlement/control logic. Difficulty access, Learn access, daily case limits, and testing-mode behavior are all enforced in frontend JS from mutable runtime state and generated JSON. In this current build, `TESTING_MODE` is already enabled and the UI explicitly says all difficulties are unlocked with 5x XP.
+
+The fifth issue is telemetry leakage. GA/Clarity are enabled, and the app sends `case_id`, `archetype`, step correctness, timing, and feedback-open events. That leaks internal content/state to third parties and gives technical users an extra side channel for the current case.
+
+
+Detailed Findings Table
+
+1. Title: Full answer bank shipped to client
+Severity: Critical
+Category: data exposure, anti-cheat
+Exact files / functions involved:
+- `generator/generators/common.py`: `build_answer_key`, `build_case`
+- `docs/app.js`: `isCorrectAnswer`, `loadCases`, app init
+How the exploit works:
+1. The generator includes `answer_key`, `expected_compensation`, and explanation inside every case object.
+2. The frontend loads the full `abg_cases.json` payload at startup.
+3. A user opens DevTools, fetches the JSON, or inspects runtime state.
+4. The user reads the correct answer fields before or during the case.
+Realistic impact:
+- Perfect scores on demand
+- Full answer-bank scraping
+- No secure exam mode
+- Automated solver scripts are straightforward
+Recommended fix:
+- Serve cases from a backend and keep scoring/answers server-side for any scored or protected mode.
+
+2. Title: XP, level, streak, stats, and badges trust unsigned localStorage
+Severity: High
+Category: anti-cheat, logic flaw
+Exact files / functions involved:
+- `docs/app.js`: storage keys, `loadUserState`, `saveUserState`, init
+How the exploit works:
+1. Open DevTools Application/Storage.
+2. Edit `abgmaster_userState`.
+3. Set arbitrary `xp`, `level`, `casesCompleted`, `streak`, `dailyCasesUsed`, `recentResults`, or badges.
+4. Reload the page.
+5. The app merges the forged object and persists it again.
+Realistic impact:
+- Fake progression
+- Fake profile stats
+- Reset or bypass daily limits
+- Fake leaderboard position
+Recommended fix:
+- Move progression and achievement authority to a backend; at minimum stop treating local state as authoritative.
+
+3. Title: Infinite XP by re-calling `finishCase()`
+Severity: Critical
+Category: anti-cheat, replay
+Exact files / functions involved:
+- `docs/index.html`: classic script load
+- `docs/app.js`: `finishCase`
+How the exploit works:
+1. Complete any case once.
+2. Open DevTools.
+3. Re-invoke `finishCase()` from the global scope.
+4. Each call re-awards XP, increments counters, updates streak/daily usage, and saves state.
+5. Repeat indefinitely.
+Realistic impact:
+- Infinite XP from one case
+- Artificial level progression
+- Polluted analytics
+Recommended fix:
+- Make completion idempotent and tie rewards to a one-time server-issued attempt ID.
+
+4. Title: Frontend-only entitlements; current build publicly ships testing mode
+Severity: Critical
+Category: access control, anti-cheat
+Exact files / functions involved:
+- `generator/config.py`: `TESTING_MODE`, `TESTING_XP_MULTIPLIER`
+- `generator/progression.py`: `build_progression_config`
+- `docs/app.js`: `isTestingMode`, `getEffectiveUnlockedDifficulty`, `canStartNewCase`
+- `docs/index.html`: testing-mode copy in practice intro modal
+How the exploit works:
+1. The generator writes testing flags into the JSON payload.
+2. The frontend trusts those flags for difficulty access, learn access, and XP multiplier behavior.
+3. In the current build, testing mode is on by default.
+4. Even if later disabled, all enforcement still lives in frontend JS and is patchable in DevTools.
+Realistic impact:
+- All difficulties unlocked
+- Free-tier limits bypassed
+- 5x XP active in production-like build
+- No meaningful paywall or entitlement integrity
+Recommended fix:
+- Remove public testing builds and enforce access rules server-side.
+
+5. Title: Daily limits and streaks trust the client clock
+Severity: Medium
+Category: anti-cheat, logic flaw
+Exact files / functions involved:
+- `docs/app.js`: `todayKey`, `yesterdayKey`, `getCasesRemainingToday`, `updateDailyStreak`
+How the exploit works:
+1. Change the system date or device clock.
+2. Start/finish cases after shifting dates.
+3. The app recalculates streak and daily usage from the manipulated local date.
+4. Combined with localStorage edits, limits become trivial to reset.
+Realistic impact:
+- Streak farming
+- Daily quota bypass
+- Untrustworthy usage metrics
+Recommended fix:
+- Use server time for daily limits and streak calculations.
+
+6. Title: Replay protection is effectively absent
+Severity: High
+Category: anti-cheat, case delivery
+Exact files / functions involved:
+- `docs/app.js`: `getEligibleCasesForDifficulty`, `startNewCase`, answer feedback path, next-case flow
+How the exploit works:
+1. Complete a case and see all correct answers during or after completion.
+2. Start more cases until the same case or archetype reappears.
+3. There is no rewarded-case ledger or one-reward-per-case rule.
+4. Users can repeat known cases for easy XP.
+Realistic impact:
+- XP farming through memorized content
+- Reduced educational integrity
+- Finite case bank becomes abusable
+Recommended fix:
+- Track rewarded attempts server-side and prevent repeated rewards for the same case or attempt.
+
+7. Title: Analytics leak internal case state and user performance
+Severity: Medium
+Category: analytics leakage, side channel
+Exact files / functions involved:
+- `docs/index.html`: GA and Clarity scripts
+- `docs/app.js`: `trackEvent`, `case_started`, `step_answered`, `case_completed`, `feedback_opened`
+How the exploit works:
+1. Start or answer a case.
+2. The app emits events containing `case_id`, `archetype`, difficulty, correctness, timing, and feedback opens.
+3. A technical user can inspect `dataLayer` or requests.
+4. Third-party services also receive these details.
+Realistic impact:
+- Leakage of internal identifiers and performance data
+- Additional side channel for current case family
+- Polluted analytics when cheating occurs
+Recommended fix:
+- Minimize telemetry, remove diagnosis-bearing identifiers, and review whether session replay is appropriate for case content.
+
+8. Title: Hidden timed-mode reward path is live
+Severity: Medium
+Category: dead flag, anti-cheat
+Exact files / functions involved:
+- `docs/index.html`: timed toggle exists in DOM
+- `docs/styles.css`: `.timed-toggle { display: none; }`
+- `docs/app.js`: timer and speed-bonus logic, `handleDocumentChange`
+How the exploit works:
+1. Unhide the timed toggle in DevTools or set `sessionState.timedMode = true`.
+2. Complete a case quickly or manipulate timer state.
+3. The app includes speed bonus in XP calculation when timed mode is enabled.
+Realistic impact:
+- Extra XP via hidden feature
+- Confusing or inconsistent reward behavior
+Recommended fix:
+- Remove hidden reward-bearing controls or support them explicitly with server-side validation.
+
+9. Title: Leaderboard and profile integrity are purely local
+Severity: Low
+Category: anti-cheat, UI-only state
+Exact files / functions involved:
+- `docs/app.js`: `renderLeaderboard`, `renderProfile`
+How the exploit works:
+1. Edit local XP/stats.
+2. Open leaderboard/profile.
+3. The app computes rank and profile data locally.
+Realistic impact:
+- Fake rank and personal stats
+- Misleading competitive presentation
+Recommended fix:
+- Do not present rankings as authoritative without a backend.
+
+
+Attack Scenarios
+
+1. Granting yourself XP via console/localStorage
+1. Open the site and complete one case normally.
+2. Open DevTools and inspect `localStorage.abgmaster_userState`.
+3. Set `xp` to a large number or directly re-run `finishCase()`.
+4. Reload or repeat.
+5. The app recalculates level from forged XP and shows the new progression.
+
+2. Unlocking Master difficulty instantly
+1. Open DevTools.
+2. Edit `abgmaster_userState` and set `xp` high enough to reach level 20, or directly set a high `level`.
+3. Reload.
+4. The frontend recalculates unlocked difficulties from local state.
+5. Master appears unlocked.
+Note: in the current build this is even easier because testing mode already unlocks all difficulties.
+
+3. Replaying cases for infinite rewards
+1. Complete a case once and observe the correct answers.
+2. Call `finishCase()` again from DevTools, or keep repeating known cases since rewards are not tied to a unique attempt.
+3. Each replay adds XP and counters again.
+4. Repeat until the desired level is reached.
+
+4. Extracting answers from loaded data
+1. Open DevTools Network or Application/Memory tools.
+2. Inspect `abg_cases.json`.
+3. Read `answer_key`, `final_diagnosis`, `expected_compensation`, and explanation for each case.
+4. Use that information during the session or export the whole answer bank.
+
+5. Keeping TESTING_MODE advantages
+1. Load the app.
+2. The JSON payload contains `testing_mode: true` and `testing_xp_multiplier: 5`.
+3. The frontend accepts these values and bypasses normal restrictions.
+4. All difficulties and 5x XP remain active.
+
+6. Bypassing progression/difficulty systems
+1. Open DevTools.
+2. Patch local state or runtime objects so the app thinks you are premium/high-level.
+3. Use the difficulty selector or call `startNewCase("master")`.
+4. Because access control is frontend-only, the UI accepts the manipulated state.
+
+
+Trust Boundary Assessment
+
+What the frontend currently trusts that is unsafe
+- It trusts `abg_cases.json` for secret answer content.
+- It trusts `localStorage` for XP, level, streak, daily counts, badges, and stats.
+- It trusts the client clock for streaks and daily quotas.
+- It trusts frontend JS for difficulty, Learn access, and testing-mode entitlement behavior.
+
+What cannot be secured in a static client-only app
+- Hidden answers
+- Secure scoring
+- Paywalls and difficulty locks
+- One-reward-per-attempt guarantees
+- Daily quotas and streak integrity
+- Real leaderboard integrity
+- True anti-cheat enforcement
+
+What is partially mitigatable vs fundamentally insecure
+- Partially mitigatable:
+  - Reducing telemetry leakage
+  - Removing obvious diagnosis-bearing identifiers
+  - Removing hidden reward paths
+  - Adding local validation/clamping
+  - Making casual cheating less convenient
+- Fundamentally insecure without backend authority:
+  - Answer secrecy
+  - Progression integrity
+  - Entitlement enforcement
+  - Replay protection
+  - Competitive ranking
+
+
+Hardening Strategy
+
+Immediate quick wins (conceptual only)
+- Stop shipping public builds with testing mode enabled.
+- Remove diagnosis-bearing IDs and per-step correctness from analytics.
+- Remove or fully disable hidden timed-mode reward behavior.
+- Stop presenting leaderboard/profile stats as authoritative.
+- Clearly frame the current static build as practice-only if secure scoring is not available.
+
+Medium-term improvements
+- Separate practice mode from scored mode.
+- Stop preloading the full case bank at startup.
+- Issue cases per attempt rather than as one static downloadable payload.
+- Add one-reward-per-attempt logic and solved-case tracking.
+- Reduce answer and explanation exposure until after a scored attempt is finalized.
+
+Backend-required protections
+- Server-side case delivery
+- Server-side answer checking and scoring
+- Server-owned progression and entitlement state
+- Server time for streaks and daily limits
+- Server-issued attempt/session IDs
+- Server-side leaderboard records
+
+
+Priority Fix List
+
+1. Stop shipping `answer_key` and explanations to the client for scored sessions.
+2. Make case completion idempotent and impossible to replay for reward.
+3. Turn off public `TESTING_MODE` immediately.
+4. Move XP/level/streak/unlocks off `localStorage`.
+5. Stop sending `case_id`/`archetype`/step correctness to GA and Clarity.
+6. Add a server-issued attempt ID and one-reward-per-attempt enforcement.
+7. Replace client-clock streak/daily logic with server time.
+8. Remove hidden timed-mode reward logic.
+9. Stop using client-generated/mock leaderboard data as if it were meaningful.
+10. Split practice feedback mode from any mode that claims progression integrity.
+
+
+What cannot be secured without a backend
+
+You cannot securely hide answers, enforce XP/level progression, prevent replay rewards, enforce paywalls or difficulty locks, trust streak/daily limits, or run a real leaderboard in a static client-only app. You can only make cheating harder.
+
+For this codebase, “harder to cheat” means obfuscation and UI friction. “Actually secure” requires a backend that owns answers, attempts, entitlements, time, and rewards.

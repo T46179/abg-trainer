@@ -1,0 +1,1004 @@
+Group: GI bicarbonate loss
+Number of cases: 8
+================================================================================
+
+{
+  "case_id": "SIMPLE_NAGMA_001",
+  "title": "Simple normal anion gap metabolic acidosis",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_nagma",
+  "clinical_stem": "31M attends ED with loose stool symptoms, mild dehydration, and general weakness.",
+  "inputs": {
+    "gas": {
+      "ph": 7.32,
+      "paco2_mmHg": 36.1,
+      "hco3_mmolL": 18
+    },
+    "electrolytes": {
+      "na_mmolL": 140,
+      "cl_mmolL": 113
+    },
+    "other": {
+      "lactate_mmolL": 0.8
+    },
+    "lactate_mmolL": 0.8
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "GI bicarbonate loss",
+        "Vomiting",
+        "DKA",
+        "Opioid toxicity",
+        "Alcoholic ketoacidosis"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 9,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "GI bicarbonate loss",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 35.0,
+      "acceptable_range_mmHg": [
+        33.0,
+        37.0
+      ]
+    }
+  },
+  "learning_objective": "Recognise a simple bicarbonate-driven metabolic acidosis with a normal anion gap",
+  "tags": [
+    "simple_nagma",
+    "nagma",
+    "metabolic_acidosis",
+    "bicarbonate_loss"
+  ],
+  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary metabolic acidosis. PaCO2 is reduced in the expected compensatory direction: Winter's formula predicts ~35.0 mmHg (+/-2), and the measured PaCO2 is 36.1. Anion gap is 140 - (113 + 18) = 9, which is normal. The relatively high chloride fits a hyperchloraemic normal anion gap metabolic acidosis, such as GI bicarbonate loss.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "simple_nagma",
+  "difficulty_level": 1,
+  "difficulty_label": "beginner",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "final_diagnosis"
+  ],
+  "case_pool": "core_metabolic",
+  "progression": {
+    "base_xp": 10
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "SIMPLE_NAGMA_006",
+  "title": "Simple normal anion gap metabolic acidosis",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_nagma",
+  "clinical_stem": "45F presents for assessment with increased stoma output and reduced oral intake and fatigue and dry mucous membranes.",
+  "inputs": {
+    "gas": {
+      "ph": 7.31,
+      "paco2_mmHg": 30.6,
+      "hco3_mmolL": 15
+    },
+    "electrolytes": {
+      "na_mmolL": 139,
+      "cl_mmolL": 114
+    },
+    "other": {
+      "lactate_mmolL": 1.4
+    },
+    "lactate_mmolL": 1.4
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "GI bicarbonate loss",
+        "Vomiting",
+        "DKA",
+        "Opioid toxicity",
+        "Alcoholic ketoacidosis"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 10,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "GI bicarbonate loss",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 30.5,
+      "acceptable_range_mmHg": [
+        28.5,
+        32.5
+      ]
+    }
+  },
+  "learning_objective": "Recognise a simple bicarbonate-driven metabolic acidosis with a normal anion gap",
+  "tags": [
+    "simple_nagma",
+    "nagma",
+    "metabolic_acidosis",
+    "bicarbonate_loss"
+  ],
+  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary metabolic acidosis. PaCO2 is reduced in the expected compensatory direction: Winter's formula predicts ~30.5 mmHg (+/-2), and the measured PaCO2 is 30.6. Anion gap is 139 - (114 + 15) = 10, which is normal. The relatively high chloride fits a hyperchloraemic normal anion gap metabolic acidosis, such as GI bicarbonate loss.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "simple_nagma",
+  "difficulty_level": 1,
+  "difficulty_label": "beginner",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "final_diagnosis"
+  ],
+  "case_pool": "core_metabolic",
+  "progression": {
+    "base_xp": 10
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "SIMPLE_NAGMA_005",
+  "title": "Simple normal anion gap metabolic acidosis",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_nagma",
+  "clinical_stem": "37F is reviewed in ED with high-output ileostomy losses, mild dehydration, and abdominal cramps.",
+  "inputs": {
+    "gas": {
+      "ph": 7.33,
+      "paco2_mmHg": 36.9,
+      "hco3_mmolL": 19
+    },
+    "electrolytes": {
+      "na_mmolL": 138,
+      "cl_mmolL": 109
+    },
+    "other": {
+      "lactate_mmolL": 0.9
+    },
+    "lactate_mmolL": 0.9
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "GI bicarbonate loss",
+        "Vomiting",
+        "DKA",
+        "Opioid toxicity",
+        "Alcoholic ketoacidosis"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 10,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "GI bicarbonate loss",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 36.5,
+      "acceptable_range_mmHg": [
+        34.5,
+        38.5
+      ]
+    }
+  },
+  "learning_objective": "Recognise a simple bicarbonate-driven metabolic acidosis with a normal anion gap",
+  "tags": [
+    "simple_nagma",
+    "nagma",
+    "metabolic_acidosis",
+    "bicarbonate_loss"
+  ],
+  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary metabolic acidosis. PaCO2 is reduced in the expected compensatory direction: Winter's formula predicts ~36.5 mmHg (+/-2), and the measured PaCO2 is 36.9. Anion gap is 138 - (109 + 19) = 10, which is normal. The relatively high chloride fits a hyperchloraemic normal anion gap metabolic acidosis, such as GI bicarbonate loss.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "simple_nagma",
+  "difficulty_level": 1,
+  "difficulty_label": "beginner",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "final_diagnosis"
+  ],
+  "case_pool": "core_metabolic",
+  "progression": {
+    "base_xp": 10
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "SIMPLE_NAGMA_008",
+  "title": "Simple normal anion gap metabolic acidosis",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_nagma",
+  "clinical_stem": "31M is reviewed in ED with reduced oral intake and dry mucous membranes.",
+  "inputs": {
+    "gas": {
+      "ph": 7.33,
+      "paco2_mmHg": 35.7,
+      "hco3_mmolL": 18
+    },
+    "electrolytes": {
+      "na_mmolL": 136,
+      "cl_mmolL": 109
+    },
+    "other": {
+      "lactate_mmolL": 1.2
+    },
+    "lactate_mmolL": 1.2
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "GI bicarbonate loss",
+        "Vomiting",
+        "DKA",
+        "Opioid toxicity",
+        "Alcoholic ketoacidosis"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 9,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "GI bicarbonate loss",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 35.0,
+      "acceptable_range_mmHg": [
+        33.0,
+        37.0
+      ]
+    }
+  },
+  "learning_objective": "Recognise a simple bicarbonate-driven metabolic acidosis with a normal anion gap",
+  "tags": [
+    "simple_nagma",
+    "nagma",
+    "metabolic_acidosis",
+    "bicarbonate_loss"
+  ],
+  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary metabolic acidosis. PaCO2 is reduced in the expected compensatory direction: Winter's formula predicts ~35.0 mmHg (+/-2), and the measured PaCO2 is 35.7. Anion gap is 136 - (109 + 18) = 9, which is normal. The relatively high chloride fits a hyperchloraemic normal anion gap metabolic acidosis, such as GI bicarbonate loss.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "simple_nagma",
+  "difficulty_level": 1,
+  "difficulty_label": "beginner",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "final_diagnosis"
+  ],
+  "case_pool": "core_metabolic",
+  "progression": {
+    "base_xp": 10
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "SIMPLE_NAGMA_007",
+  "title": "Simple normal anion gap metabolic acidosis",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_nagma",
+  "clinical_stem": "31F attends ED with fatigue and dry mucous membranes.",
+  "inputs": {
+    "gas": {
+      "ph": 7.32,
+      "paco2_mmHg": 32.4,
+      "hco3_mmolL": 16
+    },
+    "electrolytes": {
+      "na_mmolL": 138,
+      "cl_mmolL": 114
+    },
+    "other": {
+      "lactate_mmolL": 1.3
+    },
+    "lactate_mmolL": 1.3
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "GI bicarbonate loss",
+        "Vomiting",
+        "DKA",
+        "Opioid toxicity",
+        "Alcoholic ketoacidosis"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 8,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "GI bicarbonate loss",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 32.0,
+      "acceptable_range_mmHg": [
+        30.0,
+        34.0
+      ]
+    }
+  },
+  "learning_objective": "Recognise a simple bicarbonate-driven metabolic acidosis with a normal anion gap",
+  "tags": [
+    "simple_nagma",
+    "nagma",
+    "metabolic_acidosis",
+    "bicarbonate_loss"
+  ],
+  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary metabolic acidosis. PaCO2 is reduced in the expected compensatory direction: Winter's formula predicts ~32.0 mmHg (+/-2), and the measured PaCO2 is 32.4. Anion gap is 138 - (114 + 16) = 8, which is normal. The relatively high chloride fits a hyperchloraemic normal anion gap metabolic acidosis, such as GI bicarbonate loss.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "simple_nagma",
+  "difficulty_level": 1,
+  "difficulty_label": "beginner",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "final_diagnosis"
+  ],
+  "case_pool": "core_metabolic",
+  "progression": {
+    "base_xp": 10
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "SIMPLE_NAGMA_003",
+  "title": "Simple normal anion gap metabolic acidosis",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_nagma",
+  "clinical_stem": "37F attends ED with abdominal cramps and postural light-headedness.",
+  "inputs": {
+    "gas": {
+      "ph": 7.34,
+      "paco2_mmHg": 36.1,
+      "hco3_mmolL": 19
+    },
+    "electrolytes": {
+      "na_mmolL": 136,
+      "cl_mmolL": 109
+    },
+    "other": {
+      "lactate_mmolL": 0.9
+    },
+    "lactate_mmolL": 0.9
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "GI bicarbonate loss",
+        "Vomiting",
+        "DKA",
+        "Opioid toxicity",
+        "Alcoholic ketoacidosis"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 8,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "GI bicarbonate loss",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 36.5,
+      "acceptable_range_mmHg": [
+        34.5,
+        38.5
+      ]
+    }
+  },
+  "learning_objective": "Recognise a simple bicarbonate-driven metabolic acidosis with a normal anion gap",
+  "tags": [
+    "simple_nagma",
+    "nagma",
+    "metabolic_acidosis",
+    "bicarbonate_loss"
+  ],
+  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary metabolic acidosis. PaCO2 is reduced in the expected compensatory direction: Winter's formula predicts ~36.5 mmHg (+/-2), and the measured PaCO2 is 36.1. Anion gap is 136 - (109 + 19) = 8, which is normal. The relatively high chloride fits a hyperchloraemic normal anion gap metabolic acidosis, such as GI bicarbonate loss.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "simple_nagma",
+  "difficulty_level": 1,
+  "difficulty_label": "beginner",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "final_diagnosis"
+  ],
+  "case_pool": "core_metabolic",
+  "progression": {
+    "base_xp": 10
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "SIMPLE_NAGMA_002",
+  "title": "Simple normal anion gap metabolic acidosis",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_nagma",
+  "clinical_stem": "31F presents for assessment with general weakness and dry mucous membranes. Other features include high-output ileostomy losses and loose stool symptoms.",
+  "inputs": {
+    "gas": {
+      "ph": 7.33,
+      "paco2_mmHg": 31.6,
+      "hco3_mmolL": 16
+    },
+    "electrolytes": {
+      "na_mmolL": 140,
+      "cl_mmolL": 115
+    },
+    "other": {
+      "lactate_mmolL": 1.3
+    },
+    "lactate_mmolL": 1.3
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "GI bicarbonate loss",
+        "Vomiting",
+        "DKA",
+        "Opioid toxicity",
+        "Alcoholic ketoacidosis"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 9,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "GI bicarbonate loss",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 32.0,
+      "acceptable_range_mmHg": [
+        30.0,
+        34.0
+      ]
+    }
+  },
+  "learning_objective": "Recognise a simple bicarbonate-driven metabolic acidosis with a normal anion gap",
+  "tags": [
+    "simple_nagma",
+    "nagma",
+    "metabolic_acidosis",
+    "bicarbonate_loss"
+  ],
+  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary metabolic acidosis. PaCO2 is reduced in the expected compensatory direction: Winter's formula predicts ~32.0 mmHg (+/-2), and the measured PaCO2 is 31.6. Anion gap is 140 - (115 + 16) = 9, which is normal. The relatively high chloride fits a hyperchloraemic normal anion gap metabolic acidosis, such as GI bicarbonate loss.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "simple_nagma",
+  "difficulty_level": 1,
+  "difficulty_label": "beginner",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "final_diagnosis"
+  ],
+  "case_pool": "core_metabolic",
+  "progression": {
+    "base_xp": 10
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "SIMPLE_NAGMA_004",
+  "title": "Simple normal anion gap metabolic acidosis",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_nagma",
+  "clinical_stem": "45M presents to ED with fatigue and abdominal cramps.",
+  "inputs": {
+    "gas": {
+      "ph": 7.31,
+      "paco2_mmHg": 32.6,
+      "hco3_mmolL": 16
+    },
+    "electrolytes": {
+      "na_mmolL": 139,
+      "cl_mmolL": 114
+    },
+    "other": {
+      "lactate_mmolL": 1.0
+    },
+    "lactate_mmolL": 1.0
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "GI bicarbonate loss",
+        "Vomiting",
+        "DKA",
+        "Opioid toxicity",
+        "Alcoholic ketoacidosis"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 9,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "GI bicarbonate loss",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 32.0,
+      "acceptable_range_mmHg": [
+        30.0,
+        34.0
+      ]
+    }
+  },
+  "learning_objective": "Recognise a simple bicarbonate-driven metabolic acidosis with a normal anion gap",
+  "tags": [
+    "simple_nagma",
+    "nagma",
+    "metabolic_acidosis",
+    "bicarbonate_loss"
+  ],
+  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary metabolic acidosis. PaCO2 is reduced in the expected compensatory direction: Winter's formula predicts ~32.0 mmHg (+/-2), and the measured PaCO2 is 32.6. Anion gap is 139 - (114 + 16) = 9, which is normal. The relatively high chloride fits a hyperchloraemic normal anion gap metabolic acidosis, such as GI bicarbonate loss.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "simple_nagma",
+  "difficulty_level": 1,
+  "difficulty_label": "beginner",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "final_diagnosis"
+  ],
+  "case_pool": "core_metabolic",
+  "progression": {
+    "base_xp": 10
+  }
+}
+
+--------------------------------------------------------------------------------
+

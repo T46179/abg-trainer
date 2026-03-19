@@ -9,20 +9,27 @@ import json
 import os
 import random
 
+from .config import CASES_PER_ARCHETYPE
 from .generators import (
     generate_acute_copd_case,
+    generate_alcoholic_ketoacidosis_case,
     generate_copd_case,
     generate_diuretic_alkalosis_case,
     generate_diarrhoea_case,
     generate_dka_case,
     generate_dka_vomiting_case,
     generate_lactate_case,
+    generate_mixed_hagma_metabolic_alkalosis_case,
     generate_opioid_case,
     generate_panic_case,
     generate_salicylate_case,
     generate_sepsis_case,
+    generate_simple_metabolic_alkalosis_case,
+    generate_simple_nagma_case,
     generate_simple_respiratory_acidosis_case,
     generate_simple_respiratory_alkalosis_case,
+    generate_starvation_ketosis_case,
+    generate_toxic_alcohol_case,
     generate_uraemia_case,
     generate_vomiting_case,
 )
@@ -39,6 +46,11 @@ from .validation import generate_valid_case, validate_cases
 
 CASE_BUILDERS = [
     ("DKA", generate_dka_case),
+    ("AKA", generate_alcoholic_ketoacidosis_case),
+    ("STARVATION", generate_starvation_ketosis_case),
+    ("TOXIC_ALCOHOL", generate_toxic_alcohol_case),
+    ("SIMPLE_NAGMA", generate_simple_nagma_case),
+    ("SIMPLE_MET_ALK", generate_simple_metabolic_alkalosis_case),
     ("OPIOID", generate_opioid_case),
     ("COPD", generate_copd_case),
     ("VOMITING", generate_vomiting_case),
@@ -48,6 +60,7 @@ CASE_BUILDERS = [
     ("DIARRHOEA", generate_diarrhoea_case),
     ("URAEMIA", generate_uraemia_case),
     ("SALICYLATE", generate_salicylate_case),
+    ("MIXED_HAGMA_MET_ALK", generate_mixed_hagma_metabolic_alkalosis_case),
     ("LACTATE", generate_lactate_case),
     ("SIMPLE_RESP_ACID", generate_simple_respiratory_acidosis_case),
     ("ACUTE_COPD", generate_acute_copd_case),
@@ -65,7 +78,7 @@ def generate_all_cases():
     cases = []
 
     for prefix, generator_fn in CASE_BUILDERS:
-        for i in range(5):
+        for i in range(CASES_PER_ARCHETYPE):
             case_id = f"{prefix}_{i + 1:03d}"
             cases.append(generate_valid_case(generator_fn, case_id))
 

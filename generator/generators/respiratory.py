@@ -442,16 +442,18 @@ def generate_acute_copd_case(case_id):
     ph = calculate_ph_from_hco3_paco2(hco3, paco2)
     na = random.randint(*band["sodium_range"])
     cl = random.randint(*band["chloride_range"])
+    clinical_stem, patient_gender = generate_stem(
+        "acute_copd_exacerbation",
+        min_features=band["stem_feature_range"][0],
+        max_features=band["stem_feature_range"][1],
+        return_patient_gender=True,
+    )
 
     return build_case(
         case_id=case_id,
         title="COPD exacerbation (acute-on-chronic respiratory acidosis)",
         category="respiratory_acidosis",
-        clinical_stem=generate_stem(
-            "acute_copd_exacerbation",
-            min_features=band["stem_feature_range"][0],
-            max_features=band["stem_feature_range"][1],
-        ),
+        clinical_stem=clinical_stem,
         inputs=build_inputs(ph, paco2, hco3, na, cl),
         questions_flow=shuffle_question_options(
             intermediate_question_flow([
@@ -473,6 +475,7 @@ def generate_acute_copd_case(case_id):
         explanation="COPD exacerbations cause acute rises in CO2 on a background of chronic respiratory acidosis.",
         level=2,
         archetype="acute_copd_exacerbation",
+        patient_gender=patient_gender,
     )
 
 
@@ -482,12 +485,13 @@ def generate_sepsis_case(case_id):
     na = random.randint(136, 142)
     cl = random.randint(100, 106)
     ph = calculate_ph_from_hco3_paco2(hco3, paco2)
+    clinical_stem, patient_gender = generate_stem("sepsis_respiratory_alkalosis", return_patient_gender=True)
 
     return build_case(
         case_id=case_id,
         title="Sepsis (respiratory alkalosis)",
         category="respiratory_alkalosis",
-        clinical_stem=generate_stem("sepsis_respiratory_alkalosis"),
+        clinical_stem=clinical_stem,
         inputs=build_inputs(ph, paco2, hco3, na, cl),
         questions_flow=shuffle_question_options(
             intermediate_question_flow([
@@ -509,4 +513,5 @@ def generate_sepsis_case(case_id):
         explanation="Sepsis commonly causes respiratory alkalosis due to hyperventilation.",
         level=2,
         archetype="sepsis_respiratory_alkalosis",
+        patient_gender=patient_gender,
     )

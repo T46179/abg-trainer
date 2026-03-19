@@ -1,0 +1,1172 @@
+Group: Diarrhoea
+Number of cases: 8
+================================================================================
+
+{
+  "case_id": "DIARRHOEA_006",
+  "title": "Diarrhoea (normal anion gap metabolic acidosis)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_nagma",
+  "clinical_stem": "34M presents dehydrated and weak after several days of high-output gastrointestinal losses.",
+  "inputs": {
+    "gas": {
+      "ph": 7.29,
+      "paco2_mmHg": 29.8,
+      "hco3_mmolL": 14
+    },
+    "electrolytes": {
+      "na_mmolL": 141,
+      "cl_mmolL": 119
+    },
+    "other": {
+      "lactate_mmolL": 1.4
+    },
+    "lactate_mmolL": 1.4
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Diarrhoea",
+        "DKA",
+        "Vomiting",
+        "Renal failure (uraemia)",
+        "Toxic alcohol"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 8,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "Diarrhoea",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 29.0,
+      "acceptable_range_mmHg": [
+        27.0,
+        31.0
+      ]
+    }
+  },
+  "learning_objective": "Recognise normal anion gap metabolic acidosis with appropriate respiratory compensation",
+  "tags": [
+    "diarrhoea",
+    "nagma",
+    "metabolic_acidosis"
+  ],
+  "explanation": "The pH is in the normal range, but the low HCO3 still indicates a primary metabolic acidosis with respiratory compensation. Low HCO3 indicates a primary metabolic acidosis. Winter's formula predicts PaCO2 ~29.0 (+/-2); measured 29.8 is appropriate compensation. Anion gap is 141 - (119 + 14) = 8, which is normal, consistent with NAGMA such as diarrhoea.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "diarrhoea_nagma",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core_metabolic",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "DIARRHOEA_002",
+  "title": "Diarrhoea (normal anion gap metabolic acidosis)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_nagma",
+  "clinical_stem": "29M presents with light-headedness and dehydration after several days of gastroenteritis symptoms.",
+  "inputs": {
+    "gas": {
+      "ph": 7.29,
+      "paco2_mmHg": 25.7,
+      "hco3_mmolL": 12
+    },
+    "electrolytes": {
+      "na_mmolL": 138,
+      "cl_mmolL": 115
+    },
+    "other": {
+      "lactate_mmolL": 1.5
+    },
+    "lactate_mmolL": 1.5
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Diarrhoea",
+        "DKA",
+        "Vomiting",
+        "Renal failure (uraemia)",
+        "Toxic alcohol"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 11,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "Diarrhoea",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 26.0,
+      "acceptable_range_mmHg": [
+        24.0,
+        28.0
+      ]
+    }
+  },
+  "learning_objective": "Recognise normal anion gap metabolic acidosis with appropriate respiratory compensation",
+  "tags": [
+    "diarrhoea",
+    "nagma",
+    "metabolic_acidosis"
+  ],
+  "explanation": "The pH is in the normal range, but the low HCO3 still indicates a primary metabolic acidosis with respiratory compensation. Low HCO3 indicates a primary metabolic acidosis. Winter's formula predicts PaCO2 ~26.0 (+/-2); measured 25.7 is appropriate compensation. Anion gap is 138 - (115 + 12) = 11, which is normal, consistent with NAGMA such as diarrhoea.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "diarrhoea_nagma",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core_metabolic",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "DIARRHOEA_005",
+  "title": "Diarrhoea (normal anion gap metabolic acidosis)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_nagma",
+  "clinical_stem": "29F presents with light-headedness and dehydration after several days of gastroenteritis symptoms.",
+  "inputs": {
+    "gas": {
+      "ph": 7.35,
+      "paco2_mmHg": 32.1,
+      "hco3_mmolL": 17
+    },
+    "electrolytes": {
+      "na_mmolL": 139,
+      "cl_mmolL": 110
+    },
+    "other": {
+      "lactate_mmolL": 1.2
+    },
+    "lactate_mmolL": 1.2
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Diarrhoea",
+        "DKA",
+        "Vomiting",
+        "Renal failure (uraemia)",
+        "Toxic alcohol"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Normal",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 12,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "Diarrhoea",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 33.5,
+      "acceptable_range_mmHg": [
+        31.5,
+        35.5
+      ]
+    }
+  },
+  "learning_objective": "Recognise normal anion gap metabolic acidosis with appropriate respiratory compensation",
+  "tags": [
+    "diarrhoea",
+    "nagma",
+    "metabolic_acidosis"
+  ],
+  "explanation": "The pH is in the normal range, but the low HCO3 still indicates a primary metabolic acidosis with respiratory compensation. Low HCO3 indicates a primary metabolic acidosis. Winter's formula predicts PaCO2 ~33.5 (+/-2); measured 32.1 is appropriate compensation. Anion gap is 139 - (110 + 17) = 12, which is normal, consistent with NAGMA such as diarrhoea.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "diarrhoea_nagma",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core_metabolic",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "DIARRHOEA_008",
+  "title": "Diarrhoea (normal anion gap metabolic acidosis)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_nagma",
+  "clinical_stem": "34F presents dehydrated and weak after several days of high-output gastrointestinal losses.",
+  "inputs": {
+    "gas": {
+      "ph": 7.33,
+      "paco2_mmHg": 25.7,
+      "hco3_mmolL": 13
+    },
+    "electrolytes": {
+      "na_mmolL": 139,
+      "cl_mmolL": 114
+    },
+    "other": {
+      "lactate_mmolL": 1.2
+    },
+    "lactate_mmolL": 1.2
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Diarrhoea",
+        "DKA",
+        "Vomiting",
+        "Renal failure (uraemia)",
+        "Toxic alcohol"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 12,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "Diarrhoea",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 27.5,
+      "acceptable_range_mmHg": [
+        25.5,
+        29.5
+      ]
+    }
+  },
+  "learning_objective": "Recognise normal anion gap metabolic acidosis with appropriate respiratory compensation",
+  "tags": [
+    "diarrhoea",
+    "nagma",
+    "metabolic_acidosis"
+  ],
+  "explanation": "The pH is in the normal range, but the low HCO3 still indicates a primary metabolic acidosis with respiratory compensation. Low HCO3 indicates a primary metabolic acidosis. Winter's formula predicts PaCO2 ~27.5 (+/-2); measured 25.7 is appropriate compensation. Anion gap is 139 - (114 + 13) = 12, which is normal, consistent with NAGMA such as diarrhoea.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "diarrhoea_nagma",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core_metabolic",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "DIARRHOEA_001",
+  "title": "Diarrhoea (normal anion gap metabolic acidosis)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_nagma",
+  "clinical_stem": "29F presents with light-headedness and dehydration after several days of gastroenteritis symptoms.",
+  "inputs": {
+    "gas": {
+      "ph": 7.35,
+      "paco2_mmHg": 35.9,
+      "hco3_mmolL": 19
+    },
+    "electrolytes": {
+      "na_mmolL": 140,
+      "cl_mmolL": 111
+    },
+    "other": {
+      "lactate_mmolL": 1.3
+    },
+    "lactate_mmolL": 1.3
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Diarrhoea",
+        "DKA",
+        "Vomiting",
+        "Renal failure (uraemia)",
+        "Toxic alcohol"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Normal",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 10,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "Diarrhoea",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 36.5,
+      "acceptable_range_mmHg": [
+        34.5,
+        38.5
+      ]
+    }
+  },
+  "learning_objective": "Recognise normal anion gap metabolic acidosis with appropriate respiratory compensation",
+  "tags": [
+    "diarrhoea",
+    "nagma",
+    "metabolic_acidosis"
+  ],
+  "explanation": "The pH is in the normal range, but the low HCO3 still indicates a primary metabolic acidosis with respiratory compensation. Low HCO3 indicates a primary metabolic acidosis. Winter's formula predicts PaCO2 ~36.5 (+/-2); measured 35.9 is appropriate compensation. Anion gap is 140 - (111 + 19) = 10, which is normal, consistent with NAGMA such as diarrhoea.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "diarrhoea_nagma",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core_metabolic",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "DIARRHOEA_003",
+  "title": "Diarrhoea (normal anion gap metabolic acidosis)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_nagma",
+  "clinical_stem": "34F presents dehydrated and weak after several days of high-output gastrointestinal losses.",
+  "inputs": {
+    "gas": {
+      "ph": 7.29,
+      "paco2_mmHg": 30.4,
+      "hco3_mmolL": 14
+    },
+    "electrolytes": {
+      "na_mmolL": 138,
+      "cl_mmolL": 114
+    },
+    "other": {
+      "lactate_mmolL": 1.4
+    },
+    "lactate_mmolL": 1.4
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Diarrhoea",
+        "DKA",
+        "Vomiting",
+        "Renal failure (uraemia)",
+        "Toxic alcohol"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 10,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "Diarrhoea",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 29.0,
+      "acceptable_range_mmHg": [
+        27.0,
+        31.0
+      ]
+    }
+  },
+  "learning_objective": "Recognise normal anion gap metabolic acidosis with appropriate respiratory compensation",
+  "tags": [
+    "diarrhoea",
+    "nagma",
+    "metabolic_acidosis"
+  ],
+  "explanation": "The pH is in the normal range, but the low HCO3 still indicates a primary metabolic acidosis with respiratory compensation. Low HCO3 indicates a primary metabolic acidosis. Winter's formula predicts PaCO2 ~29.0 (+/-2); measured 30.4 is appropriate compensation. Anion gap is 138 - (114 + 14) = 10, which is normal, consistent with NAGMA such as diarrhoea.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "diarrhoea_nagma",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core_metabolic",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "DIARRHOEA_007",
+  "title": "Diarrhoea (normal anion gap metabolic acidosis)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_nagma",
+  "clinical_stem": "29M presents with light-headedness and dehydration after several days of gastroenteritis symptoms.",
+  "inputs": {
+    "gas": {
+      "ph": 7.28,
+      "paco2_mmHg": 26.3,
+      "hco3_mmolL": 12
+    },
+    "electrolytes": {
+      "na_mmolL": 138,
+      "cl_mmolL": 115
+    },
+    "other": {
+      "lactate_mmolL": 1.6
+    },
+    "lactate_mmolL": 1.6
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Diarrhoea",
+        "DKA",
+        "Vomiting",
+        "Renal failure (uraemia)",
+        "Toxic alcohol"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 11,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "Diarrhoea",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 26.0,
+      "acceptable_range_mmHg": [
+        24.0,
+        28.0
+      ]
+    }
+  },
+  "learning_objective": "Recognise normal anion gap metabolic acidosis with appropriate respiratory compensation",
+  "tags": [
+    "diarrhoea",
+    "nagma",
+    "metabolic_acidosis"
+  ],
+  "explanation": "The pH is in the normal range, but the low HCO3 still indicates a primary metabolic acidosis with respiratory compensation. Low HCO3 indicates a primary metabolic acidosis. Winter's formula predicts PaCO2 ~26.0 (+/-2); measured 26.3 is appropriate compensation. Anion gap is 138 - (115 + 12) = 11, which is normal, consistent with NAGMA such as diarrhoea.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "diarrhoea_nagma",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core_metabolic",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "DIARRHOEA_004",
+  "title": "Diarrhoea (normal anion gap metabolic acidosis)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_nagma",
+  "clinical_stem": "29F presents with light-headedness and dehydration after several days of gastroenteritis symptoms.",
+  "inputs": {
+    "gas": {
+      "ph": 7.3,
+      "paco2_mmHg": 33.5,
+      "hco3_mmolL": 16
+    },
+    "electrolytes": {
+      "na_mmolL": 142,
+      "cl_mmolL": 117
+    },
+    "other": {
+      "lactate_mmolL": 1.4
+    },
+    "lactate_mmolL": 1.4
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Diarrhoea",
+        "DKA",
+        "Vomiting",
+        "Renal failure (uraemia)",
+        "Toxic alcohol"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 9,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "Diarrhoea",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 32.0,
+      "acceptable_range_mmHg": [
+        30.0,
+        34.0
+      ]
+    }
+  },
+  "learning_objective": "Recognise normal anion gap metabolic acidosis with appropriate respiratory compensation",
+  "tags": [
+    "diarrhoea",
+    "nagma",
+    "metabolic_acidosis"
+  ],
+  "explanation": "The pH is in the normal range, but the low HCO3 still indicates a primary metabolic acidosis with respiratory compensation. Low HCO3 indicates a primary metabolic acidosis. Winter's formula predicts PaCO2 ~32.0 (+/-2); measured 33.5 is appropriate compensation. Anion gap is 142 - (117 + 16) = 9, which is normal, consistent with NAGMA such as diarrhoea.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "diarrhoea_nagma",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core_metabolic",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+

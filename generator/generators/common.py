@@ -2,10 +2,13 @@
 
 import re
 
+from ..physiology import build_inputs as normalize_case_inputs, ensure_level_based_input_defaults
 from ..progression import attach_progression_metadata
+from ..stems import apply_age_gender_shorthand, extract_patient_gender
 
 
 DIAGNOSIS_DISTRACTOR_POOL = [
+    "Alcoholic ketoacidosis",
     "Opioid toxicity",
     "Hypoventilation",
     "COPD",
@@ -24,6 +27,9 @@ DIAGNOSIS_DISTRACTOR_POOL = [
     "DKA with vomiting",
     "Salicylate toxicity",
     "Diarrhoea",
+    "GI bicarbonate loss",
+    "Gastric losses",
+    "Mixed high anion gap metabolic acidosis and metabolic alkalosis",
     "Renal failure",
     "Renal failure (uraemia)",
     "Toxic alcohol",
@@ -54,6 +60,15 @@ DIAGNOSIS_CONFLICT_GROUPS = (
     frozenset({"vomiting", "vomiting metabolic alkalosis"}),
 )
 
+ALLOWED_DIAGNOSIS_OPTION_PAIRS = {
+    frozenset(
+        {
+            "mixed high anion gap metabolic acidosis and metabolic alkalosis",
+            "high anion gap metabolic acidosis",
+        }
+    ),
+}
+
 MECHANISM_LABELS = {
     "hypoventilation",
     "hyperventilation",
@@ -71,16 +86,39 @@ CAUSE_LABELS = {
 GENERIC_MECHANISM_KEYWORDS = {"ventilation", "ventilatory"}
 
 
-def build_inputs(ph, paco2, hco3, na, cl, lactate=None):
-    inputs = {
-        "gas": {"ph": ph, "paco2_mmHg": paco2, "hco3_mmolL": hco3},
-        "electrolytes": {"na_mmolL": na, "cl_mmolL": cl},
-    }
-
-    if lactate is not None:
-        inputs["lactate_mmolL"] = lactate
-
-    return inputs
+def build_inputs(
+    ph,
+    paco2,
+    hco3,
+    na,
+    cl,
+    lactate=None,
+    *,
+    pao2=None,
+    base_excess=None,
+    k=None,
+    glucose=None,
+    spo2=None,
+    hb=None,
+    methb=None,
+    cohb=None,
+):
+    return normalize_case_inputs(
+        ph,
+        paco2,
+        hco3,
+        na,
+        cl,
+        lactate=lactate,
+        pao2=pao2,
+        base_excess=base_excess,
+        k=k,
+        glucose=glucose,
+        spo2=spo2,
+        hb=hb,
+        methb=methb,
+        cohb=cohb,
+    )
 
 
 def build_answer_key(
@@ -120,6 +158,9 @@ def diagnosis_labels_conflict(left, right):
     right_normalized = normalize_diagnosis_option(right)
 
     if not left_normalized or not right_normalized:
+        return False
+
+    if frozenset({left_normalized, right_normalized}) in ALLOWED_DIAGNOSIS_OPTION_PAIRS:
         return False
 
     if left_normalized == right_normalized:
@@ -218,14 +259,20 @@ def build_case(
     explanation=None,
     timing=None,
     is_mixed=False,
+    patient_gender=None,
 ):
+    normalized_inputs = ensure_level_based_input_defaults(inputs, level=level)
+    resolved_patient_gender = patient_gender or extract_patient_gender(clinical_stem)
+    normalized_stem = apply_age_gender_shorthand(clinical_stem, gender=resolved_patient_gender)
+    resolved_patient_gender = resolved_patient_gender or extract_patient_gender(normalized_stem)
+
     case = {
         "case_id": case_id,
         "title": title,
         "case_type": case_type,
         "category": category,
-        "clinical_stem": clinical_stem,
-        "inputs": inputs,
+        "clinical_stem": normalized_stem,
+        "inputs": normalized_inputs,
         "questions_flow": questions_flow,
         "answer_key": answer_key,
     }
@@ -240,5 +287,7 @@ def build_case(
         case["explanation"] = explanation
     if timing is not None:
         case["timing"] = timing
+    if resolved_patient_gender is not None:
+        case["patient_gender"] = resolved_patient_gender
 
     return attach_progression_metadata(case, level=level, archetype=archetype, is_mixed=is_mixed)

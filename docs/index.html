@@ -37,6 +37,7 @@
             <!--<button class="nav-tab" data-action="view" data-view="learn" type="button">Learn</button>-->
 			<button class="nav-tab is-disabled" type="button" disabled>Learn</button>
             <button class="nav-tab" data-action="view" data-view="practice" type="button">Practice</button>
+			<button class="nav-tab is-disabled" type="button" disabled>Exam</button>
             <button class="nav-tab" data-action="view" data-view="leaderboard" type="button">Leaderboard</button>
             <button class="nav-tab" data-action="view" data-view="profile" type="button">Profile</button>
           </nav>
@@ -134,7 +135,7 @@
 
 				<div class="button-row results-actions">
 				  <button class="btn btn-primary" data-action="next-case" type="button">Next Case</button>
-				  <button class="btn btn-secondary" data-action="return-dashboard" type="button">Dashboard</button>
+				  <button class="btn btn-secondary" data-action="return-dashboard" type="button">Performance</button>
 				</div>
 
 			  <p id="dashboardCasesRemaining" class="card-footnote"></p>
@@ -191,6 +192,7 @@
         </section>
 
         <section class="fig-card values-card">
+          <div id="practiceMetricControls" class="values-controls is-hidden"></div>
           <div id="practiceMetrics" class="values-grid"></div>
         </section>
 

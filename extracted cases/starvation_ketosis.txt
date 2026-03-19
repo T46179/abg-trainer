@@ -1,0 +1,1161 @@
+Group: Starvation ketosis
+Number of cases: 8
+================================================================================
+
+{
+  "case_id": "STARVATION_002",
+  "title": "Starvation ketosis (subtle HAGMA with appropriate respiratory compensation)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_hagma",
+  "clinical_stem": "22F is reviewed in ED with minimal oral intake during a recent illness, prolonged viral symptoms, and dry mucous membranes.",
+  "inputs": {
+    "gas": {
+      "ph": 7.28,
+      "paco2_mmHg": 26.4,
+      "hco3_mmolL": 12
+    },
+    "electrolytes": {
+      "na_mmolL": 132,
+      "cl_mmolL": 102,
+      "glucose_mmolL": 5.5
+    }
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Starvation ketosis",
+        "Alcoholic ketoacidosis",
+        "DKA",
+        "Lactic acidosis",
+        "Renal failure (uraemia)"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 18,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Starvation ketosis",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 26.0,
+      "acceptable_range_mmHg": [
+        24.0,
+        28.0
+      ]
+    }
+  },
+  "learning_objective": "Recognise starvation ketosis as a subtle high anion gap metabolic acidosis with appropriate respiratory compensation and normal-range glucose",
+  "tags": [
+    "starvation_ketosis",
+    "hagma",
+    "metabolic_acidosis"
+  ],
+  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary metabolic acidosis. Winter's formula predicts PaCO2 ~26.0 (+/-2); measured 26.4 is appropriate compensation. Anion gap is 132 - (102 + 12) = 18, which is raised. This is a relatively mild high anion gap metabolic acidosis in the setting of poor intake or fasting. Glucose is 5.5 mmol/L rather than markedly elevated, which helps distinguish this from DKA, and the stem lacks alcohol-related context that would suggest alcoholic ketoacidosis.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "starvation_ketosis",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "STARVATION_008",
+  "title": "Starvation ketosis (subtle HAGMA with appropriate respiratory compensation)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_hagma",
+  "clinical_stem": "29F presents to ED with several days of poor oral intake. Other features include mild dehydration and nausea.",
+  "inputs": {
+    "gas": {
+      "ph": 7.34,
+      "paco2_mmHg": 34.8,
+      "hco3_mmolL": 18
+    },
+    "electrolytes": {
+      "na_mmolL": 137,
+      "cl_mmolL": 102,
+      "glucose_mmolL": 5.6
+    }
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Starvation ketosis",
+        "Alcoholic ketoacidosis",
+        "DKA",
+        "Lactic acidosis",
+        "Renal failure (uraemia)"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 17,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Starvation ketosis",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 35.0,
+      "acceptable_range_mmHg": [
+        33.0,
+        37.0
+      ]
+    }
+  },
+  "learning_objective": "Recognise starvation ketosis as a subtle high anion gap metabolic acidosis with appropriate respiratory compensation and normal-range glucose",
+  "tags": [
+    "starvation_ketosis",
+    "hagma",
+    "metabolic_acidosis"
+  ],
+  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary metabolic acidosis. Winter's formula predicts PaCO2 ~35.0 (+/-2); measured 34.8 is appropriate compensation. Anion gap is 137 - (102 + 18) = 17, which is raised. This is a relatively mild high anion gap metabolic acidosis in the setting of poor intake or fasting. Glucose is 5.6 mmol/L rather than markedly elevated, which helps distinguish this from DKA, and the stem lacks alcohol-related context that would suggest alcoholic ketoacidosis.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "starvation_ketosis",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "STARVATION_001",
+  "title": "Starvation ketosis (subtle HAGMA with appropriate respiratory compensation)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_hagma",
+  "clinical_stem": "35F presents for assessment with several days of poor oral intake and difficulty eating because of mouth pain. Other features include mild dehydration.",
+  "inputs": {
+    "gas": {
+      "ph": 7.33,
+      "paco2_mmHg": 25.8,
+      "hco3_mmolL": 13
+    },
+    "electrolytes": {
+      "na_mmolL": 137,
+      "k_mmolL": 3.8,
+      "cl_mmolL": 100,
+      "glucose_mmolL": 3.3
+    }
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Starvation ketosis",
+        "Alcoholic ketoacidosis",
+        "DKA",
+        "Lactic acidosis",
+        "Renal failure (uraemia)"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 24,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Starvation ketosis",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 27.5,
+      "acceptable_range_mmHg": [
+        25.5,
+        29.5
+      ]
+    }
+  },
+  "learning_objective": "Recognise starvation ketosis as a subtle high anion gap metabolic acidosis with appropriate respiratory compensation and normal-range glucose",
+  "tags": [
+    "starvation_ketosis",
+    "hagma",
+    "metabolic_acidosis"
+  ],
+  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary metabolic acidosis. Winter's formula predicts PaCO2 ~27.5 (+/-2); measured 25.8 is appropriate compensation. Anion gap is 137 - (100 + 13) = 24, which is raised. This is a relatively mild high anion gap metabolic acidosis in the setting of poor intake or fasting. Glucose is 3.3 mmol/L rather than markedly elevated, which helps distinguish this from DKA, and the stem lacks alcohol-related context that would suggest alcoholic ketoacidosis.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "starvation_ketosis",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "STARVATION_006",
+  "title": "Starvation ketosis (subtle HAGMA with appropriate respiratory compensation)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_hagma",
+  "clinical_stem": "43M attends ED after several days of poor intake, with fasting with very limited oral intake and postural symptoms.",
+  "inputs": {
+    "gas": {
+      "ph": 7.33,
+      "paco2_mmHg": 35.0,
+      "hco3_mmolL": 18
+    },
+    "electrolytes": {
+      "na_mmolL": 139,
+      "cl_mmolL": 103,
+      "glucose_mmolL": 5.5
+    }
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Starvation ketosis",
+        "Alcoholic ketoacidosis",
+        "DKA",
+        "Lactic acidosis",
+        "Renal failure (uraemia)"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 18,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Starvation ketosis",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 35.0,
+      "acceptable_range_mmHg": [
+        33.0,
+        37.0
+      ]
+    }
+  },
+  "learning_objective": "Recognise starvation ketosis as a subtle high anion gap metabolic acidosis with appropriate respiratory compensation and normal-range glucose",
+  "tags": [
+    "starvation_ketosis",
+    "hagma",
+    "metabolic_acidosis"
+  ],
+  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary metabolic acidosis. Winter's formula predicts PaCO2 ~35.0 (+/-2); measured 35.0 is appropriate compensation. Anion gap is 139 - (103 + 18) = 18, which is raised. This is a relatively mild high anion gap metabolic acidosis in the setting of poor intake or fasting. Glucose is 5.5 mmol/L rather than markedly elevated, which helps distinguish this from DKA, and the stem lacks alcohol-related context that would suggest alcoholic ketoacidosis.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "starvation_ketosis",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "STARVATION_005",
+  "title": "Starvation ketosis (subtle HAGMA with appropriate respiratory compensation)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_hagma",
+  "clinical_stem": "35M presents for assessment with several days of poor oral intake and reduced intake after several days of illness. Other features include general weakness.",
+  "inputs": {
+    "gas": {
+      "ph": 7.32,
+      "paco2_mmHg": 33.8,
+      "hco3_mmolL": 17
+    },
+    "electrolytes": {
+      "na_mmolL": 138,
+      "cl_mmolL": 103,
+      "glucose_mmolL": 5.4
+    },
+    "other": {
+      "lactate_mmolL": 1.7
+    },
+    "lactate_mmolL": 1.7
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Starvation ketosis",
+        "Alcoholic ketoacidosis",
+        "DKA",
+        "Lactic acidosis",
+        "Renal failure (uraemia)"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 18,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Starvation ketosis",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 33.5,
+      "acceptable_range_mmHg": [
+        31.5,
+        35.5
+      ]
+    }
+  },
+  "learning_objective": "Recognise starvation ketosis as a subtle high anion gap metabolic acidosis with appropriate respiratory compensation and normal-range glucose",
+  "tags": [
+    "starvation_ketosis",
+    "hagma",
+    "metabolic_acidosis"
+  ],
+  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary metabolic acidosis. Winter's formula predicts PaCO2 ~33.5 (+/-2); measured 33.8 is appropriate compensation. Anion gap is 138 - (103 + 17) = 18, which is raised. This is a relatively mild high anion gap metabolic acidosis in the setting of poor intake or fasting. Glucose is 5.4 mmol/L rather than markedly elevated, which helps distinguish this from DKA, and the stem lacks alcohol-related context that would suggest alcoholic ketoacidosis. Lactate is 1.7, which is absent or only mildly elevated and does not dominate the picture.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "starvation_ketosis",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "STARVATION_004",
+  "title": "Starvation ketosis (subtle HAGMA with appropriate respiratory compensation)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_hagma",
+  "clinical_stem": "29F attends ED with minimal oral intake during a recent illness, general weakness, and occasional vomiting.",
+  "inputs": {
+    "gas": {
+      "ph": 7.33,
+      "paco2_mmHg": 36.9,
+      "hco3_mmolL": 19
+    },
+    "electrolytes": {
+      "na_mmolL": 139,
+      "cl_mmolL": 102,
+      "glucose_mmolL": 5.6
+    },
+    "other": {
+      "lactate_mmolL": 0.9
+    },
+    "lactate_mmolL": 0.9
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Starvation ketosis",
+        "Alcoholic ketoacidosis",
+        "DKA",
+        "Lactic acidosis",
+        "Renal failure (uraemia)"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 18,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Starvation ketosis",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 36.5,
+      "acceptable_range_mmHg": [
+        34.5,
+        38.5
+      ]
+    }
+  },
+  "learning_objective": "Recognise starvation ketosis as a subtle high anion gap metabolic acidosis with appropriate respiratory compensation and normal-range glucose",
+  "tags": [
+    "starvation_ketosis",
+    "hagma",
+    "metabolic_acidosis"
+  ],
+  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary metabolic acidosis. Winter's formula predicts PaCO2 ~36.5 (+/-2); measured 36.9 is appropriate compensation. Anion gap is 139 - (102 + 19) = 18, which is raised. This is a relatively mild high anion gap metabolic acidosis in the setting of poor intake or fasting. Glucose is 5.6 mmol/L rather than markedly elevated, which helps distinguish this from DKA, and the stem lacks alcohol-related context that would suggest alcoholic ketoacidosis. Lactate is 0.9, which is absent or only mildly elevated and does not dominate the picture.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "starvation_ketosis",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "STARVATION_003",
+  "title": "Starvation ketosis (subtle HAGMA with appropriate respiratory compensation)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_hagma",
+  "clinical_stem": "29F presents for assessment with reduced intake due to prolonged nausea and recent weight loss. Other features include postural symptoms and occasional vomiting.",
+  "inputs": {
+    "gas": {
+      "ph": 7.32,
+      "paco2_mmHg": 28.3,
+      "hco3_mmolL": 14
+    },
+    "electrolytes": {
+      "na_mmolL": 134,
+      "cl_mmolL": 100,
+      "glucose_mmolL": 5.2
+    },
+    "other": {
+      "lactate_mmolL": 2.2
+    },
+    "lactate_mmolL": 2.2
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Starvation ketosis",
+        "Alcoholic ketoacidosis",
+        "DKA",
+        "Lactic acidosis",
+        "Renal failure (uraemia)"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 20,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Starvation ketosis",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 29.0,
+      "acceptable_range_mmHg": [
+        27.0,
+        31.0
+      ]
+    }
+  },
+  "learning_objective": "Recognise starvation ketosis as a subtle high anion gap metabolic acidosis with appropriate respiratory compensation and normal-range glucose",
+  "tags": [
+    "starvation_ketosis",
+    "hagma",
+    "metabolic_acidosis"
+  ],
+  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary metabolic acidosis. Winter's formula predicts PaCO2 ~29.0 (+/-2); measured 28.3 is appropriate compensation. Anion gap is 134 - (100 + 14) = 20, which is raised. This is a relatively mild high anion gap metabolic acidosis in the setting of poor intake or fasting. Glucose is 5.2 mmol/L rather than markedly elevated, which helps distinguish this from DKA, and the stem lacks alcohol-related context that would suggest alcoholic ketoacidosis. Lactate is 2.2, which is absent or only mildly elevated and does not dominate the picture.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "starvation_ketosis",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "STARVATION_007",
+  "title": "Starvation ketosis (subtle HAGMA with appropriate respiratory compensation)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_hagma",
+  "clinical_stem": "35M attends ED with several days of poor oral intake and dry mucous membranes.",
+  "inputs": {
+    "gas": {
+      "ph": 7.33,
+      "paco2_mmHg": 35.4,
+      "hco3_mmolL": 18
+    },
+    "electrolytes": {
+      "na_mmolL": 139,
+      "cl_mmolL": 103,
+      "glucose_mmolL": 5.7
+    }
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Starvation ketosis",
+        "Alcoholic ketoacidosis",
+        "DKA",
+        "Lactic acidosis",
+        "Renal failure (uraemia)"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 18,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Starvation ketosis",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 35.0,
+      "acceptable_range_mmHg": [
+        33.0,
+        37.0
+      ]
+    }
+  },
+  "learning_objective": "Recognise starvation ketosis as a subtle high anion gap metabolic acidosis with appropriate respiratory compensation and normal-range glucose",
+  "tags": [
+    "starvation_ketosis",
+    "hagma",
+    "metabolic_acidosis"
+  ],
+  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary metabolic acidosis. Winter's formula predicts PaCO2 ~35.0 (+/-2); measured 35.4 is appropriate compensation. Anion gap is 139 - (103 + 18) = 18, which is raised. This is a relatively mild high anion gap metabolic acidosis in the setting of poor intake or fasting. Glucose is 5.7 mmol/L rather than markedly elevated, which helps distinguish this from DKA, and the stem lacks alcohol-related context that would suggest alcoholic ketoacidosis.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "starvation_ketosis",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+

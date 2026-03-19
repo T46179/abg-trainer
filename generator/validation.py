@@ -19,6 +19,15 @@ from .physiology import (
 )
 
 
+def get_case_optional_value(inputs, container, key, legacy_key=None):
+    container_values = inputs.get(container, {})
+    if isinstance(container_values, dict) and container_values.get(key) is not None:
+        return container_values.get(key)
+    if legacy_key:
+        return inputs.get(legacy_key)
+    return None
+
+
 def validate_question_flow(case):
     errors = []
     question_flow = case.get("questions_flow", [])
@@ -90,16 +99,43 @@ def validate_case(case):
     case_id = case.get("case_id", "<missing_case_id>")
     archetype = case.get("archetype")
 
-    gas = case.get("inputs", {}).get("gas", {})
-    electrolytes = case.get("inputs", {}).get("electrolytes", {})
+    inputs = case.get("inputs", {})
+    gas = inputs.get("gas", {})
+    electrolytes = inputs.get("electrolytes", {})
     answer_key = case.get("answer_key", {})
     expected_compensation = answer_key.get("expected_compensation", {})
+
+    if not isinstance(inputs, dict):
+        return [f"{case_id}: inputs should be an object"]
+    if not isinstance(gas, dict):
+        errors.append(f"{case_id}: inputs.gas should be an object")
+    if not isinstance(electrolytes, dict):
+        errors.append(f"{case_id}: inputs.electrolytes should be an object")
+
+    other = inputs.get("other")
+    if other is not None and not isinstance(other, dict):
+        errors.append(f"{case_id}: inputs.other should be an object when present")
+
+    if errors:
+        return errors
+
+    legacy_lactate = inputs.get("lactate_mmolL")
+    canonical_lactate = get_case_optional_value(inputs, "other", "lactate_mmolL")
+    if (
+        legacy_lactate is not None
+        and canonical_lactate is not None
+        and abs(legacy_lactate - canonical_lactate) > 0.05
+    ):
+        errors.append(
+            f"{case_id}: legacy lactate ({legacy_lactate}) and inputs.other.lactate_mmolL ({canonical_lactate}) disagree"
+        )
 
     ph = gas.get("ph")
     paco2 = gas.get("paco2_mmHg")
     hco3 = gas.get("hco3_mmolL")
     na = electrolytes.get("na_mmolL")
     cl = electrolytes.get("cl_mmolL")
+    glucose = electrolytes.get("glucose_mmolL")
 
     required = {
         "ph": ph,
@@ -114,6 +150,9 @@ def validate_case(case):
 
     if errors:
         return errors
+
+    if case.get("difficulty_level") == 4 and glucose is None:
+        errors.append(f"{case_id}: master-level cases should include glucose_mmolL")
 
     if not (6.8 <= ph <= 7.8):
         errors.append(f"{case_id}: implausible pH {ph}")
@@ -167,6 +206,66 @@ def validate_case(case):
         if expected_compensation.get("rule") != "Winter":
             errors.append(f"{case_id}: DKA expected rule should be Winter")
 
+    elif archetype == "alcoholic_ketoacidosis":
+        expected_paco2 = round(winters_expected_paco2(hco3), 1)
+        low = round(expected_paco2 - 2, 1)
+        high = round(expected_paco2 + 2, 1)
+
+        if answer_key.get("primary_disorder") != "Metabolic acidosis":
+            errors.append(f"{case_id}: alcoholic ketoacidosis should be metabolic acidosis")
+        if answer_key.get("final_diagnosis") != "Alcoholic ketoacidosis":
+            errors.append(f"{case_id}: alcoholic ketoacidosis final diagnosis mismatch")
+        if ag <= 16:
+            errors.append(f"{case_id}: alcoholic ketoacidosis should have raised anion gap, got {ag}")
+        if not in_range(paco2, low, high):
+            errors.append(
+                f"{case_id}: alcoholic ketoacidosis PaCO2 outside Winter range ({paco2} not in {low}-{high})"
+            )
+        if expected_compensation.get("rule") != "Winter":
+            errors.append(f"{case_id}: alcoholic ketoacidosis expected rule should be Winter")
+
+    elif archetype == "starvation_ketosis":
+        expected_paco2 = round(winters_expected_paco2(hco3), 1)
+        low = round(expected_paco2 - 2, 1)
+        high = round(expected_paco2 + 2, 1)
+
+        if answer_key.get("primary_disorder") != "Metabolic acidosis":
+            errors.append(f"{case_id}: starvation ketosis should be metabolic acidosis")
+        if answer_key.get("final_diagnosis") != "Starvation ketosis":
+            errors.append(f"{case_id}: starvation ketosis final diagnosis mismatch")
+        if ag <= 16:
+            errors.append(f"{case_id}: starvation ketosis should have at least a mildly raised anion gap, got {ag}")
+        if not in_range(paco2, low, high):
+            errors.append(
+                f"{case_id}: starvation ketosis PaCO2 outside Winter range ({paco2} not in {low}-{high})"
+            )
+        if expected_compensation.get("rule") != "Winter":
+            errors.append(f"{case_id}: starvation ketosis expected rule should be Winter")
+        if glucose is None:
+            errors.append(f"{case_id}: starvation ketosis should include glucose")
+        elif not in_range(glucose, 3.2, 6.2):
+            errors.append(f"{case_id}: starvation ketosis glucose should stay normal/low-normal, got {glucose}")
+
+        lactate = get_case_optional_value(inputs, "other", "lactate_mmolL", legacy_key="lactate_mmolL")
+        if lactate is not None and lactate > 2.2:
+            errors.append(f"{case_id}: starvation ketosis lactate should stay absent or mildly elevated, got {lactate}")
+
+    elif archetype == "toxic_alcohol":
+        expected_paco2 = round(winters_expected_paco2(hco3), 1)
+        low = round(expected_paco2 - 2, 1)
+        high = round(expected_paco2 + 2, 1)
+
+        if answer_key.get("primary_disorder") != "Metabolic acidosis":
+            errors.append(f"{case_id}: toxic alcohol should be metabolic acidosis")
+        if answer_key.get("final_diagnosis") != "Toxic alcohol":
+            errors.append(f"{case_id}: toxic alcohol final diagnosis mismatch")
+        if ag <= 16:
+            errors.append(f"{case_id}: toxic alcohol should have raised anion gap, got {ag}")
+        if not in_range(paco2, low, high):
+            errors.append(f"{case_id}: toxic alcohol PaCO2 outside Winter range ({paco2} not in {low}-{high})")
+        if expected_compensation.get("rule") != "Winter":
+            errors.append(f"{case_id}: toxic alcohol expected rule should be Winter")
+
     elif archetype == "diarrhoea_nagma":
         expected_paco2 = round(winters_expected_paco2(hco3), 1)
         low = round(expected_paco2 - 2, 1)
@@ -180,6 +279,48 @@ def validate_case(case):
             errors.append(f"{case_id}: diarrhoea should be normal AG, got {ag}")
         if not in_range(paco2, low, high):
             errors.append(f"{case_id}: diarrhoea PaCO2 outside Winter range ({paco2} not in {low}-{high})")
+
+    elif archetype == "simple_nagma":
+        expected_paco2 = round(winters_expected_paco2(hco3), 1)
+        low = round(expected_paco2 - 2, 1)
+        high = round(expected_paco2 + 2, 1)
+
+        if answer_key.get("primary_disorder") != "Metabolic acidosis":
+            errors.append(f"{case_id}: simple NAGMA should be metabolic acidosis")
+        if answer_key.get("final_diagnosis") != "GI bicarbonate loss":
+            errors.append(f"{case_id}: simple NAGMA final diagnosis mismatch")
+        if ph >= 7.35:
+            errors.append(f"{case_id}: simple NAGMA should remain acidaemic for beginner clarity")
+        if ag > 16:
+            errors.append(f"{case_id}: simple NAGMA should have a normal anion gap, got {ag}")
+        if cl < 104:
+            errors.append(f"{case_id}: simple NAGMA should be relatively hyperchloraemic, got Cl {cl}")
+        if not in_range(paco2, low, high):
+            errors.append(f"{case_id}: simple NAGMA PaCO2 outside Winter range ({paco2} not in {low}-{high})")
+        if expected_compensation.get("rule") != "Winter":
+            errors.append(f"{case_id}: simple NAGMA expected rule should be Winter")
+
+    elif archetype == "simple_metabolic_alkalosis":
+        expected_paco2 = round(metabolic_alkalosis_expected_paco2(hco3), 1)
+        low = round(expected_paco2 - 3, 1)
+        high = round(expected_paco2 + 3, 1)
+
+        if answer_key.get("primary_disorder") != "Metabolic alkalosis":
+            errors.append(f"{case_id}: simple metabolic alkalosis should be metabolic alkalosis")
+        if answer_key.get("final_diagnosis") != "Gastric losses":
+            errors.append(f"{case_id}: simple metabolic alkalosis final diagnosis mismatch")
+        if ph <= 7.45:
+            errors.append(f"{case_id}: simple metabolic alkalosis should remain alkalemic for beginner clarity")
+        if hco3 <= 26:
+            errors.append(f"{case_id}: simple metabolic alkalosis should have elevated bicarbonate")
+        if cl > 103:
+            errors.append(f"{case_id}: simple metabolic alkalosis should be relatively hypochloraemic, got Cl {cl}")
+        if not in_range(paco2, low, high):
+            errors.append(
+                f"{case_id}: simple metabolic alkalosis PaCO2 outside compensation range ({paco2} not in {low}-{high})"
+            )
+        if expected_compensation.get("rule") != "Metabolic alkalosis compensation":
+            errors.append(f"{case_id}: simple metabolic alkalosis expected rule should be metabolic alkalosis compensation")
 
     elif archetype == "opioid_toxicity":
         expected_hco3 = round(24 + ((paco2 - 40) / 10), 1)
@@ -314,6 +455,40 @@ def validate_case(case):
             errors.append(f"{case_id}: salicylate case should have raised AG, got {ag}")
         if answer_key.get("compensation") != "Inappropriate":
             errors.append(f"{case_id}: salicylate compensation should be inappropriate")
+
+    elif archetype == "mixed_hagma_metabolic_alkalosis":
+        expected_paco2 = round(winters_expected_paco2(hco3), 1)
+        low = round(expected_paco2 - 2, 1)
+        high = round(expected_paco2 + 2, 1)
+        delta_ag = ag - 12
+        delta_hco3 = 24 - hco3
+
+        if answer_key.get("primary_disorder") != "Metabolic acidosis":
+            errors.append(f"{case_id}: mixed HAGMA/metabolic alkalosis should be metabolic acidosis")
+        if answer_key.get("final_diagnosis") != "Mixed high anion gap metabolic acidosis and metabolic alkalosis":
+            errors.append(f"{case_id}: mixed HAGMA/metabolic alkalosis final diagnosis mismatch")
+        if answer_key.get("additional_metabolic_process") != "Metabolic alkalosis":
+            errors.append(f"{case_id}: mixed HAGMA/metabolic alkalosis should record additional metabolic alkalosis")
+        if answer_key.get("compensation") != "Appropriate":
+            errors.append(f"{case_id}: mixed HAGMA/metabolic alkalosis compensation should be appropriate")
+        if not (7.30 <= ph <= 7.42):
+            errors.append(f"{case_id}: mixed HAGMA/metabolic alkalosis pH should stay 7.30-7.42, got {ph}")
+        if not (17 <= hco3 <= 24):
+            errors.append(f"{case_id}: mixed HAGMA/metabolic alkalosis HCO3 should stay 17-24, got {hco3}")
+        if ag <= 16:
+            errors.append(f"{case_id}: mixed HAGMA/metabolic alkalosis should have raised AG, got {ag}")
+        if cl > 96:
+            errors.append(f"{case_id}: mixed HAGMA/metabolic alkalosis should have low/low-normal chloride, got {cl}")
+        if (delta_ag - delta_hco3) < 3:
+            errors.append(
+                f"{case_id}: mixed HAGMA/metabolic alkalosis should have bicarbonate preserved above isolated-HAGMA expectations"
+            )
+        if not in_range(paco2, low, high):
+            errors.append(
+                f"{case_id}: mixed HAGMA/metabolic alkalosis PaCO2 outside Winter range ({paco2} not in {low}-{high})"
+            )
+        if expected_compensation.get("rule") != "Winter":
+            errors.append(f"{case_id}: mixed HAGMA/metabolic alkalosis expected rule should be Winter")
 
     elif archetype == "lactic_acidosis":
         expected_paco2 = round(winters_expected_paco2(hco3), 1)

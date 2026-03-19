@@ -1,6 +1,8 @@
 const USER_STATE_STORAGE_KEY = "abgmaster_userState";
 const USER_STATE_MODE_STORAGE_KEY = "abgmaster_userState_mode";
 const PRACTICE_INTRO_SEEN_STORAGE_KEY = "practiceIntroSeen";
+const ADVANCED_RANGES_STORAGE_KEY = "abgmaster_showAdvancedRanges";
+const SEEN_CASES_STORAGE_KEY = "abgmaster_seenCasesByDifficulty";
 
 const userState = {
   xp: 0,
@@ -26,7 +28,8 @@ const sessionState = {
   stepResults: [],
   stepOptionOverrides: {},
   caseStartMs: null,
-  timedMode: false
+  timedMode: false,
+  showAdvancedRanges: false
 };
 
 const appData = {
@@ -37,6 +40,7 @@ const appData = {
   loadError: null,
   isLoaded: false,
   recentArchetypes: [],
+  seenCasesByDifficulty: {},
   timerInterval: null,
   lastCaseSummary: null,
   practiceIntroContinue: null
@@ -60,6 +64,10 @@ const VIEW_NAME_TO_ID = {
   profile: "profileView"
 };
 const DIFFICULTY_ORDER = ["beginner", "intermediate", "advanced", "master"];
+
+function createEmptySeenCasesState() {
+  return Object.fromEntries(DIFFICULTY_ORDER.map(key => [key, []]));
+}
 
 function normalizeSubscriptionTier(value) {
   const normalized = String(value ?? "").toLowerCase();
@@ -443,6 +451,59 @@ function markPracticeIntroSeen() {
   }
 }
 
+function loadAdvancedRangesPreference() {
+  try {
+    return window.localStorage.getItem(ADVANCED_RANGES_STORAGE_KEY) === "true";
+  } catch (error) {
+    console.warn("Failed to read advanced ranges preference.", error);
+    return false;
+  }
+}
+
+function saveAdvancedRangesPreference() {
+  try {
+    window.localStorage.setItem(ADVANCED_RANGES_STORAGE_KEY, String(Boolean(sessionState.showAdvancedRanges)));
+  } catch (error) {
+    console.warn("Failed to save advanced ranges preference.", error);
+  }
+}
+
+function sanitizeSeenCasesByDifficulty(source) {
+  const sanitized = createEmptySeenCasesState();
+  if (!source || typeof source !== "object") return sanitized;
+
+  DIFFICULTY_ORDER.forEach(difficultyKey => {
+    const caseIds = Array.isArray(source[difficultyKey]) ? source[difficultyKey] : [];
+    sanitized[difficultyKey] = caseIds
+      .map(caseId => String(caseId ?? "").trim())
+      .filter((caseId, index, values) => caseId && values.indexOf(caseId) === index);
+  });
+
+  return sanitized;
+}
+
+function loadSeenCasesByDifficulty() {
+  try {
+    const raw = window.localStorage.getItem(SEEN_CASES_STORAGE_KEY);
+    if (!raw) return createEmptySeenCasesState();
+    return sanitizeSeenCasesByDifficulty(JSON.parse(raw));
+  } catch (error) {
+    console.warn("Failed to load seen cases by difficulty.", error);
+    return createEmptySeenCasesState();
+  }
+}
+
+function saveSeenCasesByDifficulty() {
+  try {
+    window.localStorage.setItem(
+      SEEN_CASES_STORAGE_KEY,
+      JSON.stringify(sanitizeSeenCasesByDifficulty(appData.seenCasesByDifficulty))
+    );
+  } catch (error) {
+    console.warn("Failed to save seen cases by difficulty.", error);
+  }
+}
+
 function closePracticeIntroModal() {
   const modal = document.getElementById("practiceIntroModal");
   if (!modal) return;
@@ -546,6 +607,162 @@ function formatValue(value, decimals = 1) {
   return Number(value).toFixed(decimals);
 }
 
+function getCaseStructuredInputs(caseItem) {
+  const inputs = caseItem?.inputs ?? {};
+  return {
+    gas: inputs.gas ?? {},
+    electrolytes: inputs.electrolytes ?? {},
+    other: inputs.other ?? {},
+    legacyInputs: inputs
+  };
+}
+
+function getCaseLactateValue(caseItem) {
+  const { other, legacyInputs } = getCaseStructuredInputs(caseItem);
+  return other.lactate_mmolL ?? legacyInputs.lactate_mmolL ?? null;
+}
+
+function buildCaseMetricDefinitions(caseItem) {
+  const { gas, electrolytes } = getCaseStructuredInputs(caseItem);
+  const lactate = getCaseLactateValue(caseItem);
+
+  return [
+    {
+      label: "pH",
+      displayLabel: "pH",
+      reference: "Normal: 7.35 - 7.45",
+      value: gas.ph,
+      decimals: 2,
+      unit: "",
+      abnormal: gas.ph < 7.35 || gas.ph > 7.45
+    },
+    {
+      label: "PaCO2",
+      displayLabel: "PaCO<sub>2</sub>",
+      reference: "Normal: 35 - 45 mmHg",
+      value: gas.paco2_mmHg,
+      decimals: 1,
+      unit: "mmHg",
+      abnormal: gas.paco2_mmHg < 35 || gas.paco2_mmHg > 45
+    },
+    {
+      label: "HCO3",
+      displayLabel: "HCO<sub>3</sub><sup>−</sup>",
+      reference: "Normal: 22 - 26 mmol/L",
+      value: gas.hco3_mmolL,
+      decimals: 1,
+      unit: "mmol/L",
+      abnormal: gas.hco3_mmolL < 22 || gas.hco3_mmolL > 26
+    },
+    {
+      label: "PaO2",
+      displayLabel: "PaO<sub>2</sub>",
+      reference: "Normal: 80 - 100 mmHg",
+      value: gas.pao2_mmHg,
+      decimals: 1,
+      unit: "mmHg",
+      abnormal: gas.pao2_mmHg < 80 || gas.pao2_mmHg > 100
+    },
+    {
+      label: "Base excess",
+      displayLabel: "Base excess",
+      reference: "Normal: -2 to +2 mEq/L",
+      value: gas.base_excess_mEqL,
+      decimals: 1,
+      unit: "mEq/L",
+      abnormal: gas.base_excess_mEqL < -2 || gas.base_excess_mEqL > 2
+    },
+    {
+      label: "Na",
+      displayLabel: "Na<sup>+</sup>",
+      reference: "Normal: 135 - 145 mmol/L",
+      value: electrolytes.na_mmolL,
+      decimals: 0,
+      unit: "mmol/L",
+      abnormal: electrolytes.na_mmolL < 135 || electrolytes.na_mmolL > 145
+    },
+    {
+      label: "K",
+      displayLabel: "K<sup>+</sup>",
+      reference: "Normal: 3.5 - 5.0 mmol/L",
+      value: electrolytes.k_mmolL,
+      decimals: 1,
+      unit: "mmol/L",
+      abnormal: electrolytes.k_mmolL < 3.5 || electrolytes.k_mmolL > 5
+    },
+    {
+      label: "Cl",
+      displayLabel: "Cl<sup>−</sup>",
+      reference: "Normal: 98 - 106 mmol/L",
+      value: electrolytes.cl_mmolL,
+      decimals: 0,
+      unit: "mmol/L",
+      abnormal: electrolytes.cl_mmolL < 98 || electrolytes.cl_mmolL > 106
+    },
+    {
+      label: "Glucose",
+      displayLabel: "Glucose",
+      reference: "Normal: 3.9 - 7.8 mmol/L",
+      value: electrolytes.glucose_mmolL,
+      decimals: 1,
+      unit: "mmol/L",
+      abnormal: electrolytes.glucose_mmolL < 3.9 || electrolytes.glucose_mmolL > 7.8,
+      minDifficultyLevel: 3
+    },
+    {
+      label: "Lactate",
+      displayLabel: "Lactate",
+      reference: "Normal: 0.5 - 2.0 mmol/L",
+      value: lactate,
+      decimals: 1,
+      unit: "mmol/L",
+      abnormal: lactate != null && (lactate < 0.5 || lactate > 2)
+    }
+  ];
+}
+
+function isMetricVisibleForDifficulty(metric, difficultyLevel) {
+  if (metric.minDifficultyLevel != null && difficultyLevel < metric.minDifficultyLevel) {
+    return false;
+  }
+
+  if (metric.maxDifficultyLevel != null && difficultyLevel > metric.maxDifficultyLevel) {
+    return false;
+  }
+
+  return true;
+}
+
+function getVisibleCaseMetrics(caseItem) {
+  const difficultyLevel = Number(caseItem?.difficulty_level ?? 1);
+
+  return buildCaseMetricDefinitions(caseItem).filter(metric => {
+    if (!isMetricVisibleForDifficulty(metric, difficultyLevel)) {
+      return false;
+    }
+
+    if (metric.label === "Glucose") {
+      if (difficultyLevel >= 4) return true;
+      if (difficultyLevel >= 3) return metric.value != null;
+    }
+
+    return true;
+  });
+}
+
+function shouldShowMetricReferences(caseItem) {
+  const difficultyLevel = Number(caseItem?.difficulty_level ?? 1);
+  if (difficultyLevel <= 2) return true;
+  if (difficultyLevel === 3) return Boolean(sessionState.showAdvancedRanges);
+  return false;
+}
+
+function renderMetricValue(metric) {
+  const formatted = formatValue(metric.value, metric.decimals ?? 1);
+  if (formatted === "--") return "--";
+  return metric.unit ? `${formatted} ${metric.unit}` : formatted;
+}
+
 function isCorrectAnswer(caseItem, stepKey, chosen) {
   const answerKey = caseItem.answer_key ?? {};
 
@@ -619,12 +836,44 @@ function caseMatchesDifficulty(caseItem, difficultyKey) {
   return caseDifficultyLevel === level || caseDifficultyLabel === difficultyKey;
 }
 
+function getSeenCaseIdsForDifficulty(difficultyKey) {
+  return new Set(appData.seenCasesByDifficulty?.[difficultyKey] ?? []);
+}
+
+function filterOutRecentArchetypes(cases) {
+  const withoutRecent = cases.filter(caseItem => !appData.recentArchetypes.includes(caseItem.archetype));
+  return withoutRecent.length ? withoutRecent : cases;
+}
+
+function getCaseDifficultyKey(caseItem) {
+  const difficultyLevel = Number(caseItem?.difficulty_level ?? getDifficultyLevel(sessionState.currentDifficulty));
+  return getDifficultyLabel(difficultyLevel);
+}
+
 function getEligibleCasesForDifficulty(difficultyKey) {
   const exactMatches = appData.cases.filter(caseItem => caseMatchesDifficulty(caseItem, difficultyKey));
   const pool = exactMatches.length ? exactMatches : [...appData.cases];
 
-  const withoutRecent = pool.filter(caseItem => !appData.recentArchetypes.includes(caseItem.archetype));
-  return withoutRecent.length ? withoutRecent : pool;
+  const seenCaseIds = getSeenCaseIdsForDifficulty(difficultyKey);
+
+  const unseenCases = pool.filter(caseItem => !seenCaseIds.has(caseItem.case_id));
+  const seenCases = pool.filter(caseItem => seenCaseIds.has(caseItem.case_id));
+
+  // 1. Prefer unseen cases
+  if (unseenCases.length) {
+    const unseenWithoutRecent = unseenCases.filter(
+      caseItem => !appData.recentArchetypes.includes(caseItem.archetype)
+    );
+
+    return unseenWithoutRecent.length ? unseenWithoutRecent : unseenCases;
+  }
+
+  // 2. If all seen → allow repeats, still avoid recent if possible
+  const seenWithoutRecent = seenCases.filter(
+    caseItem => !appData.recentArchetypes.includes(caseItem.archetype)
+  );
+
+  return seenWithoutRecent.length ? seenWithoutRecent : seenCases;
 }
 
 function rememberRecentArchetype(caseItem) {
@@ -633,6 +882,23 @@ function rememberRecentArchetype(caseItem) {
   if (appData.recentArchetypes.length > RECENT_ARCHETYPE_LIMIT) {
     appData.recentArchetypes.shift();
   }
+}
+
+function markCaseSeen(caseItem) {
+  const difficultyKey = getCaseDifficultyKey(caseItem);
+  const caseId = String(caseItem?.case_id ?? "").trim();
+
+  if (!difficultyKey || !caseId) return;
+
+  const seenCases = sanitizeSeenCasesByDifficulty(appData.seenCasesByDifficulty);
+  const seenForDifficulty = seenCases[difficultyKey] ?? [];
+  if (!seenForDifficulty.includes(caseId)) {
+    seenForDifficulty.push(caseId);
+  }
+
+  seenCases[difficultyKey] = seenForDifficulty;
+  appData.seenCasesByDifficulty = seenCases;
+  saveSeenCasesByDifficulty();
 }
 
 function normalizeDiagnosisOption(value) {
@@ -827,6 +1093,9 @@ function finishCase() {
   const caseItem = sessionState.currentCase;
   if (!caseItem) return;
 
+  const previousLevel = userState.level;
+  const previousProgress = getLevelProgress();
+
   const difficultyLevel = Number(caseItem.difficulty_level ?? getDifficultyLevel(sessionState.currentDifficulty));
   const elapsedSeconds = getCurrentElapsedSeconds();
   stopTimer();
@@ -853,7 +1122,12 @@ function finishCase() {
   }
   updateDailyStreak();
   syncUserStateDerivedFields();
+  const nextLevel = userState.level;
+  const nextProgress = getLevelProgress();
+  const didLevelUp = nextLevel > previousLevel;
+
   evaluateBadges();
+  markCaseSeen(caseItem);
   saveUserState();
 
   appData.lastCaseSummary = {
@@ -883,8 +1157,33 @@ function finishCase() {
   elapsed_seconds: Math.round(elapsedSeconds)
 });
 
-  sessionState.currentView = "results";
-  renderApp();
+sessionState.currentView = "results";
+renderApp();
+
+window.requestAnimationFrame(async () => {
+  if (!didLevelUp) {
+    await Promise.all([
+      animateProgressFill("navProgressFill", previousProgress.progressPercent, nextProgress.progressPercent, 1500),
+      animateProgressFill("dashboardProgressFill", previousProgress.progressPercent, nextProgress.progressPercent, 1500)
+    ]);
+    return;
+  }
+
+  await Promise.all([
+    animateProgressFill("navProgressFill", previousProgress.progressPercent, 100, 900),
+    animateProgressFill("dashboardProgressFill", previousProgress.progressPercent, 100, 900)
+  ]);
+
+  await Promise.all([
+    resetProgressFill("navProgressFill"),
+    resetProgressFill("dashboardProgressFill")
+  ]);
+
+  await Promise.all([
+    animateProgressFill("navProgressFill", 0, nextProgress.progressPercent, 900),
+    animateProgressFill("dashboardProgressFill", 0, nextProgress.progressPercent, 900)
+  ]);
+});
 }
 
 function openCaseFeedbackForm() {
@@ -952,6 +1251,43 @@ function renderNavbar() {
   nav.querySelectorAll(".nav-tab").forEach(link => {
     link.classList.toggle("is-active", link.dataset.view === sessionState.currentView);
   });
+}
+
+function waitForNextFrame() {
+  return new Promise(resolve => {
+    window.requestAnimationFrame(() => resolve());
+  });
+}
+
+function waitMs(ms) {
+  return new Promise(resolve => {
+    window.setTimeout(resolve, ms);
+  });
+}
+
+async function animateProgressFill(id, fromPercent, toPercent, duration = 1500) {
+  const element = document.getElementById(id);
+  if (!element) return;
+
+  element.style.transition = "none";
+  element.style.width = `${fromPercent}%`;
+
+  await waitForNextFrame();
+
+  element.style.transition = `width ${duration}ms ease-in-out`;
+  element.style.width = `${toPercent}%`;
+
+  await waitMs(duration);
+}
+
+async function resetProgressFill(id) {
+  const element = document.getElementById(id);
+  if (!element) return;
+
+  element.style.transition = "none";
+  element.style.width = "0%";
+
+  await waitForNextFrame();
 }
 
 function renderDashboard() {
@@ -1049,75 +1385,25 @@ function renderDashboard() {
 }
 
 function renderAbgMetrics(caseItem) {
-  const gas = caseItem.inputs?.gas ?? {};
-  const electrolytes = caseItem.inputs?.electrolytes ?? {};
-  const lactate = caseItem.inputs?.lactate_mmolL;
   const difficultyLevel = Number(caseItem.difficulty_level ?? 1);
-  const showReferences = difficultyLevel <= 2;
+  const showReferences = shouldShowMetricReferences(caseItem);
   const showAbnormalHighlighting = difficultyLevel <= 3;
 
-  const metrics = [
-    {
-      label: "pH",
-      reference: "Normal: 7.35 - 7.45",
-      value: formatValue(gas.ph, 2),
-      abnormal: gas.ph < 7.35 || gas.ph > 7.45
-    },
-    {
-      label: "PaCO2",
-      reference: "Normal: 35 - 45 mmHg",
-      value: gas.paco2_mmHg != null ? `${formatValue(gas.paco2_mmHg, 1)} mmHg` : "--",
-      abnormal: gas.paco2_mmHg < 35 || gas.paco2_mmHg > 45
-    },
-    {
-      label: "HCO3",
-      reference: "Normal: 22 - 26 mmol/L",
-      value: gas.hco3_mmolL != null ? `${formatValue(gas.hco3_mmolL, 1)} mmol/L` : "--",
-      abnormal: gas.hco3_mmolL < 22 || gas.hco3_mmolL > 26
-    },
-    {
-      label: "PaO2",
-      reference: "Normal: 80 - 100 mmHg",
-      value: gas.pao2_mmHg != null ? `${formatValue(gas.pao2_mmHg, 1)} mmHg` : "--",
-      abnormal: gas.pao2_mmHg < 80 || gas.pao2_mmHg > 100
-    },
-    {
-      label: "Base excess",
-      reference: "Normal: -2 to +2 mEq/L",
-      value: gas.base_excess_mEqL != null ? `${formatValue(gas.base_excess_mEqL, 1)} mEq/L` : "--",
-      abnormal: gas.base_excess_mEqL < -2 || gas.base_excess_mEqL > 2
-    },
-    {
-      label: "Na",
-      reference: "Normal: 135 - 145 mmol/L",
-      value: electrolytes.na_mmolL != null ? `${formatValue(electrolytes.na_mmolL, 0)} mmol/L` : "--",
-      abnormal: electrolytes.na_mmolL < 135 || electrolytes.na_mmolL > 145
-    },
-    {
-      label: "Cl",
-      reference: "Normal: 98 - 106 mmol/L",
-      value: electrolytes.cl_mmolL != null ? `${formatValue(electrolytes.cl_mmolL, 0)} mmol/L` : "--",
-      abnormal: electrolytes.cl_mmolL < 98 || electrolytes.cl_mmolL > 106
-    },
-    {
-      label: "Lactate",
-      reference: "Normal: 0.5 - 2.0 mmol/L",
-      value: lactate != null ? `${formatValue(lactate, 1)} mmol/L` : "--",
-      abnormal: lactate < 0.5 || lactate > 2
-    }
-  ];
-
-  return metrics
-    .filter(metric => metric.value !== "--")
+  return getVisibleCaseMetrics(caseItem)
+    .map(metric => ({
+      ...metric,
+      renderedValue: renderMetricValue(metric)
+    }))
+    .filter(metric => metric.renderedValue !== "--")
     .map(metric => {
       return `
         <div class="value-item">
           <div class="value-copy">
-            <span class="value-label">${metric.label}</span>
+            <span class="value-label">${metric.displayLabel ?? escapeHtml(metric.label)}</span>
             ${showReferences ? `<span class="value-reference">${metric.reference}</span>` : ""}
           </div>
           <strong class="value-number ${showAbnormalHighlighting && metric.abnormal ? "value-abnormal" : ""}">
-            ${escapeHtml(metric.value)}
+            ${escapeHtml(metric.renderedValue)}
           </strong>
         </div>
       `;
@@ -1162,6 +1448,8 @@ function renderPractice() {
 
   if (!sessionState.currentCase) {
     setText("practiceStem", "");
+    setHtml("practiceMetricControls", "");
+    document.getElementById("practiceMetricControls")?.classList.add("is-hidden");
     setHtml("practiceMetrics", "");
     setText("practiceQuestionLabel", "Interpret the ABG");
     setText("practiceQuestionMeta", "");
@@ -1175,6 +1463,7 @@ function renderPractice() {
   }
 
   const caseItem = sessionState.currentCase;
+  const difficultyLevel = Number(caseItem.difficulty_level ?? 1);
   const totalSteps = caseItem.questions_flow?.length ?? 0;
   const currentStep = caseItem.questions_flow?.[sessionState.currentStepIndex];
   const currentResult = sessionState.stepResults[sessionState.currentStepIndex] ?? null;
@@ -1207,6 +1496,26 @@ function renderPractice() {
     `Question ${sessionState.currentStepIndex + 1} of ${totalSteps}`
   );
   setText("practicePrompt", currentStep?.prompt ?? "");
+  const metricControls = document.getElementById("practiceMetricControls");
+  if (metricControls) {
+    if (difficultyLevel === 3) {
+      metricControls.classList.remove("is-hidden");
+      metricControls.innerHTML = `
+        <label class="metric-toggle" for="advancedRangesToggle">
+			<input
+			  id="advancedRangesToggle"
+			  type="checkbox"
+			  ${sessionState.showAdvancedRanges ? "checked" : ""}
+			  style="display:none;"
+			>
+          <span class="metric-toggle-label inline-chip">Show reference ranges</span>
+        </label>
+      `;
+    } else {
+      metricControls.classList.add("is-hidden");
+      metricControls.innerHTML = "";
+    }
+  }
   setHtml("practiceStepProgress", stepPills);
   setHtml("practiceMetrics", renderAbgMetrics(caseItem));
   setHtml(
@@ -1312,25 +1621,17 @@ function renderResults() {
 }
 
 function renderResultsValues(caseItem) {
-  const gas = caseItem?.inputs?.gas ?? {};
-  const electrolytes = caseItem?.inputs?.electrolytes ?? {};
-  const lactate = caseItem?.inputs?.lactate_mmolL;
-
-  const metrics = [
-    ["pH", formatValue(gas.ph, 2)],
-    ["PaCO2", gas.paco2_mmHg != null ? `${formatValue(gas.paco2_mmHg, 1)} mmHg` : "--"],
-    ["HCO3", gas.hco3_mmolL != null ? `${formatValue(gas.hco3_mmolL, 1)} mmol/L` : "--"],
-    ["Na", electrolytes.na_mmolL != null ? `${formatValue(electrolytes.na_mmolL, 0)} mmol/L` : "--"],
-    ["Cl", electrolytes.cl_mmolL != null ? `${formatValue(electrolytes.cl_mmolL, 0)} mmol/L` : "--"],
-    ["Lactate", lactate != null ? `${formatValue(lactate, 1)} mmol/L` : "--"]
-  ];
-
-  return metrics
-    .filter(([, value]) => value !== "--")
-    .map(([label, value]) => `
+  return getVisibleCaseMetrics(caseItem)
+    .map(metric => ({
+      label: metric.label,
+      displayLabel: metric.displayLabel ?? escapeHtml(metric.label),
+      value: renderMetricValue(metric)
+    }))
+    .filter(metric => metric.value !== "--")
+    .map(metric => `
       <div class="results-value-tile">
-        <span class="results-value-label">${label}</span>
-        <strong class="results-value-number">${escapeHtml(value)}</strong>
+        <span class="results-value-label">${metric.displayLabel}</span>
+        <strong class="results-value-number">${escapeHtml(metric.value)}</strong>
       </div>
     `)
     .join("");
@@ -1528,6 +1829,13 @@ function handleDocumentChange(event) {
     return;
   }
 
+  if (event.target.id === "advancedRangesToggle") {
+    sessionState.showAdvancedRanges = Boolean(event.target.checked);
+    saveAdvancedRangesPreference();
+    renderPractice();
+    return;
+  }
+
   if (event.target.id === "practiceDifficultySelect") {
     sessionState.currentDifficulty = event.target.value || sessionState.currentDifficulty;
     startNewCase(sessionState.currentDifficulty);
@@ -1565,6 +1873,8 @@ if (practiceIntroStartBtn) {
     appData.loadError = null;
     appData.isLoaded = true;
 
+    appData.seenCasesByDifficulty = loadSeenCasesByDifficulty();
+    sessionState.showAdvancedRanges = loadAdvancedRangesPreference();
     Object.assign(userState, loadUserState());
     syncUserStateDerivedFields();
     saveUserState();

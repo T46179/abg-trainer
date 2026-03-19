@@ -1,6 +1,6 @@
 # AI Project Context: ABG Trainer
 
-Last updated: 2026-03-17
+Last updated: 2026-03-19
 
 This document summarizes the architecture and case schema so external AI tools can understand the project even when only this file is provided.
 
@@ -121,12 +121,14 @@ What the main modules do:
 
 - `docs/index.html`
   - Static HTML shell for the training app.
+  - Defines the dashboard, practice, results, learn, leaderboard, and profile views, plus the first-run practice intro modal, feedback/reset footer controls, and analytics script tags.
 
 - `docs/app.js`
-  - Frontend logic for loading cases, rendering questions, scoring, timing, and practice flow.
+  - Frontend SPA controller for loading the generated payload, persisting user state in local storage, rendering all views, handling practice flow, scoring, analytics events, feedback links, and launch/testing access behavior.
 
 - `docs/styles.css`
   - Frontend presentation layer.
+  - Implements the current responsive card-based dashboard/practice/results/profile/leaderboard layout and modal/footer styling.
 
 - `docs/abg_cases.json`
   - Generated data payload consumed by the frontend.
@@ -162,7 +164,7 @@ Architecturally, these bands are used to vary:
 
 The important design point is that variation bands increase replayability and reduce case memorisation without changing the underlying acid-base physiology or the intended reasoning path for that archetype.
 
-Standard case shape:
+Standard case builder shape:
 
 ```python
 build_case(
@@ -184,11 +186,14 @@ build_case(
 
 Important shared builders:
 - `build_inputs()`
-  - Normalizes the `gas`, `electrolytes`, and optional `lactate` input structure.
+  - Normalizes the sparse shared `inputs` schema.
+  - Core containers are `gas` and `electrolytes`, with an optional `other` container for richer non-core labs.
+  - During the lactate migration, canonical lactate lives in `inputs.other.lactate_mmolL` while a legacy top-level `inputs.lactate_mmolL` mirror may still be emitted for backward compatibility.
 - `build_answer_key()`
   - Normalizes the answer schema across archetypes.
 - `build_case()`
   - Creates the final case object and attaches progression metadata such as difficulty, archetype, skills tested, and case pool.
+  - Also applies centralized level-based input defaults before metadata attachment, including guaranteed `glucose_mmolL` for Master-level cases.
 
 Architecturally, the important idea is that archetype modules are thin composers. They do not own global app logic. They combine:
 - physiology helpers
@@ -199,31 +204,52 @@ Architecturally, the important idea is that archetype modules are thin composers
 
 ## Case Data Schema
 
-Every generated case object follows a standardized schema used by the frontend. The browser-side app is data-driven and relies on this case structure rather than hard-coded diagnoses or per-case UI logic.
+The generated frontend payload is now a wrapped JSON object rather than a bare case array. `docs/app.js` accepts either shape, but the current generated contract is:
 
-Illustrative case schema:
+```text
+{
+  progression_config: object,
+  default_user_state: object,
+  dashboard_state: object,
+  cases: Case[]
+}
+```
+
+Every generated case object still follows a standardized data-driven schema used by the frontend. The browser app relies on this structure rather than hard-coded diagnosis-specific UI logic.
+
+Current case schema:
 
 ```text
 {
   case_id: string,
   title: string,
+  case_type: string,   // currently "ABG"
   category: string,
-  learning_objective: string,
-  tags: string[],
-
   clinical_stem: string,
+  patient_gender?: string,
 
   inputs: {
     gas: {
       ph: number,
-      paco2: number,
-      hco3: number
+      paco2_mmHg: number,
+      hco3_mmolL: number,
+      pao2_mmHg?: number,
+      base_excess_mEqL?: number,
+      spo2_percent?: number
     },
     electrolytes: {
-      na: number,
-      cl: number
+      na_mmolL: number,
+      k_mmolL?: number,
+      cl_mmolL: number,
+      glucose_mmolL?: number
     },
-    lactate?: number
+    other?: {
+      lactate_mmolL?: number,
+      hb_gL?: number,
+      methb_percent?: number,
+      cohb_percent?: number
+    },
+    lactate_mmolL?: number   // legacy transitional mirror for backward compatibility
   },
 
   questions_flow: QuestionStep[],
@@ -239,28 +265,50 @@ Illustrative case schema:
     additional_metabolic_process?: string
   },
 
-  explanation: string,
-  timing: object,
-  level: number,
-  archetype: string
+  learning_objective?: string,
+  tags?: string[],
+  explanation?: string,
+  timing?: object,
+
+  difficulty_level: number,
+  difficulty_label: string,
+  archetype: string,
+  skills_tested: string[],
+  case_pool: string
 }
 ```
 
 Key field roles:
 - `inputs`
   - Raw ABG and electrolyte values used for interpretation.
+- The schema is intentionally wide but sparse: only explicitly provided fields are emitted.
+- Canonical containers are `gas`, `electrolytes`, and optional `other`.
+- The frontend can currently display optional `pao2_mmHg`, `base_excess_mEqL`, `k_mmolL`, `glucose_mmolL`, and lactate when present.
+- `starvation_ketosis` is the first archetype that actively uses the widened schema for `inputs.electrolytes.glucose_mmolL`.
+- During the transition to the canonical `other` container, lactate may appear in either `inputs.other.lactate_mmolL` or the legacy top-level `inputs.lactate_mmolL`.
 - `questions_flow`
   - Defines the step-by-step reasoning questions shown to the learner.
+- `patient_gender`
+  - Optional top-level metadata currently carrying `"M"` or `"F"` for the shorthand used in `clinical_stem`.
+  - Intended as lightweight future-facing metadata and not yet used by frontend logic.
 - `answer_key`
   - Contains the correct interpretation used by the scoring logic.
 - `explanation`
   - Provides the educational explanation shown after completion.
-- `level`
-  - Determines difficulty.
+- `difficulty_level` / `difficulty_label`
+  - Determine difficulty and drive frontend filtering, unlocking, and labels.
 - `archetype`
   - Identifies the physiological pattern used to generate the case.
+- `skills_tested` / `case_pool`
+  - Progression metadata attached by `generator/progression.py` and consumed by the broader app contract.
 
-In the real generated payload, progression metadata and difficulty labels are also attached, but the schema above captures the most important architecture-level contract external AI tools need to reason about the system.
+The wrapped payload also carries frontend-facing progression state:
+- `progression_config`
+  - XP rules, speed bonuses, testing-mode flags, unlock levels, daily limits, and difficulty labels.
+- `default_user_state`
+  - The generated baseline local user state.
+- `dashboard_state`
+  - Precomputed dashboard-facing user and difficulty summary data.
 
 ## 4. Physiology Engine
 
@@ -315,7 +363,7 @@ Current role of the question flow system:
 - It keeps question structure consistent across archetypes.
 - It scales cognitive load by difficulty.
 
-Frontend rendering keeps option order static for most question types. To reduce answer-position bias, only the `primary_disorder` step has its options randomized, and that randomization is done once per case attempt so the order remains stable throughout the attempt.
+Frontend rendering keeps option order static for most question types. The main exception is `final_diagnosis`: diagnosis options are sanitized generator-side to remove conflicting duplicates, then reshuffled client-side once per attempt so order stays stable during that attempt while reducing memorisation and duplicate-distractor issues.
 
 Typical difficulty progression:
 - Beginner: pH status, primary disorder, then diagnosis.
@@ -329,47 +377,67 @@ Archetypes are organized by module. They represent acid-base patterns first, and
 
 ### Metabolic
 
-- `dka`
-- `vomiting_metabolic_alkalosis`
-- `diuretic_metabolic_alkalosis`
-- `diarrhoea_nagma`
-- `lactic_acidosis`
-- `uraemia`
+- `simple_nagma` - Beginner
+- `simple_metabolic_alkalosis` - Beginner
+- `dka` - Advanced
+- `alcoholic_ketoacidosis` - Advanced
+- `starvation_ketosis` - Advanced
+- `toxic_alcohol` - Advanced
+- `vomiting_metabolic_alkalosis` - Intermediate
+- `diuretic_metabolic_alkalosis` - Intermediate
+- `diarrhoea_nagma` - Advanced
+- `lactic_acidosis` - Advanced
+- `uraemia` - Advanced
 
 ### Respiratory
 
-- `panic_hyperventilation`
-- `opioid_toxicity`
-- `copd_chronic_retainer`
-- `acute_copd_exacerbation`
-- `sepsis_respiratory_alkalosis`
-- `simple_respiratory_alkalosis`
-- `simple_respiratory_acidosis`
+- `panic_hyperventilation` - Beginner
+- `opioid_toxicity` - Beginner
+- `copd_chronic_retainer` - Intermediate
+- `acute_copd_exacerbation` - Intermediate
+- `sepsis_respiratory_alkalosis` - Intermediate
+- `simple_respiratory_alkalosis` - Beginner
+- `simple_respiratory_acidosis` - Beginner
 
 ### Mixed
 
-- `salicylate_toxicity`
-- `dka_vomiting`
+- `salicylate_toxicity` - Master
+- `dka_vomiting` - Master
+- `mixed_hagma_metabolic_alkalosis` - Master
 
 Design interpretation:
 - An archetype is not just a diagnosis label.
 - It is a reusable physiological pattern with a consistent compensation profile, diagnostic explanation, and question structure.
 - Some archetypes now include mild/moderate/severe or subtle/moderate/severe variation bands to improve replay variety without changing the underlying acid-base pattern.
 - This now includes `simple_respiratory_alkalosis` and `simple_respiratory_acidosis`, which represent single-process respiratory disorders aimed primarily at beginner pattern recognition.
+- `mixed_hagma_metabolic_alkalosis` now also uses structured variation bands (`obvious_mix`, `subtle_mix`, and `near_normal_ph_trap`) to vary how strongly the additional metabolic alkalosis is signalled while preserving the same Master-level mixed-disorder reasoning path.
 - In those respiratory archetypes, variation bands adjust severity while preserving the same disorder pattern, compensation logic, and beginner question flow.
 - Respiratory generators still compute anion gap through the shared `calc_anion_gap()` helper in `generator/physiology.py`. This keeps the schema and answer-key structure consistent across archetypes, even when anion-gap reasoning is not required at lower levels.
+
+Current live difficulty assignment in the generated dataset:
+- Beginner: `opioid_toxicity`, `panic_hyperventilation`, `simple_metabolic_alkalosis`, `simple_nagma`, `simple_respiratory_acidosis`, `simple_respiratory_alkalosis`
+- Intermediate: `acute_copd_exacerbation`, `copd_chronic_retainer`, `diuretic_metabolic_alkalosis`, `sepsis_respiratory_alkalosis`, `vomiting_metabolic_alkalosis`
+- Advanced: `alcoholic_ketoacidosis`, `diarrhoea_nagma`, `dka`, `lactic_acidosis`, `starvation_ketosis`, `toxic_alcohol`, `uraemia`
+- Master: `dka_vomiting`, `mixed_hagma_metabolic_alkalosis`, `salicylate_toxicity`
+
+At present, each archetype maps to exactly one difficulty level in `docs/abg_cases.json`; no archetype currently spans multiple difficulty tiers.
 
 ## Current Case Pool Size
 
 Each archetype typically produces multiple cases rather than a single fixed case.
 
-Typical generation configuration:
-- Approximately 5 cases generated per archetype.
+Current generation configuration in the live dataset:
+- 8 cases generated per archetype.
 
 Estimated case pool size:
 
 Metabolic archetypes:
+- `simple_nagma`
+- `simple_metabolic_alkalosis`
 - `dka`
+- `alcoholic_ketoacidosis`
+- `starvation_ketosis`
+- `toxic_alcohol`
 - `vomiting_metabolic_alkalosis`
 - `diuretic_metabolic_alkalosis`
 - `diarrhoea_nagma`
@@ -388,17 +456,18 @@ Respiratory archetypes:
 Mixed archetypes:
 - `salicylate_toxicity`
 - `dka_vomiting`
+- `mixed_hagma_metabolic_alkalosis`
 
 Current archetype count:
-- Metabolic: 6
+- Metabolic: 11
 - Respiratory: 7
-- Mixed: 2
+- Mixed: 3
 
-Total archetypes: 15
+Total archetypes: 21
 
-Typical generated dataset size:
-- ~5 cases per archetype
-- ~75 cases total
+Current generated dataset size:
+- 8 cases per archetype
+- 168 cases total
 
 Variation bands increase effective replay diversity beyond the raw archetype count without requiring a larger archetype library.
 
@@ -408,7 +477,7 @@ These numbers may change as new archetypes, generators, or variation bands are a
 
 The platform uses progression levels tied to reasoning complexity.
 
-The XP progression table is now explicitly defined through Level 19. The progression engine uses the absence of a Level 20 requirement as the cap/terminal threshold for computing advancement beyond the final configured unlock.
+The XP progression table is now explicitly defined through Level 24. The progression engine uses the absence of a Level 25 requirement as the cap/terminal threshold for computing advancement beyond the current late-game range.
 
 Levels:
 - Level 1: Beginner
@@ -420,6 +489,7 @@ Important note:
 - In code, the level-4 difficulty label is `"master"` in `progression.py` and in the generated progression metadata.
 - In the UI, the highest tier is also presented as Master.
 - Master cases unlock at Level 20.
+- Level 25 is the current reachable cap under the existing progression engine because XP requirements are defined through Level 24.
 - This tier contains the highest interpretation complexity, including mixed-disorder reasoning where applicable.
 
 Difficulty controls:
@@ -439,8 +509,8 @@ Current progression pacing intent:
 - Early levels are front-loaded so beginners can make visible progress quickly.
 - Beginner is designed to act as the initial hook, especially for free users limited to beginner difficulty and 5 cases per day.
 - Intermediate and especially Advanced are intentionally longer progression bands.
-- Master is an aspirational unlock at Level 20 rather than the end of the product.
-- This pacing supports the freemium model: quick early reward, longer mid-game progression, and a meaningful high-tier unlock.
+- Master is an aspirational unlock at Level 20 and remains the highest difficulty tier through the current Level 25 cap.
+- This pacing supports the freemium model: quick early reward, longer mid-game progression, and a meaningful late-game Master grind without adding a new tier.
 
 ## 8. Frontend Architecture
 
@@ -459,6 +529,17 @@ Frontend model:
 - `app.js` fetches the generated JSON, manages SPA view state, renders cases dynamically, and handles scoring, timing, and case navigation.
 - `styles.css` controls layout and styling.
 
+Current frontend shell and UI behavior:
+- The HTML shell now exposes six SPA views: dashboard, practice, results, learn, leaderboard, and profile.
+- The Learn renderer still exists in `docs/app.js`, but the primary nav currently shows Learn as a disabled placeholder in `docs/index.html`.
+- The header includes sticky navigation plus streak, level, and XP progress chrome.
+- The dashboard is card-based and now emphasizes level progress, recent badges, and difficulty unlock cards.
+- Practice mode includes a first-run intro modal, difficulty selector, step-progress pills, and richer value rendering.
+- Results now include a stronger summary state card, answer review list, values recap, and a "Provide Feedback" action that opens a prefilled Google Form for the completed case.
+- Leaderboard and profile are distinct frontend views rendered in the browser from local/mock state rather than a live backend service.
+- The footer now includes a global feedback link plus a reset-progress control that clears local storage and reloads the app.
+- `index.html` also includes Google Analytics (`gtag`) and Microsoft Clarity instrumentation.
+
 Data flow:
 1. Python generation writes `abg_cases.json`.
 2. The browser fetches `abg_cases.json`.
@@ -469,10 +550,14 @@ This means the web app is fully JSON-driven. Most educational logic is encoded i
 
 In practical frontend terms, `docs/app.js` is primarily responsible for:
 - session state
+- local persistence and persistence-boundary resets
 - XP and level progression display
 - timing state
 - case selection and navigation
 - rendering dashboard, practice, results, learn, leaderboard, and profile views
+- practice intro onboarding flow
+- per-case feedback URL generation
+- analytics event tracking for page views, case starts, answers, completions, and feedback opens
 
 Launch-mode access control is also enforced in `docs/app.js` through centralized helpers rather than scattered per-view conditions. That frontend access layer is responsible for:
 - learn-mode gating
@@ -485,13 +570,25 @@ The educational reasoning itself still lives mainly in the generated payload:
 - `answer_key` defines correctness and explanatory interpretation
 - progression metadata defines difficulty labels, unlocks, and XP behavior
 
+Current practice rendering details that matter architecturally:
+- The practice metrics panel is schema-driven and conditionally shows reference ranges for lower-difficulty cases.
+- Abnormal-value highlighting is also difficulty-sensitive and currently shown through Advanced.
+- The frontend supports optional display of `pao2_mmHg`, `base_excess_mEqL`, `k_mmolL`, `glucose_mmolL`, and lactate in addition to pH, PaCO2, HCO3, sodium, and chloride.
+- `glucose_mmolL` is hidden at Beginner/Intermediate, shown at Advanced only when present, and always shown at Master because the generator guarantees a glucose value there.
+- Advanced cases keep abnormal-value highlighting on by default but now expose an optional practice-only reference-range toggle; Master keeps ranges off.
+- Frontend lactate rendering is transition-safe and reads both the canonical `inputs.other.lactate_mmolL` path and the legacy top-level `inputs.lactate_mmolL` path.
+- Final-diagnosis distractors are de-duplicated twice: once in generator helpers and again in browser-side option assembly to avoid near-identical answer choices.
+- Practice intro state is persisted separately from user progression state through `practiceIntroSeen` in local storage.
+- Seen-case tracking is also persisted separately from progression state as per-difficulty `case_id` lists in local storage.
+- Case selection is priority-based rather than simple random repeat avoidance: exact difficulty first, then unseen cases first, then recent-archetype avoidance as a secondary filter, with repeats allowed only after unseen-pool exhaustion.
+
 ## Testing Mode
 
 The project now includes an explicit generated testing override intended for feedback collection only.
 
 Configuration:
-- `TESTING_MODE = False` in `generator/config.py`
-- `TESTING_XP_MULTIPLIER = 3` in `generator/config.py`
+- `TESTING_MODE = True` in `generator/config.py`
+- `TESTING_XP_MULTIPLIER = 5` in `generator/config.py`
 
 How it works:
 - `generator/progression.py` includes these values in `progression_config`
@@ -504,6 +601,8 @@ When `TESTING_MODE` is enabled:
 - the daily free-case limit is bypassed
 - all difficulties are immediately accessible
 - XP is multiplied using the configured testing multiplier so testers can reach higher tiers quickly
+
+Current frontend copy also reflects this testing posture explicitly through the practice intro modal, which tells testers that all difficulties are unlocked and that the build is running with a 5x XP multiplier.
 
 When `TESTING_MODE` is disabled:
 - launch behavior is restored
@@ -629,6 +728,10 @@ Plausible future expansions include:
 - Larger archetype libraries.
 - More advanced respiratory compensation variants.
 - Additional frontend filtering or study modes.
+- AI explanations 
+- Stewart Analysis
+- Global leaderboards
+- badges/achievements with founder badges
 
 ## Summary For External AI Tools
 

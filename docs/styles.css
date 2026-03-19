@@ -269,6 +269,7 @@ button {
   width: 0;
   border-radius: inherit;
   background: linear-gradient(90deg, var(--brand-start), var(--brand-end));
+  transition: width 1500ms ease-in-out;
 }
 
 .main-content {
@@ -397,6 +398,40 @@ button {
   display: flex;
   flex-direction: column;
   height: 100%;
+}
+
+.values-controls {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 24px;
+}
+
+.metric-toggle {
+  gap: 0;
+}
+
+.metric-toggle input {
+  width: 0;
+  height: 0;
+}
+
+.metric-toggle-label {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: var(--muted);
+  color: var(--muted-foreground);
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  transition: all 120ms ease;
+}
+
+.metric-toggle input:checked + .metric-toggle-label {
+  background: rgba(22, 163, 74, 0.1);
+  color: var(--success);
 }
 
 .stat-card {
@@ -1325,4 +1360,12 @@ button {
 
 .footer-feedback:hover {
   text-decoration: underline;
+}
+
+.value-label sub,
+.value-label sup,
+.results-value-label sub,
+.results-value-label sup {
+  font-size: 0.72em;
+  line-height: 0;
 }

@@ -1,0 +1,996 @@
+Group: Hypoventilation
+Number of cases: 8
+================================================================================
+
+{
+  "case_id": "SIMPLE_RESP_ACID_003",
+  "title": "Simple respiratory acidosis",
+  "case_type": "ABG",
+  "category": "respiratory_acidosis",
+  "clinical_stem": "54M becomes sleepy with shallow breathing after a sedating treatment.",
+  "inputs": {
+    "gas": {
+      "ph": 7.28,
+      "paco2_mmHg": 55,
+      "hco3_mmolL": 25.1
+    },
+    "electrolytes": {
+      "na_mmolL": 136,
+      "cl_mmolL": 100
+    },
+    "other": {
+      "lactate_mmolL": 1.0
+    },
+    "lactate_mmolL": 1.0
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Hypoventilation",
+        "Neuromuscular weakness",
+        "Alcoholic ketoacidosis",
+        "Pneumonia",
+        "Hyperventilation"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Respiratory acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 11.0,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "Hypoventilation",
+    "expected_compensation": {
+      "rule": "Acute respiratory acidosis",
+      "expected_hco3_mmolL": 25.5,
+      "acceptable_range_mmolL": [
+        23.5,
+        27.5
+      ]
+    }
+  },
+  "learning_objective": "Recognise acute respiratory acidosis with appropriate metabolic compensation",
+  "tags": [
+    "respiratory_acidosis",
+    "hypoventilation",
+    "acute"
+  ],
+  "explanation": "Low pH indicates acidaemia. High PaCO2 indicates a primary respiratory acidosis. For acute respiratory acidosis, expected HCO3 is ~25.5; measured 25.1 is appropriate acute compensation. The anion gap is normal at 11.0. This pattern is consistent with acute hypoventilation.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "simple_respiratory_acidosis",
+  "difficulty_level": 1,
+  "difficulty_label": "beginner",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 10
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "SIMPLE_RESP_ACID_002",
+  "title": "Simple respiratory acidosis",
+  "case_type": "ABG",
+  "category": "respiratory_acidosis",
+  "clinical_stem": "52M is difficult to rouse with shallow respirations after multiple sedating medications.",
+  "inputs": {
+    "gas": {
+      "ph": 7.21,
+      "paco2_mmHg": 67,
+      "hco3_mmolL": 26.1
+    },
+    "electrolytes": {
+      "na_mmolL": 140,
+      "cl_mmolL": 106
+    },
+    "other": {
+      "lactate_mmolL": 1.5
+    },
+    "lactate_mmolL": 1.5
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Hypoventilation",
+        "Neuromuscular weakness",
+        "Alcoholic ketoacidosis",
+        "Pneumonia",
+        "Hyperventilation"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Respiratory acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 8.0,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "Hypoventilation",
+    "expected_compensation": {
+      "rule": "Acute respiratory acidosis",
+      "expected_hco3_mmolL": 26.7,
+      "acceptable_range_mmolL": [
+        24.7,
+        28.7
+      ]
+    }
+  },
+  "learning_objective": "Recognise acute respiratory acidosis with appropriate metabolic compensation",
+  "tags": [
+    "respiratory_acidosis",
+    "hypoventilation",
+    "acute"
+  ],
+  "explanation": "Low pH indicates acidaemia. High PaCO2 indicates a primary respiratory acidosis. For acute respiratory acidosis, expected HCO3 is ~26.7; measured 26.1 is appropriate acute compensation. The anion gap is normal at 8.0. This pattern is consistent with acute hypoventilation.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "simple_respiratory_acidosis",
+  "difficulty_level": 1,
+  "difficulty_label": "beginner",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 10
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "SIMPLE_RESP_ACID_001",
+  "title": "Simple respiratory acidosis",
+  "case_type": "ABG",
+  "category": "respiratory_acidosis",
+  "clinical_stem": "61F becomes markedly somnolent with slow breathing after procedural sedation.",
+  "inputs": {
+    "gas": {
+      "ph": 7.23,
+      "paco2_mmHg": 64,
+      "hco3_mmolL": 26.1
+    },
+    "electrolytes": {
+      "na_mmolL": 139,
+      "cl_mmolL": 105
+    },
+    "other": {
+      "lactate_mmolL": 1.7
+    },
+    "lactate_mmolL": 1.7
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Hypoventilation",
+        "Neuromuscular weakness",
+        "Alcoholic ketoacidosis",
+        "Pneumonia",
+        "Hyperventilation"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Respiratory acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 8.0,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "Hypoventilation",
+    "expected_compensation": {
+      "rule": "Acute respiratory acidosis",
+      "expected_hco3_mmolL": 26.4,
+      "acceptable_range_mmolL": [
+        24.4,
+        28.4
+      ]
+    }
+  },
+  "learning_objective": "Recognise acute respiratory acidosis with appropriate metabolic compensation",
+  "tags": [
+    "respiratory_acidosis",
+    "hypoventilation",
+    "acute"
+  ],
+  "explanation": "Low pH indicates acidaemia. High PaCO2 indicates a primary respiratory acidosis. For acute respiratory acidosis, expected HCO3 is ~26.4; measured 26.1 is appropriate acute compensation. The anion gap is normal at 8.0. This pattern is consistent with acute hypoventilation.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "simple_respiratory_acidosis",
+  "difficulty_level": 1,
+  "difficulty_label": "beginner",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 10
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "SIMPLE_RESP_ACID_005",
+  "title": "Simple respiratory acidosis",
+  "case_type": "ABG",
+  "category": "respiratory_acidosis",
+  "clinical_stem": "37F presents with reduced consciousness and hypoventilation without focal findings.",
+  "inputs": {
+    "gas": {
+      "ph": 7.26,
+      "paco2_mmHg": 57,
+      "hco3_mmolL": 25.0
+    },
+    "electrolytes": {
+      "na_mmolL": 136,
+      "cl_mmolL": 102
+    },
+    "other": {
+      "lactate_mmolL": 1.1
+    },
+    "lactate_mmolL": 1.1
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Hypoventilation",
+        "Neuromuscular weakness",
+        "Alcoholic ketoacidosis",
+        "Pneumonia",
+        "Hyperventilation"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Respiratory acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 9.0,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "Hypoventilation",
+    "expected_compensation": {
+      "rule": "Acute respiratory acidosis",
+      "expected_hco3_mmolL": 25.7,
+      "acceptable_range_mmolL": [
+        23.7,
+        27.7
+      ]
+    }
+  },
+  "learning_objective": "Recognise acute respiratory acidosis with appropriate metabolic compensation",
+  "tags": [
+    "respiratory_acidosis",
+    "hypoventilation",
+    "acute"
+  ],
+  "explanation": "Low pH indicates acidaemia. High PaCO2 indicates a primary respiratory acidosis. For acute respiratory acidosis, expected HCO3 is ~25.7; measured 25.0 is appropriate acute compensation. The anion gap is normal at 9.0. This pattern is consistent with acute hypoventilation.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "simple_respiratory_acidosis",
+  "difficulty_level": 1,
+  "difficulty_label": "beginner",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 10
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "SIMPLE_RESP_ACID_004",
+  "title": "Simple respiratory acidosis",
+  "case_type": "ABG",
+  "category": "respiratory_acidosis",
+  "clinical_stem": "59F becomes progressively somnolent with slow respirations after sedation.",
+  "inputs": {
+    "gas": {
+      "ph": 7.25,
+      "paco2_mmHg": 62,
+      "hco3_mmolL": 26.1
+    },
+    "electrolytes": {
+      "na_mmolL": 141,
+      "cl_mmolL": 104
+    },
+    "other": {
+      "lactate_mmolL": 1.5
+    },
+    "lactate_mmolL": 1.5
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Hypoventilation",
+        "Neuromuscular weakness",
+        "Alcoholic ketoacidosis",
+        "Pneumonia",
+        "Hyperventilation"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Respiratory acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 11.0,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "Hypoventilation",
+    "expected_compensation": {
+      "rule": "Acute respiratory acidosis",
+      "expected_hco3_mmolL": 26.2,
+      "acceptable_range_mmolL": [
+        24.2,
+        28.2
+      ]
+    }
+  },
+  "learning_objective": "Recognise acute respiratory acidosis with appropriate metabolic compensation",
+  "tags": [
+    "respiratory_acidosis",
+    "hypoventilation",
+    "acute"
+  ],
+  "explanation": "Low pH indicates acidaemia. High PaCO2 indicates a primary respiratory acidosis. For acute respiratory acidosis, expected HCO3 is ~26.2; measured 26.1 is appropriate acute compensation. The anion gap is normal at 11.0. This pattern is consistent with acute hypoventilation.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "simple_respiratory_acidosis",
+  "difficulty_level": 1,
+  "difficulty_label": "beginner",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 10
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "SIMPLE_RESP_ACID_007",
+  "title": "Simple respiratory acidosis",
+  "case_type": "ABG",
+  "category": "respiratory_acidosis",
+  "clinical_stem": "39M presents with reduced consciousness and marked hypoventilation after multiple sedating agents.",
+  "inputs": {
+    "gas": {
+      "ph": 7.22,
+      "paco2_mmHg": 65,
+      "hco3_mmolL": 25.9
+    },
+    "electrolytes": {
+      "na_mmolL": 142,
+      "cl_mmolL": 106
+    },
+    "other": {
+      "lactate_mmolL": 1.6
+    },
+    "lactate_mmolL": 1.6
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Hypoventilation",
+        "Neuromuscular weakness",
+        "Alcoholic ketoacidosis",
+        "Pneumonia",
+        "Hyperventilation"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Respiratory acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 10.0,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "Hypoventilation",
+    "expected_compensation": {
+      "rule": "Acute respiratory acidosis",
+      "expected_hco3_mmolL": 26.5,
+      "acceptable_range_mmolL": [
+        24.5,
+        28.5
+      ]
+    }
+  },
+  "learning_objective": "Recognise acute respiratory acidosis with appropriate metabolic compensation",
+  "tags": [
+    "respiratory_acidosis",
+    "hypoventilation",
+    "acute"
+  ],
+  "explanation": "Low pH indicates acidaemia. High PaCO2 indicates a primary respiratory acidosis. For acute respiratory acidosis, expected HCO3 is ~26.5; measured 25.9 is appropriate acute compensation. The anion gap is normal at 10.0. This pattern is consistent with acute hypoventilation.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "simple_respiratory_acidosis",
+  "difficulty_level": 1,
+  "difficulty_label": "beginner",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 10
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "SIMPLE_RESP_ACID_006",
+  "title": "Simple respiratory acidosis",
+  "case_type": "ABG",
+  "category": "respiratory_acidosis",
+  "clinical_stem": "37F presents with reduced consciousness and hypoventilation without focal findings.",
+  "inputs": {
+    "gas": {
+      "ph": 7.27,
+      "paco2_mmHg": 59,
+      "hco3_mmolL": 26.1
+    },
+    "electrolytes": {
+      "na_mmolL": 142,
+      "cl_mmolL": 108
+    },
+    "other": {
+      "lactate_mmolL": 1.1
+    },
+    "lactate_mmolL": 1.1
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Hypoventilation",
+        "Neuromuscular weakness",
+        "Alcoholic ketoacidosis",
+        "Pneumonia",
+        "Hyperventilation"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Respiratory acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 8.0,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "Hypoventilation",
+    "expected_compensation": {
+      "rule": "Acute respiratory acidosis",
+      "expected_hco3_mmolL": 25.9,
+      "acceptable_range_mmolL": [
+        23.9,
+        27.9
+      ]
+    }
+  },
+  "learning_objective": "Recognise acute respiratory acidosis with appropriate metabolic compensation",
+  "tags": [
+    "respiratory_acidosis",
+    "hypoventilation",
+    "acute"
+  ],
+  "explanation": "Low pH indicates acidaemia. High PaCO2 indicates a primary respiratory acidosis. For acute respiratory acidosis, expected HCO3 is ~25.9; measured 26.1 is appropriate acute compensation. The anion gap is normal at 8.0. This pattern is consistent with acute hypoventilation.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "simple_respiratory_acidosis",
+  "difficulty_level": 1,
+  "difficulty_label": "beginner",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 10
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "SIMPLE_RESP_ACID_008",
+  "title": "Simple respiratory acidosis",
+  "case_type": "ABG",
+  "category": "respiratory_acidosis",
+  "clinical_stem": "46M is drowsy with shallow breathing after taking multiple sedating medications.",
+  "inputs": {
+    "gas": {
+      "ph": 7.29,
+      "paco2_mmHg": 56,
+      "hco3_mmolL": 26.0
+    },
+    "electrolytes": {
+      "na_mmolL": 141,
+      "cl_mmolL": 105
+    },
+    "other": {
+      "lactate_mmolL": 1.4
+    },
+    "lactate_mmolL": 1.4
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Hypoventilation",
+        "Neuromuscular weakness",
+        "Alcoholic ketoacidosis",
+        "Pneumonia",
+        "Hyperventilation"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Respiratory acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 10.0,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "Hypoventilation",
+    "expected_compensation": {
+      "rule": "Acute respiratory acidosis",
+      "expected_hco3_mmolL": 25.6,
+      "acceptable_range_mmolL": [
+        23.6,
+        27.6
+      ]
+    }
+  },
+  "learning_objective": "Recognise acute respiratory acidosis with appropriate metabolic compensation",
+  "tags": [
+    "respiratory_acidosis",
+    "hypoventilation",
+    "acute"
+  ],
+  "explanation": "Low pH indicates acidaemia. High PaCO2 indicates a primary respiratory acidosis. For acute respiratory acidosis, expected HCO3 is ~25.6; measured 26.0 is appropriate acute compensation. The anion gap is normal at 10.0. This pattern is consistent with acute hypoventilation.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "simple_respiratory_acidosis",
+  "difficulty_level": 1,
+  "difficulty_label": "beginner",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 10
+  }
+}
+
+--------------------------------------------------------------------------------
+

@@ -1,0 +1,1160 @@
+Group: Alcoholic ketoacidosis
+Number of cases: 8
+================================================================================
+
+{
+  "case_id": "AKA_001",
+  "title": "Alcoholic ketoacidosis (HAGMA with appropriate respiratory compensation)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_hagma",
+  "clinical_stem": "42M is brought in with heavy alcohol use and postural light-headedness and tachypnoea.",
+  "inputs": {
+    "gas": {
+      "ph": 7.22,
+      "paco2_mmHg": 22.5,
+      "hco3_mmolL": 9
+    },
+    "electrolytes": {
+      "na_mmolL": 132,
+      "cl_mmolL": 94
+    }
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Alcoholic ketoacidosis",
+        "DKA",
+        "Lactic acidosis",
+        "Renal failure (uraemia)",
+        "Toxic alcohol"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 29,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Alcoholic ketoacidosis",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 21.5,
+      "acceptable_range_mmHg": [
+        19.5,
+        23.5
+      ]
+    }
+  },
+  "learning_objective": "Recognise alcoholic ketoacidosis as a high anion gap metabolic acidosis with appropriate respiratory compensation",
+  "tags": [
+    "alcoholic_ketoacidosis",
+    "hagma",
+    "metabolic_acidosis"
+  ],
+  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary high anion gap metabolic acidosis. Winter's formula predicts PaCO2 ~21.5 (+/-2); measured 22.5 is appropriate compensation. Anion gap is 132 - (94 + 9) = 29, which is raised. The clinical context fits alcoholic ketoacidosis, which commonly follows heavy alcohol use with poor intake and can occur without marked hyperglycaemia.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "alcoholic_ketoacidosis",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "AKA_006",
+  "title": "Alcoholic ketoacidosis (HAGMA with appropriate respiratory compensation)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_hagma",
+  "clinical_stem": "26M presents to ED with reduced oral intake, repeated vomiting, and early withdrawal symptoms.",
+  "inputs": {
+    "gas": {
+      "ph": 7.18,
+      "paco2_mmHg": 19.4,
+      "hco3_mmolL": 7
+    },
+    "electrolytes": {
+      "na_mmolL": 128,
+      "cl_mmolL": 90
+    },
+    "other": {
+      "lactate_mmolL": 3.7
+    },
+    "lactate_mmolL": 3.7
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Alcoholic ketoacidosis",
+        "DKA",
+        "Lactic acidosis",
+        "Renal failure (uraemia)",
+        "Toxic alcohol"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 31,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Alcoholic ketoacidosis",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 18.5,
+      "acceptable_range_mmHg": [
+        16.5,
+        20.5
+      ]
+    }
+  },
+  "learning_objective": "Recognise alcoholic ketoacidosis as a high anion gap metabolic acidosis with appropriate respiratory compensation",
+  "tags": [
+    "alcoholic_ketoacidosis",
+    "hagma",
+    "metabolic_acidosis"
+  ],
+  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary high anion gap metabolic acidosis. Winter's formula predicts PaCO2 ~18.5 (+/-2); measured 19.4 is appropriate compensation. Anion gap is 128 - (90 + 7) = 31, which is raised. The clinical context fits alcoholic ketoacidosis, which commonly follows heavy alcohol use with poor intake and can occur without marked hyperglycaemia. Lactate is 3.7, which is not high enough to make this read as isolated lactic acidosis.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "alcoholic_ketoacidosis",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "AKA_003",
+  "title": "Alcoholic ketoacidosis (HAGMA with appropriate respiratory compensation)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_hagma",
+  "clinical_stem": "31F presents to ED with recent heavy alcohol intake, epigastric pain, diaphoresis, and tachypnoea.",
+  "inputs": {
+    "gas": {
+      "ph": 7.19,
+      "paco2_mmHg": 16.3,
+      "hco3_mmolL": 6
+    },
+    "electrolytes": {
+      "na_mmolL": 129,
+      "cl_mmolL": 93
+    }
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Alcoholic ketoacidosis",
+        "DKA",
+        "Lactic acidosis",
+        "Renal failure (uraemia)",
+        "Toxic alcohol"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 30,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Alcoholic ketoacidosis",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 17.0,
+      "acceptable_range_mmHg": [
+        15.0,
+        19.0
+      ]
+    }
+  },
+  "learning_objective": "Recognise alcoholic ketoacidosis as a high anion gap metabolic acidosis with appropriate respiratory compensation",
+  "tags": [
+    "alcoholic_ketoacidosis",
+    "hagma",
+    "metabolic_acidosis"
+  ],
+  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary high anion gap metabolic acidosis. Winter's formula predicts PaCO2 ~17.0 (+/-2); measured 16.3 is appropriate compensation. Anion gap is 129 - (93 + 6) = 30, which is raised. The clinical context fits alcoholic ketoacidosis, which commonly follows heavy alcohol use with poor intake and can occur without marked hyperglycaemia.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "alcoholic_ketoacidosis",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "AKA_008",
+  "title": "Alcoholic ketoacidosis (HAGMA with appropriate respiratory compensation)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_hagma",
+  "clinical_stem": "31M presents to ED with epigastric pain, tremor, and tachypnoea.",
+  "inputs": {
+    "gas": {
+      "ph": 7.35,
+      "paco2_mmHg": 34.0,
+      "hco3_mmolL": 18
+    },
+    "electrolytes": {
+      "na_mmolL": 135,
+      "cl_mmolL": 93
+    },
+    "other": {
+      "lactate_mmolL": 2.3
+    },
+    "lactate_mmolL": 2.3
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Alcoholic ketoacidosis",
+        "DKA",
+        "Lactic acidosis",
+        "Renal failure (uraemia)",
+        "Toxic alcohol"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Normal",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 24,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Alcoholic ketoacidosis",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 35.0,
+      "acceptable_range_mmHg": [
+        33.0,
+        37.0
+      ]
+    }
+  },
+  "learning_objective": "Recognise alcoholic ketoacidosis as a high anion gap metabolic acidosis with appropriate respiratory compensation",
+  "tags": [
+    "alcoholic_ketoacidosis",
+    "hagma",
+    "metabolic_acidosis"
+  ],
+  "explanation": "The pH is near normal, but the low HCO3 still indicates a primary metabolic acidosis with compensation. Low HCO3 indicates a primary high anion gap metabolic acidosis. Winter's formula predicts PaCO2 ~35.0 (+/-2); measured 34.0 is appropriate compensation. Anion gap is 135 - (93 + 18) = 24, which is raised. The clinical context fits alcoholic ketoacidosis, which commonly follows heavy alcohol use with poor intake and can occur without marked hyperglycaemia. Lactate is 2.3, which is not high enough to make this read as isolated lactic acidosis.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "alcoholic_ketoacidosis",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "AKA_002",
+  "title": "Alcoholic ketoacidosis (HAGMA with appropriate respiratory compensation)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_hagma",
+  "clinical_stem": "48M attends ED with recent alcohol binge, reduced oral intake, diaphoresis, and tachypnoea.",
+  "inputs": {
+    "gas": {
+      "ph": 7.3,
+      "paco2_mmHg": 29.6,
+      "hco3_mmolL": 14
+    },
+    "electrolytes": {
+      "na_mmolL": 133,
+      "cl_mmolL": 89
+    },
+    "other": {
+      "lactate_mmolL": 2.6
+    },
+    "lactate_mmolL": 2.6
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Alcoholic ketoacidosis",
+        "DKA",
+        "Lactic acidosis",
+        "Renal failure (uraemia)",
+        "Toxic alcohol"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 30,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Alcoholic ketoacidosis",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 29.0,
+      "acceptable_range_mmHg": [
+        27.0,
+        31.0
+      ]
+    }
+  },
+  "learning_objective": "Recognise alcoholic ketoacidosis as a high anion gap metabolic acidosis with appropriate respiratory compensation",
+  "tags": [
+    "alcoholic_ketoacidosis",
+    "hagma",
+    "metabolic_acidosis"
+  ],
+  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary high anion gap metabolic acidosis. Winter's formula predicts PaCO2 ~29.0 (+/-2); measured 29.6 is appropriate compensation. Anion gap is 133 - (89 + 14) = 30, which is raised. The clinical context fits alcoholic ketoacidosis, which commonly follows heavy alcohol use with poor intake and can occur without marked hyperglycaemia. Lactate is 2.6, which is not high enough to make this read as isolated lactic acidosis.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "alcoholic_ketoacidosis",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "AKA_005",
+  "title": "Alcoholic ketoacidosis (HAGMA with appropriate respiratory compensation)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_hagma",
+  "clinical_stem": "26M presents to ED with recent alcohol binge and epigastric pain and early withdrawal symptoms and tachypnoea.",
+  "inputs": {
+    "gas": {
+      "ph": 7.28,
+      "paco2_mmHg": 21.9,
+      "hco3_mmolL": 10
+    },
+    "electrolytes": {
+      "na_mmolL": 135,
+      "cl_mmolL": 98
+    }
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Alcoholic ketoacidosis",
+        "DKA",
+        "Lactic acidosis",
+        "Renal failure (uraemia)",
+        "Toxic alcohol"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 27,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Alcoholic ketoacidosis",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 23.0,
+      "acceptable_range_mmHg": [
+        21.0,
+        25.0
+      ]
+    }
+  },
+  "learning_objective": "Recognise alcoholic ketoacidosis as a high anion gap metabolic acidosis with appropriate respiratory compensation",
+  "tags": [
+    "alcoholic_ketoacidosis",
+    "hagma",
+    "metabolic_acidosis"
+  ],
+  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary high anion gap metabolic acidosis. Winter's formula predicts PaCO2 ~23.0 (+/-2); measured 21.9 is appropriate compensation. Anion gap is 135 - (98 + 10) = 27, which is raised. The clinical context fits alcoholic ketoacidosis, which commonly follows heavy alcohol use with poor intake and can occur without marked hyperglycaemia.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "alcoholic_ketoacidosis",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "AKA_004",
+  "title": "Alcoholic ketoacidosis (HAGMA with appropriate respiratory compensation)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_hagma",
+  "clinical_stem": "31M presents to ED with poor oral intake and tremor. Other features include dehydration.",
+  "inputs": {
+    "gas": {
+      "ph": 7.16,
+      "paco2_mmHg": 17.6,
+      "hco3_mmolL": 6
+    },
+    "electrolytes": {
+      "na_mmolL": 134,
+      "cl_mmolL": 95
+    },
+    "other": {
+      "lactate_mmolL": 3.6
+    },
+    "lactate_mmolL": 3.6
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Alcoholic ketoacidosis",
+        "DKA",
+        "Lactic acidosis",
+        "Renal failure (uraemia)",
+        "Toxic alcohol"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 33,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Alcoholic ketoacidosis",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 17.0,
+      "acceptable_range_mmHg": [
+        15.0,
+        19.0
+      ]
+    }
+  },
+  "learning_objective": "Recognise alcoholic ketoacidosis as a high anion gap metabolic acidosis with appropriate respiratory compensation",
+  "tags": [
+    "alcoholic_ketoacidosis",
+    "hagma",
+    "metabolic_acidosis"
+  ],
+  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary high anion gap metabolic acidosis. Winter's formula predicts PaCO2 ~17.0 (+/-2); measured 17.6 is appropriate compensation. Anion gap is 134 - (95 + 6) = 33, which is raised. The clinical context fits alcoholic ketoacidosis, which commonly follows heavy alcohol use with poor intake and can occur without marked hyperglycaemia. Lactate is 3.6, which is not high enough to make this read as isolated lactic acidosis.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "alcoholic_ketoacidosis",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "AKA_007",
+  "title": "Alcoholic ketoacidosis (HAGMA with appropriate respiratory compensation)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_hagma",
+  "clinical_stem": "48M presents to ED with heavy alcohol use, repeated vomiting, and dehydration.",
+  "inputs": {
+    "gas": {
+      "ph": 7.32,
+      "paco2_mmHg": 32.4,
+      "hco3_mmolL": 16
+    },
+    "electrolytes": {
+      "na_mmolL": 136,
+      "cl_mmolL": 99
+    },
+    "other": {
+      "lactate_mmolL": 1.7
+    },
+    "lactate_mmolL": 1.7
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Alcoholic ketoacidosis",
+        "DKA",
+        "Lactic acidosis",
+        "Renal failure (uraemia)",
+        "Toxic alcohol"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 21,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Alcoholic ketoacidosis",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 32.0,
+      "acceptable_range_mmHg": [
+        30.0,
+        34.0
+      ]
+    }
+  },
+  "learning_objective": "Recognise alcoholic ketoacidosis as a high anion gap metabolic acidosis with appropriate respiratory compensation",
+  "tags": [
+    "alcoholic_ketoacidosis",
+    "hagma",
+    "metabolic_acidosis"
+  ],
+  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary high anion gap metabolic acidosis. Winter's formula predicts PaCO2 ~32.0 (+/-2); measured 32.4 is appropriate compensation. Anion gap is 136 - (99 + 16) = 21, which is raised. The clinical context fits alcoholic ketoacidosis, which commonly follows heavy alcohol use with poor intake and can occur without marked hyperglycaemia. Lactate is 1.7, which is not high enough to make this read as isolated lactic acidosis.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "alcoholic_ketoacidosis",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+

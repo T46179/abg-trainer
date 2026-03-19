@@ -1,0 +1,916 @@
+Group: Lactic acidosis
+Number of cases: 8
+================================================================================
+
+{
+  "case_id": "LACTATE_008",
+  "title": "Lactic acidosis (sepsis)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_hagma",
+  "clinical_stem": "60F is brought in with confusion and critical illness.",
+  "inputs": {
+    "gas": {
+      "ph": 7.33,
+      "paco2_mmHg": 29.0,
+      "hco3_mmolL": 14.8
+    },
+    "electrolytes": {
+      "na_mmolL": 139,
+      "cl_mmolL": 98
+    },
+    "other": {
+      "lactate_mmolL": 7.7
+    },
+    "lactate_mmolL": 7.7
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Lactic acidosis",
+        "DKA",
+        "Renal failure (uraemia)",
+        "Toxic alcohol",
+        "Salicylate toxicity"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 26.1,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Lactic acidosis",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 30.3,
+      "acceptable_range_mmHg": [
+        28.3,
+        32.3
+      ]
+    }
+  },
+  "explanation": "Sepsis commonly causes high anion gap metabolic acidosis due to lactate accumulation.",
+  "patient_gender": "F",
+  "archetype": "lactic_acidosis",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "LACTATE_005",
+  "title": "Lactic acidosis (sepsis)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_hagma",
+  "clinical_stem": "65F presents to ED with critical illness, fever, hypotension, and confusion.",
+  "inputs": {
+    "gas": {
+      "ph": 7.29,
+      "paco2_mmHg": 23.1,
+      "hco3_mmolL": 10.8
+    },
+    "electrolytes": {
+      "na_mmolL": 141,
+      "cl_mmolL": 99
+    },
+    "other": {
+      "lactate_mmolL": 5.2
+    },
+    "lactate_mmolL": 5.2
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Lactic acidosis",
+        "DKA",
+        "Renal failure (uraemia)",
+        "Toxic alcohol",
+        "Salicylate toxicity"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 31.1,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Lactic acidosis",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 24.1,
+      "acceptable_range_mmHg": [
+        22.1,
+        26.1
+      ]
+    }
+  },
+  "explanation": "Sepsis commonly causes high anion gap metabolic acidosis due to lactate accumulation.",
+  "patient_gender": "F",
+  "archetype": "lactic_acidosis",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "LACTATE_002",
+  "title": "Lactic acidosis (sepsis)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_hagma",
+  "clinical_stem": "65F is admitted with hypotension and fever.",
+  "inputs": {
+    "gas": {
+      "ph": 7.3,
+      "paco2_mmHg": 32.7,
+      "hco3_mmolL": 15.7
+    },
+    "electrolytes": {
+      "na_mmolL": 141,
+      "cl_mmolL": 101
+    },
+    "other": {
+      "lactate_mmolL": 4.5
+    },
+    "lactate_mmolL": 4.5
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Lactic acidosis",
+        "DKA",
+        "Renal failure (uraemia)",
+        "Toxic alcohol",
+        "Salicylate toxicity"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 24.3,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Lactic acidosis",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 31.5,
+      "acceptable_range_mmHg": [
+        29.5,
+        33.5
+      ]
+    }
+  },
+  "explanation": "Sepsis commonly causes high anion gap metabolic acidosis due to lactate accumulation.",
+  "patient_gender": "F",
+  "archetype": "lactic_acidosis",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "LACTATE_003",
+  "title": "Lactic acidosis (sepsis)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_hagma",
+  "clinical_stem": "72M is admitted with fever and suspected sepsis. Other features include confusion and hypotension.",
+  "inputs": {
+    "gas": {
+      "ph": 7.25,
+      "paco2_mmHg": 23.6,
+      "hco3_mmolL": 10.0
+    },
+    "electrolytes": {
+      "na_mmolL": 140,
+      "cl_mmolL": 98
+    },
+    "other": {
+      "lactate_mmolL": 9.4
+    },
+    "lactate_mmolL": 9.4
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Lactic acidosis",
+        "DKA",
+        "Renal failure (uraemia)",
+        "Toxic alcohol",
+        "Salicylate toxicity"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 32.1,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Lactic acidosis",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 23.0,
+      "acceptable_range_mmHg": [
+        21.0,
+        25.0
+      ]
+    }
+  },
+  "explanation": "Sepsis commonly causes high anion gap metabolic acidosis due to lactate accumulation.",
+  "patient_gender": "M",
+  "archetype": "lactic_acidosis",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "LACTATE_004",
+  "title": "Lactic acidosis (sepsis)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_hagma",
+  "clinical_stem": "65F presents to ED with tachycardia and rigors.",
+  "inputs": {
+    "gas": {
+      "ph": 7.32,
+      "paco2_mmHg": 26.4,
+      "hco3_mmolL": 13.2
+    },
+    "electrolytes": {
+      "na_mmolL": 142,
+      "cl_mmolL": 95
+    },
+    "other": {
+      "lactate_mmolL": 7.5
+    },
+    "lactate_mmolL": 7.5
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Lactic acidosis",
+        "DKA",
+        "Renal failure (uraemia)",
+        "Toxic alcohol",
+        "Salicylate toxicity"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 33.7,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Lactic acidosis",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 27.8,
+      "acceptable_range_mmHg": [
+        25.8,
+        29.8
+      ]
+    }
+  },
+  "explanation": "Sepsis commonly causes high anion gap metabolic acidosis due to lactate accumulation.",
+  "patient_gender": "F",
+  "archetype": "lactic_acidosis",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "LACTATE_006",
+  "title": "Lactic acidosis (sepsis)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_hagma",
+  "clinical_stem": "72F is brought in with tachycardia and critical illness. Other features include rigors and increasing oxygen requirements.",
+  "inputs": {
+    "gas": {
+      "ph": 7.29,
+      "paco2_mmHg": 22.3,
+      "hco3_mmolL": 10.4
+    },
+    "electrolytes": {
+      "na_mmolL": 141,
+      "cl_mmolL": 100
+    },
+    "other": {
+      "lactate_mmolL": 4.5
+    },
+    "lactate_mmolL": 4.5
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Lactic acidosis",
+        "DKA",
+        "Renal failure (uraemia)",
+        "Toxic alcohol",
+        "Salicylate toxicity"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 30.5,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Lactic acidosis",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 23.6,
+      "acceptable_range_mmHg": [
+        21.6,
+        25.6
+      ]
+    }
+  },
+  "explanation": "Sepsis commonly causes high anion gap metabolic acidosis due to lactate accumulation.",
+  "patient_gender": "F",
+  "archetype": "lactic_acidosis",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "LACTATE_001",
+  "title": "Lactic acidosis (sepsis)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_hagma",
+  "clinical_stem": "65F is admitted with hypotension and rigors and suspected sepsis and increasing oxygen requirements.",
+  "inputs": {
+    "gas": {
+      "ph": 7.31,
+      "paco2_mmHg": 25.0,
+      "hco3_mmolL": 12.2
+    },
+    "electrolytes": {
+      "na_mmolL": 143,
+      "cl_mmolL": 99
+    },
+    "other": {
+      "lactate_mmolL": 8.9
+    },
+    "lactate_mmolL": 8.9
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Lactic acidosis",
+        "DKA",
+        "Renal failure (uraemia)",
+        "Toxic alcohol",
+        "Salicylate toxicity"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 31.9,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Lactic acidosis",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 26.3,
+      "acceptable_range_mmHg": [
+        24.3,
+        28.3
+      ]
+    }
+  },
+  "explanation": "Sepsis commonly causes high anion gap metabolic acidosis due to lactate accumulation.",
+  "patient_gender": "F",
+  "archetype": "lactic_acidosis",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "LACTATE_007",
+  "title": "Lactic acidosis (sepsis)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_hagma",
+  "clinical_stem": "65M presents to ED with tachycardia and suspected sepsis. Other features include confusion and fever.",
+  "inputs": {
+    "gas": {
+      "ph": 7.3,
+      "paco2_mmHg": 23.5,
+      "hco3_mmolL": 11.3
+    },
+    "electrolytes": {
+      "na_mmolL": 138,
+      "cl_mmolL": 101
+    },
+    "other": {
+      "lactate_mmolL": 4.5
+    },
+    "lactate_mmolL": 4.5
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Lactic acidosis",
+        "DKA",
+        "Renal failure (uraemia)",
+        "Toxic alcohol",
+        "Salicylate toxicity"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 25.6,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Lactic acidosis",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 24.9,
+      "acceptable_range_mmHg": [
+        22.9,
+        26.9
+      ]
+    }
+  },
+  "explanation": "Sepsis commonly causes high anion gap metabolic acidosis due to lactate accumulation.",
+  "patient_gender": "M",
+  "archetype": "lactic_acidosis",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+
