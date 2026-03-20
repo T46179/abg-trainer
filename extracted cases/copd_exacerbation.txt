@@ -3,20 +3,20 @@ Number of cases: 8
 ================================================================================
 
 {
-  "case_id": "ACUTE_COPD_001",
+  "case_id": "ACUTE_COPD_006",
   "title": "COPD exacerbation (acute-on-chronic respiratory acidosis)",
   "case_type": "ABG",
   "category": "respiratory_acidosis",
-  "clinical_stem": "68F is brought to ED with increased sputum with several days of breathlessness, increased drowsiness, and a history of COPD.",
+  "clinical_stem": "76F attends ED with a history of COPD and increased drowsiness. Other features include wheeze and worsening dyspnoea.",
   "inputs": {
     "gas": {
-      "ph": 7.27,
-      "paco2_mmHg": 88.9,
+      "ph": 7.26,
+      "paco2_mmHg": 89.4,
       "hco3_mmolL": 39
     },
     "electrolytes": {
-      "na_mmolL": 138,
-      "cl_mmolL": 96
+      "na_mmolL": 136,
+      "cl_mmolL": 100
     }
   },
   "questions_flow": [
@@ -70,7 +70,7 @@ Number of cases: 8
     "ph_status": "Acidaemia",
     "primary_disorder": "Respiratory acidosis",
     "compensation": "Chronic with acute worsening",
-    "anion_gap_value": 3,
+    "anion_gap_value": -3,
     "anion_gap_category": "Normal",
     "final_diagnosis": "COPD exacerbation"
   },
@@ -94,20 +94,20 @@ Number of cases: 8
 --------------------------------------------------------------------------------
 
 {
-  "case_id": "ACUTE_COPD_006",
+  "case_id": "ACUTE_COPD_007",
   "title": "COPD exacerbation (acute-on-chronic respiratory acidosis)",
   "case_type": "ABG",
   "category": "respiratory_acidosis",
-  "clinical_stem": "76M attends ED with hypercapnic symptoms and increased work of breathing. Other features include a history of COPD.",
+  "clinical_stem": "65M attends ED after several days of infective symptoms, with productive cough and a history of COPD.",
   "inputs": {
     "gas": {
-      "ph": 7.27,
-      "paco2_mmHg": 88.7,
-      "hco3_mmolL": 39
+      "ph": 7.29,
+      "paco2_mmHg": 79.5,
+      "hco3_mmolL": 37
     },
     "electrolytes": {
-      "na_mmolL": 141,
-      "cl_mmolL": 101
+      "na_mmolL": 136,
+      "cl_mmolL": 99
     }
   },
   "questions_flow": [
@@ -161,7 +161,7 @@ Number of cases: 8
     "ph_status": "Acidaemia",
     "primary_disorder": "Respiratory acidosis",
     "compensation": "Chronic with acute worsening",
-    "anion_gap_value": 1,
+    "anion_gap_value": 0,
     "anion_gap_category": "Normal",
     "final_diagnosis": "COPD exacerbation"
   },
@@ -185,20 +185,20 @@ Number of cases: 8
 --------------------------------------------------------------------------------
 
 {
-  "case_id": "ACUTE_COPD_008",
+  "case_id": "ACUTE_COPD_001",
   "title": "COPD exacerbation (acute-on-chronic respiratory acidosis)",
   "case_type": "ABG",
   "category": "respiratory_acidosis",
-  "clinical_stem": "61F presents with several days of breathlessness and increased drowsiness. Other features include chronic respiratory disease.",
+  "clinical_stem": "76F attends ED with known COPD and productive cough with several days of breathlessness.",
   "inputs": {
     "gas": {
-      "ph": 7.29,
-      "paco2_mmHg": 79.1,
-      "hco3_mmolL": 37
+      "ph": 7.3,
+      "paco2_mmHg": 73.7,
+      "hco3_mmolL": 35
     },
     "electrolytes": {
-      "na_mmolL": 141,
-      "cl_mmolL": 102
+      "na_mmolL": 138,
+      "cl_mmolL": 101
     }
   },
   "questions_flow": [
@@ -276,20 +276,20 @@ Number of cases: 8
 --------------------------------------------------------------------------------
 
 {
-  "case_id": "ACUTE_COPD_005",
+  "case_id": "ACUTE_COPD_003",
   "title": "COPD exacerbation (acute-on-chronic respiratory acidosis)",
   "case_type": "ABG",
   "category": "respiratory_acidosis",
-  "clinical_stem": "61M is brought to ED with a history of COPD, hypercapnic symptoms, and productive cough with several days of breathlessness.",
+  "clinical_stem": "61M is brought to ED with increased work of breathing with productive cough and a history of COPD. Other features include hypercapnic symptoms.",
   "inputs": {
     "gas": {
       "ph": 7.28,
-      "paco2_mmHg": 81.3,
-      "hco3_mmolL": 37
+      "paco2_mmHg": 85.1,
+      "hco3_mmolL": 39
     },
     "electrolytes": {
-      "na_mmolL": 141,
-      "cl_mmolL": 98
+      "na_mmolL": 135,
+      "cl_mmolL": 100
     }
   },
   "questions_flow": [
@@ -343,7 +343,7 @@ Number of cases: 8
     "ph_status": "Acidaemia",
     "primary_disorder": "Respiratory acidosis",
     "compensation": "Chronic with acute worsening",
-    "anion_gap_value": 6,
+    "anion_gap_value": -4,
     "anion_gap_category": "Normal",
     "final_diagnosis": "COPD exacerbation"
   },
@@ -367,19 +367,292 @@ Number of cases: 8
 --------------------------------------------------------------------------------
 
 {
+  "case_id": "ACUTE_COPD_004",
+  "title": "COPD exacerbation (acute-on-chronic respiratory acidosis)",
+  "case_type": "ABG",
+  "category": "respiratory_acidosis",
+  "clinical_stem": "68M presents to ED with increased sputum and known COPD. Other features include hypercapnic symptoms.",
+  "inputs": {
+    "gas": {
+      "ph": 7.29,
+      "paco2_mmHg": 80.1,
+      "hco3_mmolL": 37
+    },
+    "electrolytes": {
+      "na_mmolL": 136,
+      "cl_mmolL": 100
+    }
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "COPD exacerbation",
+        "Opioid toxicity",
+        "Neuromuscular weakness",
+        "Asthma",
+        "Pneumonia"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Respiratory acidosis",
+    "compensation": "Chronic with acute worsening",
+    "anion_gap_value": -1,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "COPD exacerbation"
+  },
+  "explanation": "COPD exacerbations cause acute rises in CO2 on a background of chronic respiratory acidosis.",
+  "patient_gender": "M",
+  "archetype": "acute_copd_exacerbation",
+  "difficulty_level": 2,
+  "difficulty_label": "intermediate",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 15
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "ACUTE_COPD_005",
+  "title": "COPD exacerbation (acute-on-chronic respiratory acidosis)",
+  "case_type": "ABG",
+  "category": "respiratory_acidosis",
+  "clinical_stem": "65F attends ED with increased sputum with worsening dyspnoea on a background of hypercapnic symptoms.",
+  "inputs": {
+    "gas": {
+      "ph": 7.27,
+      "paco2_mmHg": 83.8,
+      "hco3_mmolL": 37
+    },
+    "electrolytes": {
+      "na_mmolL": 136,
+      "cl_mmolL": 99
+    }
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "COPD exacerbation",
+        "Opioid toxicity",
+        "Neuromuscular weakness",
+        "Asthma",
+        "Pneumonia"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Respiratory acidosis",
+    "compensation": "Chronic with acute worsening",
+    "anion_gap_value": 0,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "COPD exacerbation"
+  },
+  "explanation": "COPD exacerbations cause acute rises in CO2 on a background of chronic respiratory acidosis.",
+  "patient_gender": "F",
+  "archetype": "acute_copd_exacerbation",
+  "difficulty_level": 2,
+  "difficulty_label": "intermediate",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 15
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
   "case_id": "ACUTE_COPD_002",
   "title": "COPD exacerbation (acute-on-chronic respiratory acidosis)",
   "case_type": "ABG",
   "category": "respiratory_acidosis",
-  "clinical_stem": "72M is brought to ED with worsening dyspnoea with productive cough and chronic respiratory disease.",
+  "clinical_stem": "61M presents with several days of breathlessness with wheeze, chronic respiratory disease, and hypercapnic symptoms.",
   "inputs": {
     "gas": {
       "ph": 7.28,
-      "paco2_mmHg": 81.0,
+      "paco2_mmHg": 81.4,
       "hco3_mmolL": 37
     },
     "electrolytes": {
       "na_mmolL": 137,
+      "cl_mmolL": 102
+    }
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "COPD exacerbation",
+        "Opioid toxicity",
+        "Neuromuscular weakness",
+        "Asthma",
+        "Pneumonia"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Respiratory acidosis",
+    "compensation": "Chronic with acute worsening",
+    "anion_gap_value": -2,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "COPD exacerbation"
+  },
+  "explanation": "COPD exacerbations cause acute rises in CO2 on a background of chronic respiratory acidosis.",
+  "patient_gender": "M",
+  "archetype": "acute_copd_exacerbation",
+  "difficulty_level": 2,
+  "difficulty_label": "intermediate",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 15
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "ACUTE_COPD_008",
+  "title": "COPD exacerbation (acute-on-chronic respiratory acidosis)",
+  "case_type": "ABG",
+  "category": "respiratory_acidosis",
+  "clinical_stem": "76F is brought to ED with several days of breathlessness and productive cough and hypercapnic symptoms and chronic respiratory disease.",
+  "inputs": {
+    "gas": {
+      "ph": 7.27,
+      "paco2_mmHg": 88.2,
+      "hco3_mmolL": 39
+    },
+    "electrolytes": {
+      "na_mmolL": 139,
       "cl_mmolL": 100
     }
   },
@@ -435,279 +708,6 @@ Number of cases: 8
     "primary_disorder": "Respiratory acidosis",
     "compensation": "Chronic with acute worsening",
     "anion_gap_value": 0,
-    "anion_gap_category": "Normal",
-    "final_diagnosis": "COPD exacerbation"
-  },
-  "explanation": "COPD exacerbations cause acute rises in CO2 on a background of chronic respiratory acidosis.",
-  "patient_gender": "M",
-  "archetype": "acute_copd_exacerbation",
-  "difficulty_level": 2,
-  "difficulty_label": "intermediate",
-  "skills_tested": [
-    "ph_status",
-    "primary_disorder",
-    "compensation",
-    "final_diagnosis"
-  ],
-  "case_pool": "core",
-  "progression": {
-    "base_xp": 15
-  }
-}
-
---------------------------------------------------------------------------------
-
-{
-  "case_id": "ACUTE_COPD_004",
-  "title": "COPD exacerbation (acute-on-chronic respiratory acidosis)",
-  "case_type": "ABG",
-  "category": "respiratory_acidosis",
-  "clinical_stem": "76M presents with increasing somnolence and wheeze and a history of COPD.",
-  "inputs": {
-    "gas": {
-      "ph": 7.3,
-      "paco2_mmHg": 73.3,
-      "hco3_mmolL": 35
-    },
-    "electrolytes": {
-      "na_mmolL": 136,
-      "cl_mmolL": 101
-    }
-  },
-  "questions_flow": [
-    {
-      "step": 1,
-      "key": "ph_status",
-      "label": "pH",
-      "prompt": "What is the pH status?",
-      "options": [
-        "Acidaemia",
-        "Alkalaemia",
-        "Normal"
-      ]
-    },
-    {
-      "step": 2,
-      "key": "primary_disorder",
-      "label": "Primary acid-base disorder",
-      "prompt": "What is the primary acid-base disorder?",
-      "options": [
-        "Respiratory acidosis",
-        "Respiratory alkalosis",
-        "Metabolic acidosis",
-        "Metabolic alkalosis"
-      ]
-    },
-    {
-      "step": 3,
-      "key": "compensation",
-      "label": "Compensation",
-      "prompt": "Is the physiological compensation appropriate?",
-      "options": [
-        "Appropriate",
-        "Inappropriate"
-      ]
-    },
-    {
-      "step": 4,
-      "key": "final_diagnosis",
-      "prompt": "Most likely diagnosis?",
-      "options": [
-        "COPD exacerbation",
-        "Opioid toxicity",
-        "Neuromuscular weakness",
-        "Asthma",
-        "Pneumonia"
-      ]
-    }
-  ],
-  "answer_key": {
-    "ph_status": "Acidaemia",
-    "primary_disorder": "Respiratory acidosis",
-    "compensation": "Chronic with acute worsening",
-    "anion_gap_value": 0,
-    "anion_gap_category": "Normal",
-    "final_diagnosis": "COPD exacerbation"
-  },
-  "explanation": "COPD exacerbations cause acute rises in CO2 on a background of chronic respiratory acidosis.",
-  "patient_gender": "M",
-  "archetype": "acute_copd_exacerbation",
-  "difficulty_level": 2,
-  "difficulty_label": "intermediate",
-  "skills_tested": [
-    "ph_status",
-    "primary_disorder",
-    "compensation",
-    "final_diagnosis"
-  ],
-  "case_pool": "core",
-  "progression": {
-    "base_xp": 15
-  }
-}
-
---------------------------------------------------------------------------------
-
-{
-  "case_id": "ACUTE_COPD_003",
-  "title": "COPD exacerbation (acute-on-chronic respiratory acidosis)",
-  "case_type": "ABG",
-  "category": "respiratory_acidosis",
-  "clinical_stem": "68M attends ED after several days of infective symptoms, with increasing somnolence and increased sputum with worsening dyspnoea.",
-  "inputs": {
-    "gas": {
-      "ph": 7.26,
-      "paco2_mmHg": 89.6,
-      "hco3_mmolL": 39
-    },
-    "electrolytes": {
-      "na_mmolL": 139,
-      "cl_mmolL": 99
-    }
-  },
-  "questions_flow": [
-    {
-      "step": 1,
-      "key": "ph_status",
-      "label": "pH",
-      "prompt": "What is the pH status?",
-      "options": [
-        "Acidaemia",
-        "Alkalaemia",
-        "Normal"
-      ]
-    },
-    {
-      "step": 2,
-      "key": "primary_disorder",
-      "label": "Primary acid-base disorder",
-      "prompt": "What is the primary acid-base disorder?",
-      "options": [
-        "Respiratory acidosis",
-        "Respiratory alkalosis",
-        "Metabolic acidosis",
-        "Metabolic alkalosis"
-      ]
-    },
-    {
-      "step": 3,
-      "key": "compensation",
-      "label": "Compensation",
-      "prompt": "Is the physiological compensation appropriate?",
-      "options": [
-        "Appropriate",
-        "Inappropriate"
-      ]
-    },
-    {
-      "step": 4,
-      "key": "final_diagnosis",
-      "prompt": "Most likely diagnosis?",
-      "options": [
-        "COPD exacerbation",
-        "Opioid toxicity",
-        "Neuromuscular weakness",
-        "Asthma",
-        "Pneumonia"
-      ]
-    }
-  ],
-  "answer_key": {
-    "ph_status": "Acidaemia",
-    "primary_disorder": "Respiratory acidosis",
-    "compensation": "Chronic with acute worsening",
-    "anion_gap_value": 1,
-    "anion_gap_category": "Normal",
-    "final_diagnosis": "COPD exacerbation"
-  },
-  "explanation": "COPD exacerbations cause acute rises in CO2 on a background of chronic respiratory acidosis.",
-  "patient_gender": "M",
-  "archetype": "acute_copd_exacerbation",
-  "difficulty_level": 2,
-  "difficulty_label": "intermediate",
-  "skills_tested": [
-    "ph_status",
-    "primary_disorder",
-    "compensation",
-    "final_diagnosis"
-  ],
-  "case_pool": "core",
-  "progression": {
-    "base_xp": 15
-  }
-}
-
---------------------------------------------------------------------------------
-
-{
-  "case_id": "ACUTE_COPD_007",
-  "title": "COPD exacerbation (acute-on-chronic respiratory acidosis)",
-  "case_type": "ABG",
-  "category": "respiratory_acidosis",
-  "clinical_stem": "76F presents to ED with several days of breathlessness and known COPD.",
-  "inputs": {
-    "gas": {
-      "ph": 7.31,
-      "paco2_mmHg": 72.5,
-      "hco3_mmolL": 35
-    },
-    "electrolytes": {
-      "na_mmolL": 140,
-      "cl_mmolL": 103
-    }
-  },
-  "questions_flow": [
-    {
-      "step": 1,
-      "key": "ph_status",
-      "label": "pH",
-      "prompt": "What is the pH status?",
-      "options": [
-        "Acidaemia",
-        "Alkalaemia",
-        "Normal"
-      ]
-    },
-    {
-      "step": 2,
-      "key": "primary_disorder",
-      "label": "Primary acid-base disorder",
-      "prompt": "What is the primary acid-base disorder?",
-      "options": [
-        "Respiratory acidosis",
-        "Respiratory alkalosis",
-        "Metabolic acidosis",
-        "Metabolic alkalosis"
-      ]
-    },
-    {
-      "step": 3,
-      "key": "compensation",
-      "label": "Compensation",
-      "prompt": "Is the physiological compensation appropriate?",
-      "options": [
-        "Appropriate",
-        "Inappropriate"
-      ]
-    },
-    {
-      "step": 4,
-      "key": "final_diagnosis",
-      "prompt": "Most likely diagnosis?",
-      "options": [
-        "COPD exacerbation",
-        "Opioid toxicity",
-        "Neuromuscular weakness",
-        "Asthma",
-        "Pneumonia"
-      ]
-    }
-  ],
-  "answer_key": {
-    "ph_status": "Acidaemia",
-    "primary_disorder": "Respiratory acidosis",
-    "compensation": "Chronic with acute worsening",
-    "anion_gap_value": 2,
     "anion_gap_category": "Normal",
     "final_diagnosis": "COPD exacerbation"
   },

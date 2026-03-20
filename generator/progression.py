@@ -65,6 +65,7 @@ def case_pool_for_archetype(archetype):
         "panic_hyperventilation": "core_respiratory",
         "salicylate_toxicity": "mixed_disorders",
         "mixed_hagma_metabolic_alkalosis": "mixed_disorders",
+        "respiratory_acidosis_hagma": "mixed_disorders",
     }
     return mapping.get(archetype, "core")
 

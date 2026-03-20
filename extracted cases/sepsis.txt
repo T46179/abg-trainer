@@ -3,202 +3,20 @@ Number of cases: 8
 ================================================================================
 
 {
-  "case_id": "SEPSIS_006",
+  "case_id": "SEPSIS_005",
   "title": "Sepsis (respiratory alkalosis)",
   "case_type": "ABG",
   "category": "respiratory_alkalosis",
-  "clinical_stem": "50M presents to ED with tachypnoea and tachycardia and fever.",
+  "clinical_stem": "50M is brought to ED with respiratory distress and pneumonia.",
   "inputs": {
     "gas": {
-      "ph": 7.64,
-      "paco2_mmHg": 22.6,
-      "hco3_mmolL": 23.4
-    },
-    "electrolytes": {
-      "na_mmolL": 137,
-      "cl_mmolL": 102
-    }
-  },
-  "questions_flow": [
-    {
-      "step": 1,
-      "key": "ph_status",
-      "label": "pH",
-      "prompt": "What is the pH status?",
-      "options": [
-        "Acidaemia",
-        "Alkalaemia",
-        "Normal"
-      ]
-    },
-    {
-      "step": 2,
-      "key": "primary_disorder",
-      "label": "Primary acid-base disorder",
-      "prompt": "What is the primary acid-base disorder?",
-      "options": [
-        "Respiratory acidosis",
-        "Respiratory alkalosis",
-        "Metabolic acidosis",
-        "Metabolic alkalosis"
-      ]
-    },
-    {
-      "step": 3,
-      "key": "compensation",
-      "label": "Compensation",
-      "prompt": "Is the physiological compensation appropriate?",
-      "options": [
-        "Appropriate",
-        "Inappropriate"
-      ]
-    },
-    {
-      "step": 4,
-      "key": "final_diagnosis",
-      "prompt": "Most likely diagnosis?",
-      "options": [
-        "Sepsis",
-        "Panic attack",
-        "Pain",
-        "Pulmonary embolism",
-        "Pregnancy"
-      ]
-    }
-  ],
-  "answer_key": {
-    "ph_status": "Alkalaemia",
-    "primary_disorder": "Respiratory alkalosis",
-    "compensation": "None",
-    "anion_gap_value": 11.6,
-    "anion_gap_category": "Normal",
-    "final_diagnosis": "Sepsis"
-  },
-  "explanation": "Sepsis commonly causes respiratory alkalosis due to hyperventilation.",
-  "patient_gender": "M",
-  "archetype": "sepsis_respiratory_alkalosis",
-  "difficulty_level": 2,
-  "difficulty_label": "intermediate",
-  "skills_tested": [
-    "ph_status",
-    "primary_disorder",
-    "compensation",
-    "final_diagnosis"
-  ],
-  "case_pool": "core",
-  "progression": {
-    "base_xp": 15
-  }
-}
-
---------------------------------------------------------------------------------
-
-{
-  "case_id": "SEPSIS_001",
-  "title": "Sepsis (respiratory alkalosis)",
-  "case_type": "ABG",
-  "category": "respiratory_alkalosis",
-  "clinical_stem": "60M is brought to ED with suspected sepsis and hypotension. Other features include rigors and tachypnoea.",
-  "inputs": {
-    "gas": {
-      "ph": 7.61,
-      "paco2_mmHg": 25.2,
-      "hco3_mmolL": 24.2
-    },
-    "electrolytes": {
-      "na_mmolL": 136,
-      "cl_mmolL": 102
-    }
-  },
-  "questions_flow": [
-    {
-      "step": 1,
-      "key": "ph_status",
-      "label": "pH",
-      "prompt": "What is the pH status?",
-      "options": [
-        "Acidaemia",
-        "Alkalaemia",
-        "Normal"
-      ]
-    },
-    {
-      "step": 2,
-      "key": "primary_disorder",
-      "label": "Primary acid-base disorder",
-      "prompt": "What is the primary acid-base disorder?",
-      "options": [
-        "Respiratory acidosis",
-        "Respiratory alkalosis",
-        "Metabolic acidosis",
-        "Metabolic alkalosis"
-      ]
-    },
-    {
-      "step": 3,
-      "key": "compensation",
-      "label": "Compensation",
-      "prompt": "Is the physiological compensation appropriate?",
-      "options": [
-        "Appropriate",
-        "Inappropriate"
-      ]
-    },
-    {
-      "step": 4,
-      "key": "final_diagnosis",
-      "prompt": "Most likely diagnosis?",
-      "options": [
-        "Sepsis",
-        "Panic attack",
-        "Pain",
-        "Pulmonary embolism",
-        "Pregnancy"
-      ]
-    }
-  ],
-  "answer_key": {
-    "ph_status": "Alkalaemia",
-    "primary_disorder": "Respiratory alkalosis",
-    "compensation": "None",
-    "anion_gap_value": 9.8,
-    "anion_gap_category": "Normal",
-    "final_diagnosis": "Sepsis"
-  },
-  "explanation": "Sepsis commonly causes respiratory alkalosis due to hyperventilation.",
-  "patient_gender": "M",
-  "archetype": "sepsis_respiratory_alkalosis",
-  "difficulty_level": 2,
-  "difficulty_label": "intermediate",
-  "skills_tested": [
-    "ph_status",
-    "primary_disorder",
-    "compensation",
-    "final_diagnosis"
-  ],
-  "case_pool": "core",
-  "progression": {
-    "base_xp": 15
-  }
-}
-
---------------------------------------------------------------------------------
-
-{
-  "case_id": "SEPSIS_004",
-  "title": "Sepsis (respiratory alkalosis)",
-  "case_type": "ABG",
-  "category": "respiratory_alkalosis",
-  "clinical_stem": "60F is brought to ED with tachypnoea and tachycardia.",
-  "inputs": {
-    "gas": {
-      "ph": 7.58,
-      "paco2_mmHg": 27.9,
-      "hco3_mmolL": 25.1
+      "ph": 7.55,
+      "paco2_mmHg": 27.3,
+      "hco3_mmolL": 23.2
     },
     "electrolytes": {
       "na_mmolL": 141,
-      "cl_mmolL": 103
+      "cl_mmolL": 102
     }
   },
   "questions_flow": [
@@ -252,7 +70,98 @@ Number of cases: 8
     "ph_status": "Alkalaemia",
     "primary_disorder": "Respiratory alkalosis",
     "compensation": "None",
-    "anion_gap_value": 12.9,
+    "anion_gap_value": 15.8,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "Sepsis"
+  },
+  "explanation": "Sepsis commonly causes respiratory alkalosis due to hyperventilation.",
+  "patient_gender": "M",
+  "archetype": "sepsis_respiratory_alkalosis",
+  "difficulty_level": 2,
+  "difficulty_label": "intermediate",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 15
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "SEPSIS_002",
+  "title": "Sepsis (respiratory alkalosis)",
+  "case_type": "ABG",
+  "category": "respiratory_alkalosis",
+  "clinical_stem": "50F attends ED with pneumonia and respiratory distress. Other features include hypotension and rigors.",
+  "inputs": {
+    "gas": {
+      "ph": 7.57,
+      "paco2_mmHg": 29.1,
+      "hco3_mmolL": 25.6
+    },
+    "electrolytes": {
+      "na_mmolL": 139,
+      "cl_mmolL": 102
+    }
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Sepsis",
+        "Panic attack",
+        "Pain",
+        "Pulmonary embolism",
+        "Pregnancy"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Alkalaemia",
+    "primary_disorder": "Respiratory alkalosis",
+    "compensation": "None",
+    "anion_gap_value": 11.4,
     "anion_gap_category": "Normal",
     "final_diagnosis": "Sepsis"
   },
@@ -276,107 +185,16 @@ Number of cases: 8
 --------------------------------------------------------------------------------
 
 {
-  "case_id": "SEPSIS_008",
+  "case_id": "SEPSIS_006",
   "title": "Sepsis (respiratory alkalosis)",
   "case_type": "ABG",
   "category": "respiratory_alkalosis",
-  "clinical_stem": "60M attends ED with respiratory distress and tachycardia. Other features include fever and pneumonia.",
+  "clinical_stem": "55M attends ED with fever and suspected sepsis.",
   "inputs": {
     "gas": {
-      "ph": 7.6,
-      "paco2_mmHg": 24.8,
-      "hco3_mmolL": 23.5
-    },
-    "electrolytes": {
-      "na_mmolL": 139,
-      "cl_mmolL": 106
-    }
-  },
-  "questions_flow": [
-    {
-      "step": 1,
-      "key": "ph_status",
-      "label": "pH",
-      "prompt": "What is the pH status?",
-      "options": [
-        "Acidaemia",
-        "Alkalaemia",
-        "Normal"
-      ]
-    },
-    {
-      "step": 2,
-      "key": "primary_disorder",
-      "label": "Primary acid-base disorder",
-      "prompt": "What is the primary acid-base disorder?",
-      "options": [
-        "Respiratory acidosis",
-        "Respiratory alkalosis",
-        "Metabolic acidosis",
-        "Metabolic alkalosis"
-      ]
-    },
-    {
-      "step": 3,
-      "key": "compensation",
-      "label": "Compensation",
-      "prompt": "Is the physiological compensation appropriate?",
-      "options": [
-        "Appropriate",
-        "Inappropriate"
-      ]
-    },
-    {
-      "step": 4,
-      "key": "final_diagnosis",
-      "prompt": "Most likely diagnosis?",
-      "options": [
-        "Sepsis",
-        "Panic attack",
-        "Pain",
-        "Pulmonary embolism",
-        "Pregnancy"
-      ]
-    }
-  ],
-  "answer_key": {
-    "ph_status": "Alkalaemia",
-    "primary_disorder": "Respiratory alkalosis",
-    "compensation": "None",
-    "anion_gap_value": 9.5,
-    "anion_gap_category": "Normal",
-    "final_diagnosis": "Sepsis"
-  },
-  "explanation": "Sepsis commonly causes respiratory alkalosis due to hyperventilation.",
-  "patient_gender": "M",
-  "archetype": "sepsis_respiratory_alkalosis",
-  "difficulty_level": 2,
-  "difficulty_label": "intermediate",
-  "skills_tested": [
-    "ph_status",
-    "primary_disorder",
-    "compensation",
-    "final_diagnosis"
-  ],
-  "case_pool": "core",
-  "progression": {
-    "base_xp": 15
-  }
-}
-
---------------------------------------------------------------------------------
-
-{
-  "case_id": "SEPSIS_003",
-  "title": "Sepsis (respiratory alkalosis)",
-  "case_type": "ABG",
-  "category": "respiratory_alkalosis",
-  "clinical_stem": "50F presents to ED with tachypnoea and suspected sepsis.",
-  "inputs": {
-    "gas": {
-      "ph": 7.61,
-      "paco2_mmHg": 24.7,
-      "hco3_mmolL": 24.2
+      "ph": 7.56,
+      "paco2_mmHg": 28.2,
+      "hco3_mmolL": 24.4
     },
     "electrolytes": {
       "na_mmolL": 136,
@@ -434,189 +252,7 @@ Number of cases: 8
     "ph_status": "Alkalaemia",
     "primary_disorder": "Respiratory alkalosis",
     "compensation": "None",
-    "anion_gap_value": 10.8,
-    "anion_gap_category": "Normal",
-    "final_diagnosis": "Sepsis"
-  },
-  "explanation": "Sepsis commonly causes respiratory alkalosis due to hyperventilation.",
-  "patient_gender": "F",
-  "archetype": "sepsis_respiratory_alkalosis",
-  "difficulty_level": 2,
-  "difficulty_label": "intermediate",
-  "skills_tested": [
-    "ph_status",
-    "primary_disorder",
-    "compensation",
-    "final_diagnosis"
-  ],
-  "case_pool": "core",
-  "progression": {
-    "base_xp": 15
-  }
-}
-
---------------------------------------------------------------------------------
-
-{
-  "case_id": "SEPSIS_005",
-  "title": "Sepsis (respiratory alkalosis)",
-  "case_type": "ABG",
-  "category": "respiratory_alkalosis",
-  "clinical_stem": "55F presents to ED with tachypnoea, pneumonia, and fever.",
-  "inputs": {
-    "gas": {
-      "ph": 7.56,
-      "paco2_mmHg": 27.1,
-      "hco3_mmolL": 23.3
-    },
-    "electrolytes": {
-      "na_mmolL": 136,
-      "cl_mmolL": 100
-    }
-  },
-  "questions_flow": [
-    {
-      "step": 1,
-      "key": "ph_status",
-      "label": "pH",
-      "prompt": "What is the pH status?",
-      "options": [
-        "Acidaemia",
-        "Alkalaemia",
-        "Normal"
-      ]
-    },
-    {
-      "step": 2,
-      "key": "primary_disorder",
-      "label": "Primary acid-base disorder",
-      "prompt": "What is the primary acid-base disorder?",
-      "options": [
-        "Respiratory acidosis",
-        "Respiratory alkalosis",
-        "Metabolic acidosis",
-        "Metabolic alkalosis"
-      ]
-    },
-    {
-      "step": 3,
-      "key": "compensation",
-      "label": "Compensation",
-      "prompt": "Is the physiological compensation appropriate?",
-      "options": [
-        "Appropriate",
-        "Inappropriate"
-      ]
-    },
-    {
-      "step": 4,
-      "key": "final_diagnosis",
-      "prompt": "Most likely diagnosis?",
-      "options": [
-        "Sepsis",
-        "Panic attack",
-        "Pain",
-        "Pulmonary embolism",
-        "Pregnancy"
-      ]
-    }
-  ],
-  "answer_key": {
-    "ph_status": "Alkalaemia",
-    "primary_disorder": "Respiratory alkalosis",
-    "compensation": "None",
-    "anion_gap_value": 12.7,
-    "anion_gap_category": "Normal",
-    "final_diagnosis": "Sepsis"
-  },
-  "explanation": "Sepsis commonly causes respiratory alkalosis due to hyperventilation.",
-  "patient_gender": "F",
-  "archetype": "sepsis_respiratory_alkalosis",
-  "difficulty_level": 2,
-  "difficulty_label": "intermediate",
-  "skills_tested": [
-    "ph_status",
-    "primary_disorder",
-    "compensation",
-    "final_diagnosis"
-  ],
-  "case_pool": "core",
-  "progression": {
-    "base_xp": 15
-  }
-}
-
---------------------------------------------------------------------------------
-
-{
-  "case_id": "SEPSIS_007",
-  "title": "Sepsis (respiratory alkalosis)",
-  "case_type": "ABG",
-  "category": "respiratory_alkalosis",
-  "clinical_stem": "50M presents to ED with pneumonia and tachycardia.",
-  "inputs": {
-    "gas": {
-      "ph": 7.62,
-      "paco2_mmHg": 24.9,
-      "hco3_mmolL": 24.7
-    },
-    "electrolytes": {
-      "na_mmolL": 139,
-      "cl_mmolL": 102
-    }
-  },
-  "questions_flow": [
-    {
-      "step": 1,
-      "key": "ph_status",
-      "label": "pH",
-      "prompt": "What is the pH status?",
-      "options": [
-        "Acidaemia",
-        "Alkalaemia",
-        "Normal"
-      ]
-    },
-    {
-      "step": 2,
-      "key": "primary_disorder",
-      "label": "Primary acid-base disorder",
-      "prompt": "What is the primary acid-base disorder?",
-      "options": [
-        "Respiratory acidosis",
-        "Respiratory alkalosis",
-        "Metabolic acidosis",
-        "Metabolic alkalosis"
-      ]
-    },
-    {
-      "step": 3,
-      "key": "compensation",
-      "label": "Compensation",
-      "prompt": "Is the physiological compensation appropriate?",
-      "options": [
-        "Appropriate",
-        "Inappropriate"
-      ]
-    },
-    {
-      "step": 4,
-      "key": "final_diagnosis",
-      "prompt": "Most likely diagnosis?",
-      "options": [
-        "Sepsis",
-        "Panic attack",
-        "Pain",
-        "Pulmonary embolism",
-        "Pregnancy"
-      ]
-    }
-  ],
-  "answer_key": {
-    "ph_status": "Alkalaemia",
-    "primary_disorder": "Respiratory alkalosis",
-    "compensation": "None",
-    "anion_gap_value": 12.3,
+    "anion_gap_value": 10.6,
     "anion_gap_category": "Normal",
     "final_diagnosis": "Sepsis"
   },
@@ -640,16 +276,16 @@ Number of cases: 8
 --------------------------------------------------------------------------------
 
 {
-  "case_id": "SEPSIS_002",
+  "case_id": "SEPSIS_007",
   "title": "Sepsis (respiratory alkalosis)",
   "case_type": "ABG",
   "category": "respiratory_alkalosis",
-  "clinical_stem": "55M presents to ED with rigors and hypotension. Other features include suspected sepsis and tachypnoea.",
+  "clinical_stem": "55F presents to ED with suspected sepsis and tachycardia.",
   "inputs": {
     "gas": {
-      "ph": 7.61,
-      "paco2_mmHg": 26.1,
-      "hco3_mmolL": 25.5
+      "ph": 7.62,
+      "paco2_mmHg": 22.5,
+      "hco3_mmolL": 22.3
     },
     "electrolytes": {
       "na_mmolL": 138,
@@ -707,12 +343,376 @@ Number of cases: 8
     "ph_status": "Alkalaemia",
     "primary_disorder": "Respiratory alkalosis",
     "compensation": "None",
-    "anion_gap_value": 10.5,
+    "anion_gap_value": 13.7,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "Sepsis"
+  },
+  "explanation": "Sepsis commonly causes respiratory alkalosis due to hyperventilation.",
+  "patient_gender": "F",
+  "archetype": "sepsis_respiratory_alkalosis",
+  "difficulty_level": 2,
+  "difficulty_label": "intermediate",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 15
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "SEPSIS_004",
+  "title": "Sepsis (respiratory alkalosis)",
+  "case_type": "ABG",
+  "category": "respiratory_alkalosis",
+  "clinical_stem": "60M is brought to ED with respiratory distress and tachycardia. Other features include suspected sepsis and rigors.",
+  "inputs": {
+    "gas": {
+      "ph": 7.61,
+      "paco2_mmHg": 23.3,
+      "hco3_mmolL": 22.8
+    },
+    "electrolytes": {
+      "na_mmolL": 140,
+      "cl_mmolL": 102
+    }
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Sepsis",
+        "Panic attack",
+        "Pain",
+        "Pulmonary embolism",
+        "Pregnancy"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Alkalaemia",
+    "primary_disorder": "Respiratory alkalosis",
+    "compensation": "None",
+    "anion_gap_value": 15.2,
     "anion_gap_category": "Normal",
     "final_diagnosis": "Sepsis"
   },
   "explanation": "Sepsis commonly causes respiratory alkalosis due to hyperventilation.",
   "patient_gender": "M",
+  "archetype": "sepsis_respiratory_alkalosis",
+  "difficulty_level": 2,
+  "difficulty_label": "intermediate",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 15
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "SEPSIS_008",
+  "title": "Sepsis (respiratory alkalosis)",
+  "case_type": "ABG",
+  "category": "respiratory_alkalosis",
+  "clinical_stem": "60F attends ED with tachypnoea and fever. Other features include hypotension.",
+  "inputs": {
+    "gas": {
+      "ph": 7.59,
+      "paco2_mmHg": 26.6,
+      "hco3_mmolL": 24.7
+    },
+    "electrolytes": {
+      "na_mmolL": 138,
+      "cl_mmolL": 104
+    }
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Sepsis",
+        "Panic attack",
+        "Pain",
+        "Pulmonary embolism",
+        "Pregnancy"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Alkalaemia",
+    "primary_disorder": "Respiratory alkalosis",
+    "compensation": "None",
+    "anion_gap_value": 9.3,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "Sepsis"
+  },
+  "explanation": "Sepsis commonly causes respiratory alkalosis due to hyperventilation.",
+  "patient_gender": "F",
+  "archetype": "sepsis_respiratory_alkalosis",
+  "difficulty_level": 2,
+  "difficulty_label": "intermediate",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 15
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "SEPSIS_003",
+  "title": "Sepsis (respiratory alkalosis)",
+  "case_type": "ABG",
+  "category": "respiratory_alkalosis",
+  "clinical_stem": "60M presents to ED with tachypnoea and tachycardia.",
+  "inputs": {
+    "gas": {
+      "ph": 7.52,
+      "paco2_mmHg": 29.3,
+      "hco3_mmolL": 22.8
+    },
+    "electrolytes": {
+      "na_mmolL": 138,
+      "cl_mmolL": 103
+    }
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Sepsis",
+        "Panic attack",
+        "Pain",
+        "Pulmonary embolism",
+        "Pregnancy"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Alkalaemia",
+    "primary_disorder": "Respiratory alkalosis",
+    "compensation": "None",
+    "anion_gap_value": 12.2,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "Sepsis"
+  },
+  "explanation": "Sepsis commonly causes respiratory alkalosis due to hyperventilation.",
+  "patient_gender": "M",
+  "archetype": "sepsis_respiratory_alkalosis",
+  "difficulty_level": 2,
+  "difficulty_label": "intermediate",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 15
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "SEPSIS_001",
+  "title": "Sepsis (respiratory alkalosis)",
+  "case_type": "ABG",
+  "category": "respiratory_alkalosis",
+  "clinical_stem": "60F presents to ED with fever and respiratory distress and tachycardia.",
+  "inputs": {
+    "gas": {
+      "ph": 7.57,
+      "paco2_mmHg": 26.2,
+      "hco3_mmolL": 23.3
+    },
+    "electrolytes": {
+      "na_mmolL": 137,
+      "cl_mmolL": 102
+    }
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Sepsis",
+        "Panic attack",
+        "Pain",
+        "Pulmonary embolism",
+        "Pregnancy"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Alkalaemia",
+    "primary_disorder": "Respiratory alkalosis",
+    "compensation": "None",
+    "anion_gap_value": 11.7,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "Sepsis"
+  },
+  "explanation": "Sepsis commonly causes respiratory alkalosis due to hyperventilation.",
+  "patient_gender": "F",
   "archetype": "sepsis_respiratory_alkalosis",
   "difficulty_level": 2,
   "difficulty_label": "intermediate",

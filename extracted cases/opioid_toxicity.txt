@@ -3,775 +3,25 @@ Number of cases: 8
 ================================================================================
 
 {
-  "case_id": "OPIOID_001",
-  "title": "Opioid toxicity (acute respiratory acidosis)",
-  "case_type": "ABG",
-  "category": "respiratory_acidosis",
-  "clinical_stem": "32F is brought in drowsy with bradypnoea and decreased responsiveness.",
-  "inputs": {
-    "gas": {
-      "ph": 7.21,
-      "paco2_mmHg": 68,
-      "hco3_mmolL": 26.1
-    },
-    "electrolytes": {
-      "na_mmolL": 142,
-      "cl_mmolL": 106
-    },
-    "other": {
-      "lactate_mmolL": 1.6
-    },
-    "lactate_mmolL": 1.6
-  },
-  "questions_flow": [
-    {
-      "step": 1,
-      "key": "ph_status",
-      "label": "pH",
-      "prompt": "What is the pH status?",
-      "options": [
-        "Acidaemia",
-        "Alkalaemia",
-        "Normal"
-      ]
-    },
-    {
-      "step": 2,
-      "key": "primary_disorder",
-      "label": "Primary acid-base disorder",
-      "prompt": "What is the primary acid-base disorder?",
-      "options": [
-        "Respiratory acidosis",
-        "Respiratory alkalosis",
-        "Metabolic acidosis",
-        "Metabolic alkalosis"
-      ]
-    },
-    {
-      "step": 3,
-      "key": "final_diagnosis",
-      "prompt": "Most likely diagnosis?",
-      "options": [
-        "Opioid toxicity",
-        "COPD",
-        "Pneumonia",
-        "Neuromuscular weakness",
-        "Alcoholic ketoacidosis"
-      ]
-    }
-  ],
-  "answer_key": {
-    "ph_status": "Acidaemia",
-    "primary_disorder": "Respiratory acidosis",
-    "compensation": "Appropriate",
-    "anion_gap_value": 10.0,
-    "anion_gap_category": "Normal",
-    "final_diagnosis": "Opioid toxicity",
-    "expected_compensation": {
-      "rule": "Acute respiratory acidosis",
-      "expected_hco3_mmolL": 26.8,
-      "acceptable_range_mmolL": [
-        24.8,
-        28.8
-      ]
-    }
-  },
-  "learning_objective": "Recognise acute respiratory acidosis due to hypoventilation with appropriate compensation",
-  "tags": [
-    "opioid",
-    "respiratory_acidosis",
-    "hypoventilation",
-    "toxicology"
-  ],
-  "explanation": "Low pH = acidaemia. High PaCO2 indicates a primary respiratory acidosis. For acute respiratory acidosis, expected HCO3 is ~26.8; measured 26.1 is appropriate acute compensation. This pattern fits acute hypoventilation, such as opioid toxicity.",
-  "timing": {
-    "timer_visible_by_default": false,
-    "time_bonus_scope": "whole_case",
-    "time_bonus_tiers_seconds_inclusive": [
-      {
-        "max_seconds": 30,
-        "bonus": 10
-      },
-      {
-        "max_seconds": 45,
-        "bonus": 7
-      },
-      {
-        "max_seconds": 60,
-        "bonus": 5
-      },
-      {
-        "max_seconds": 90,
-        "bonus": 3
-      },
-      {
-        "max_seconds": 999999,
-        "bonus": 0
-      }
-    ]
-  },
-  "patient_gender": "F",
-  "archetype": "opioid_toxicity",
-  "difficulty_level": 1,
-  "difficulty_label": "beginner",
-  "skills_tested": [
-    "ph_status",
-    "primary_disorder",
-    "final_diagnosis"
-  ],
-  "case_pool": "core_respiratory",
-  "progression": {
-    "base_xp": 10
-  }
-}
-
---------------------------------------------------------------------------------
-
-{
-  "case_id": "OPIOID_002",
-  "title": "Opioid toxicity (acute respiratory acidosis)",
-  "case_type": "ABG",
-  "category": "respiratory_acidosis",
-  "clinical_stem": "32F is brought in drowsy with bradypnoea and decreased responsiveness.",
-  "inputs": {
-    "gas": {
-      "ph": 7.22,
-      "paco2_mmHg": 68,
-      "hco3_mmolL": 27.1
-    },
-    "electrolytes": {
-      "na_mmolL": 142,
-      "cl_mmolL": 107
-    },
-    "other": {
-      "lactate_mmolL": 0.9
-    },
-    "lactate_mmolL": 0.9
-  },
-  "questions_flow": [
-    {
-      "step": 1,
-      "key": "ph_status",
-      "label": "pH",
-      "prompt": "What is the pH status?",
-      "options": [
-        "Acidaemia",
-        "Alkalaemia",
-        "Normal"
-      ]
-    },
-    {
-      "step": 2,
-      "key": "primary_disorder",
-      "label": "Primary acid-base disorder",
-      "prompt": "What is the primary acid-base disorder?",
-      "options": [
-        "Respiratory acidosis",
-        "Respiratory alkalosis",
-        "Metabolic acidosis",
-        "Metabolic alkalosis"
-      ]
-    },
-    {
-      "step": 3,
-      "key": "final_diagnosis",
-      "prompt": "Most likely diagnosis?",
-      "options": [
-        "Opioid toxicity",
-        "COPD",
-        "Pneumonia",
-        "Neuromuscular weakness",
-        "Alcoholic ketoacidosis"
-      ]
-    }
-  ],
-  "answer_key": {
-    "ph_status": "Acidaemia",
-    "primary_disorder": "Respiratory acidosis",
-    "compensation": "Appropriate",
-    "anion_gap_value": 8.0,
-    "anion_gap_category": "Normal",
-    "final_diagnosis": "Opioid toxicity",
-    "expected_compensation": {
-      "rule": "Acute respiratory acidosis",
-      "expected_hco3_mmolL": 26.8,
-      "acceptable_range_mmolL": [
-        24.8,
-        28.8
-      ]
-    }
-  },
-  "learning_objective": "Recognise acute respiratory acidosis due to hypoventilation with appropriate compensation",
-  "tags": [
-    "opioid",
-    "respiratory_acidosis",
-    "hypoventilation",
-    "toxicology"
-  ],
-  "explanation": "Low pH = acidaemia. High PaCO2 indicates a primary respiratory acidosis. For acute respiratory acidosis, expected HCO3 is ~26.8; measured 27.1 is appropriate acute compensation. This pattern fits acute hypoventilation, such as opioid toxicity.",
-  "timing": {
-    "timer_visible_by_default": false,
-    "time_bonus_scope": "whole_case",
-    "time_bonus_tiers_seconds_inclusive": [
-      {
-        "max_seconds": 30,
-        "bonus": 10
-      },
-      {
-        "max_seconds": 45,
-        "bonus": 7
-      },
-      {
-        "max_seconds": 60,
-        "bonus": 5
-      },
-      {
-        "max_seconds": 90,
-        "bonus": 3
-      },
-      {
-        "max_seconds": 999999,
-        "bonus": 0
-      }
-    ]
-  },
-  "patient_gender": "F",
-  "archetype": "opioid_toxicity",
-  "difficulty_level": 1,
-  "difficulty_label": "beginner",
-  "skills_tested": [
-    "ph_status",
-    "primary_disorder",
-    "final_diagnosis"
-  ],
-  "case_pool": "core_respiratory",
-  "progression": {
-    "base_xp": 10
-  }
-}
-
---------------------------------------------------------------------------------
-
-{
-  "case_id": "OPIOID_004",
+  "case_id": "OPIOID_008",
   "title": "Opioid toxicity (acute respiratory acidosis)",
   "case_type": "ABG",
   "category": "respiratory_acidosis",
   "clinical_stem": "32M is brought in drowsy with bradypnoea and decreased responsiveness.",
   "inputs": {
     "gas": {
-      "ph": 7.23,
-      "paco2_mmHg": 67,
-      "hco3_mmolL": 26.9
-    },
-    "electrolytes": {
-      "na_mmolL": 142,
-      "cl_mmolL": 103
-    },
-    "other": {
-      "lactate_mmolL": 1.6
-    },
-    "lactate_mmolL": 1.6
-  },
-  "questions_flow": [
-    {
-      "step": 1,
-      "key": "ph_status",
-      "label": "pH",
-      "prompt": "What is the pH status?",
-      "options": [
-        "Acidaemia",
-        "Alkalaemia",
-        "Normal"
-      ]
-    },
-    {
-      "step": 2,
-      "key": "primary_disorder",
-      "label": "Primary acid-base disorder",
-      "prompt": "What is the primary acid-base disorder?",
-      "options": [
-        "Respiratory acidosis",
-        "Respiratory alkalosis",
-        "Metabolic acidosis",
-        "Metabolic alkalosis"
-      ]
-    },
-    {
-      "step": 3,
-      "key": "final_diagnosis",
-      "prompt": "Most likely diagnosis?",
-      "options": [
-        "Opioid toxicity",
-        "COPD",
-        "Pneumonia",
-        "Neuromuscular weakness",
-        "Alcoholic ketoacidosis"
-      ]
-    }
-  ],
-  "answer_key": {
-    "ph_status": "Acidaemia",
-    "primary_disorder": "Respiratory acidosis",
-    "compensation": "Appropriate",
-    "anion_gap_value": 12.0,
-    "anion_gap_category": "Normal",
-    "final_diagnosis": "Opioid toxicity",
-    "expected_compensation": {
-      "rule": "Acute respiratory acidosis",
-      "expected_hco3_mmolL": 26.7,
-      "acceptable_range_mmolL": [
-        24.7,
-        28.7
-      ]
-    }
-  },
-  "learning_objective": "Recognise acute respiratory acidosis due to hypoventilation with appropriate compensation",
-  "tags": [
-    "opioid",
-    "respiratory_acidosis",
-    "hypoventilation",
-    "toxicology"
-  ],
-  "explanation": "Low pH = acidaemia. High PaCO2 indicates a primary respiratory acidosis. For acute respiratory acidosis, expected HCO3 is ~26.7; measured 26.9 is appropriate acute compensation. This pattern fits acute hypoventilation, such as opioid toxicity.",
-  "timing": {
-    "timer_visible_by_default": false,
-    "time_bonus_scope": "whole_case",
-    "time_bonus_tiers_seconds_inclusive": [
-      {
-        "max_seconds": 30,
-        "bonus": 10
-      },
-      {
-        "max_seconds": 45,
-        "bonus": 7
-      },
-      {
-        "max_seconds": 60,
-        "bonus": 5
-      },
-      {
-        "max_seconds": 90,
-        "bonus": 3
-      },
-      {
-        "max_seconds": 999999,
-        "bonus": 0
-      }
-    ]
-  },
-  "patient_gender": "M",
-  "archetype": "opioid_toxicity",
-  "difficulty_level": 1,
-  "difficulty_label": "beginner",
-  "skills_tested": [
-    "ph_status",
-    "primary_disorder",
-    "final_diagnosis"
-  ],
-  "case_pool": "core_respiratory",
-  "progression": {
-    "base_xp": 10
-  }
-}
-
---------------------------------------------------------------------------------
-
-{
-  "case_id": "OPIOID_007",
-  "title": "Opioid toxicity (acute respiratory acidosis)",
-  "case_type": "ABG",
-  "category": "respiratory_acidosis",
-  "clinical_stem": "40F presents with low GCS and hypoventilation after being found collapsed at home.",
-  "inputs": {
-    "gas": {
-      "ph": 7.21,
-      "paco2_mmHg": 67,
-      "hco3_mmolL": 26.1
-    },
-    "electrolytes": {
-      "na_mmolL": 142,
-      "cl_mmolL": 105
-    },
-    "other": {
-      "lactate_mmolL": 0.9
-    },
-    "lactate_mmolL": 0.9
-  },
-  "questions_flow": [
-    {
-      "step": 1,
-      "key": "ph_status",
-      "label": "pH",
-      "prompt": "What is the pH status?",
-      "options": [
-        "Acidaemia",
-        "Alkalaemia",
-        "Normal"
-      ]
-    },
-    {
-      "step": 2,
-      "key": "primary_disorder",
-      "label": "Primary acid-base disorder",
-      "prompt": "What is the primary acid-base disorder?",
-      "options": [
-        "Respiratory acidosis",
-        "Respiratory alkalosis",
-        "Metabolic acidosis",
-        "Metabolic alkalosis"
-      ]
-    },
-    {
-      "step": 3,
-      "key": "final_diagnosis",
-      "prompt": "Most likely diagnosis?",
-      "options": [
-        "Opioid toxicity",
-        "COPD",
-        "Pneumonia",
-        "Neuromuscular weakness",
-        "Alcoholic ketoacidosis"
-      ]
-    }
-  ],
-  "answer_key": {
-    "ph_status": "Acidaemia",
-    "primary_disorder": "Respiratory acidosis",
-    "compensation": "Appropriate",
-    "anion_gap_value": 11.0,
-    "anion_gap_category": "Normal",
-    "final_diagnosis": "Opioid toxicity",
-    "expected_compensation": {
-      "rule": "Acute respiratory acidosis",
-      "expected_hco3_mmolL": 26.7,
-      "acceptable_range_mmolL": [
-        24.7,
-        28.7
-      ]
-    }
-  },
-  "learning_objective": "Recognise acute respiratory acidosis due to hypoventilation with appropriate compensation",
-  "tags": [
-    "opioid",
-    "respiratory_acidosis",
-    "hypoventilation",
-    "toxicology"
-  ],
-  "explanation": "Low pH = acidaemia. High PaCO2 indicates a primary respiratory acidosis. For acute respiratory acidosis, expected HCO3 is ~26.7; measured 26.1 is appropriate acute compensation. This pattern fits acute hypoventilation, such as opioid toxicity.",
-  "timing": {
-    "timer_visible_by_default": false,
-    "time_bonus_scope": "whole_case",
-    "time_bonus_tiers_seconds_inclusive": [
-      {
-        "max_seconds": 30,
-        "bonus": 10
-      },
-      {
-        "max_seconds": 45,
-        "bonus": 7
-      },
-      {
-        "max_seconds": 60,
-        "bonus": 5
-      },
-      {
-        "max_seconds": 90,
-        "bonus": 3
-      },
-      {
-        "max_seconds": 999999,
-        "bonus": 0
-      }
-    ]
-  },
-  "patient_gender": "F",
-  "archetype": "opioid_toxicity",
-  "difficulty_level": 1,
-  "difficulty_label": "beginner",
-  "skills_tested": [
-    "ph_status",
-    "primary_disorder",
-    "final_diagnosis"
-  ],
-  "case_pool": "core_respiratory",
-  "progression": {
-    "base_xp": 10
-  }
-}
-
---------------------------------------------------------------------------------
-
-{
-  "case_id": "OPIOID_008",
-  "title": "Opioid toxicity (acute respiratory acidosis)",
-  "case_type": "ABG",
-  "category": "respiratory_acidosis",
-  "clinical_stem": "40M presents with low GCS and hypoventilation after being found collapsed at home.",
-  "inputs": {
-    "gas": {
-      "ph": 7.28,
-      "paco2_mmHg": 60,
-      "hco3_mmolL": 27.0
-    },
-    "electrolytes": {
-      "na_mmolL": 136,
-      "cl_mmolL": 101
-    },
-    "other": {
-      "lactate_mmolL": 1.5
-    },
-    "lactate_mmolL": 1.5
-  },
-  "questions_flow": [
-    {
-      "step": 1,
-      "key": "ph_status",
-      "label": "pH",
-      "prompt": "What is the pH status?",
-      "options": [
-        "Acidaemia",
-        "Alkalaemia",
-        "Normal"
-      ]
-    },
-    {
-      "step": 2,
-      "key": "primary_disorder",
-      "label": "Primary acid-base disorder",
-      "prompt": "What is the primary acid-base disorder?",
-      "options": [
-        "Respiratory acidosis",
-        "Respiratory alkalosis",
-        "Metabolic acidosis",
-        "Metabolic alkalosis"
-      ]
-    },
-    {
-      "step": 3,
-      "key": "final_diagnosis",
-      "prompt": "Most likely diagnosis?",
-      "options": [
-        "Opioid toxicity",
-        "COPD",
-        "Pneumonia",
-        "Neuromuscular weakness",
-        "Alcoholic ketoacidosis"
-      ]
-    }
-  ],
-  "answer_key": {
-    "ph_status": "Acidaemia",
-    "primary_disorder": "Respiratory acidosis",
-    "compensation": "Appropriate",
-    "anion_gap_value": 8.0,
-    "anion_gap_category": "Normal",
-    "final_diagnosis": "Opioid toxicity",
-    "expected_compensation": {
-      "rule": "Acute respiratory acidosis",
-      "expected_hco3_mmolL": 26.0,
-      "acceptable_range_mmolL": [
-        24.0,
-        28.0
-      ]
-    }
-  },
-  "learning_objective": "Recognise acute respiratory acidosis due to hypoventilation with appropriate compensation",
-  "tags": [
-    "opioid",
-    "respiratory_acidosis",
-    "hypoventilation",
-    "toxicology"
-  ],
-  "explanation": "Low pH = acidaemia. High PaCO2 indicates a primary respiratory acidosis. For acute respiratory acidosis, expected HCO3 is ~26.0; measured 27.0 is appropriate acute compensation. This pattern fits acute hypoventilation, such as opioid toxicity.",
-  "timing": {
-    "timer_visible_by_default": false,
-    "time_bonus_scope": "whole_case",
-    "time_bonus_tiers_seconds_inclusive": [
-      {
-        "max_seconds": 30,
-        "bonus": 10
-      },
-      {
-        "max_seconds": 45,
-        "bonus": 7
-      },
-      {
-        "max_seconds": 60,
-        "bonus": 5
-      },
-      {
-        "max_seconds": 90,
-        "bonus": 3
-      },
-      {
-        "max_seconds": 999999,
-        "bonus": 0
-      }
-    ]
-  },
-  "patient_gender": "M",
-  "archetype": "opioid_toxicity",
-  "difficulty_level": 1,
-  "difficulty_label": "beginner",
-  "skills_tested": [
-    "ph_status",
-    "primary_disorder",
-    "final_diagnosis"
-  ],
-  "case_pool": "core_respiratory",
-  "progression": {
-    "base_xp": 10
-  }
-}
-
---------------------------------------------------------------------------------
-
-{
-  "case_id": "OPIOID_006",
-  "title": "Opioid toxicity (acute respiratory acidosis)",
-  "case_type": "ABG",
-  "category": "respiratory_acidosis",
-  "clinical_stem": "27M presents with reduced consciousness, shallow respirations, and pinpoint pupils.",
-  "inputs": {
-    "gas": {
       "ph": 7.26,
-      "paco2_mmHg": 57,
-      "hco3_mmolL": 25.0
+      "paco2_mmHg": 63,
+      "hco3_mmolL": 27.1
     },
     "electrolytes": {
-      "na_mmolL": 140,
+      "na_mmolL": 138,
       "cl_mmolL": 102
     },
     "other": {
-      "lactate_mmolL": 1.3
+      "lactate_mmolL": 2.0
     },
-    "lactate_mmolL": 1.3
-  },
-  "questions_flow": [
-    {
-      "step": 1,
-      "key": "ph_status",
-      "label": "pH",
-      "prompt": "What is the pH status?",
-      "options": [
-        "Acidaemia",
-        "Alkalaemia",
-        "Normal"
-      ]
-    },
-    {
-      "step": 2,
-      "key": "primary_disorder",
-      "label": "Primary acid-base disorder",
-      "prompt": "What is the primary acid-base disorder?",
-      "options": [
-        "Respiratory acidosis",
-        "Respiratory alkalosis",
-        "Metabolic acidosis",
-        "Metabolic alkalosis"
-      ]
-    },
-    {
-      "step": 3,
-      "key": "final_diagnosis",
-      "prompt": "Most likely diagnosis?",
-      "options": [
-        "Opioid toxicity",
-        "COPD",
-        "Pneumonia",
-        "Neuromuscular weakness",
-        "Alcoholic ketoacidosis"
-      ]
-    }
-  ],
-  "answer_key": {
-    "ph_status": "Acidaemia",
-    "primary_disorder": "Respiratory acidosis",
-    "compensation": "Appropriate",
-    "anion_gap_value": 13.0,
-    "anion_gap_category": "Normal",
-    "final_diagnosis": "Opioid toxicity",
-    "expected_compensation": {
-      "rule": "Acute respiratory acidosis",
-      "expected_hco3_mmolL": 25.7,
-      "acceptable_range_mmolL": [
-        23.7,
-        27.7
-      ]
-    }
-  },
-  "learning_objective": "Recognise acute respiratory acidosis due to hypoventilation with appropriate compensation",
-  "tags": [
-    "opioid",
-    "respiratory_acidosis",
-    "hypoventilation",
-    "toxicology"
-  ],
-  "explanation": "Low pH = acidaemia. High PaCO2 indicates a primary respiratory acidosis. For acute respiratory acidosis, expected HCO3 is ~25.7; measured 25.0 is appropriate acute compensation. This pattern fits acute hypoventilation, such as opioid toxicity.",
-  "timing": {
-    "timer_visible_by_default": false,
-    "time_bonus_scope": "whole_case",
-    "time_bonus_tiers_seconds_inclusive": [
-      {
-        "max_seconds": 30,
-        "bonus": 10
-      },
-      {
-        "max_seconds": 45,
-        "bonus": 7
-      },
-      {
-        "max_seconds": 60,
-        "bonus": 5
-      },
-      {
-        "max_seconds": 90,
-        "bonus": 3
-      },
-      {
-        "max_seconds": 999999,
-        "bonus": 0
-      }
-    ]
-  },
-  "patient_gender": "M",
-  "archetype": "opioid_toxicity",
-  "difficulty_level": 1,
-  "difficulty_label": "beginner",
-  "skills_tested": [
-    "ph_status",
-    "primary_disorder",
-    "final_diagnosis"
-  ],
-  "case_pool": "core_respiratory",
-  "progression": {
-    "base_xp": 10
-  }
-}
-
---------------------------------------------------------------------------------
-
-{
-  "case_id": "OPIOID_003",
-  "title": "Opioid toxicity (acute respiratory acidosis)",
-  "case_type": "ABG",
-  "category": "respiratory_acidosis",
-  "clinical_stem": "40F presents with low GCS and hypoventilation after being found collapsed at home.",
-  "inputs": {
-    "gas": {
-      "ph": 7.3,
-      "paco2_mmHg": 55,
-      "hco3_mmolL": 26.0
-    },
-    "electrolytes": {
-      "na_mmolL": 139,
-      "cl_mmolL": 104
-    },
-    "other": {
-      "lactate_mmolL": 1.2
-    },
-    "lactate_mmolL": 1.2
+    "lactate_mmolL": 2.0
   },
   "questions_flow": [
     {
@@ -819,10 +69,10 @@ Number of cases: 8
     "final_diagnosis": "Opioid toxicity",
     "expected_compensation": {
       "rule": "Acute respiratory acidosis",
-      "expected_hco3_mmolL": 25.5,
+      "expected_hco3_mmolL": 26.3,
       "acceptable_range_mmolL": [
-        23.5,
-        27.5
+        24.3,
+        28.3
       ]
     }
   },
@@ -833,7 +83,382 @@ Number of cases: 8
     "hypoventilation",
     "toxicology"
   ],
-  "explanation": "Low pH = acidaemia. High PaCO2 indicates a primary respiratory acidosis. For acute respiratory acidosis, expected HCO3 is ~25.5; measured 26.0 is appropriate acute compensation. This pattern fits acute hypoventilation, such as opioid toxicity.",
+  "explanation": "Low pH = acidaemia. High PaCO2 indicates a primary respiratory acidosis. For acute respiratory acidosis, expected HCO3 is ~26.3; measured 27.1 is appropriate acute compensation. This pattern fits acute hypoventilation, such as opioid toxicity.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "opioid_toxicity",
+  "difficulty_level": 1,
+  "difficulty_label": "beginner",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "final_diagnosis"
+  ],
+  "case_pool": "core_respiratory",
+  "progression": {
+    "base_xp": 10
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "OPIOID_002",
+  "title": "Opioid toxicity (acute respiratory acidosis)",
+  "case_type": "ABG",
+  "category": "respiratory_acidosis",
+  "clinical_stem": "40F presents with low GCS and hypoventilation after being found collapsed at home.",
+  "inputs": {
+    "gas": {
+      "ph": 7.27,
+      "paco2_mmHg": 56,
+      "hco3_mmolL": 25.0
+    },
+    "electrolytes": {
+      "na_mmolL": 139,
+      "cl_mmolL": 104
+    },
+    "other": {
+      "lactate_mmolL": 1.4
+    },
+    "lactate_mmolL": 1.4
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Opioid toxicity",
+        "COPD",
+        "Pneumonia",
+        "Neuromuscular weakness",
+        "Alcoholic ketoacidosis"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Respiratory acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 10.0,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "Opioid toxicity",
+    "expected_compensation": {
+      "rule": "Acute respiratory acidosis",
+      "expected_hco3_mmolL": 25.6,
+      "acceptable_range_mmolL": [
+        23.6,
+        27.6
+      ]
+    }
+  },
+  "learning_objective": "Recognise acute respiratory acidosis due to hypoventilation with appropriate compensation",
+  "tags": [
+    "opioid",
+    "respiratory_acidosis",
+    "hypoventilation",
+    "toxicology"
+  ],
+  "explanation": "Low pH = acidaemia. High PaCO2 indicates a primary respiratory acidosis. For acute respiratory acidosis, expected HCO3 is ~25.6; measured 25.0 is appropriate acute compensation. This pattern fits acute hypoventilation, such as opioid toxicity.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "opioid_toxicity",
+  "difficulty_level": 1,
+  "difficulty_label": "beginner",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "final_diagnosis"
+  ],
+  "case_pool": "core_respiratory",
+  "progression": {
+    "base_xp": 10
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "OPIOID_006",
+  "title": "Opioid toxicity (acute respiratory acidosis)",
+  "case_type": "ABG",
+  "category": "respiratory_acidosis",
+  "clinical_stem": "27M presents with reduced consciousness, shallow respirations, and pinpoint pupils.",
+  "inputs": {
+    "gas": {
+      "ph": 7.25,
+      "paco2_mmHg": 62,
+      "hco3_mmolL": 26.0
+    },
+    "electrolytes": {
+      "na_mmolL": 142,
+      "cl_mmolL": 103
+    },
+    "other": {
+      "lactate_mmolL": 1.0
+    },
+    "lactate_mmolL": 1.0
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Opioid toxicity",
+        "COPD",
+        "Pneumonia",
+        "Neuromuscular weakness",
+        "Alcoholic ketoacidosis"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Respiratory acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 13.0,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "Opioid toxicity",
+    "expected_compensation": {
+      "rule": "Acute respiratory acidosis",
+      "expected_hco3_mmolL": 26.2,
+      "acceptable_range_mmolL": [
+        24.2,
+        28.2
+      ]
+    }
+  },
+  "learning_objective": "Recognise acute respiratory acidosis due to hypoventilation with appropriate compensation",
+  "tags": [
+    "opioid",
+    "respiratory_acidosis",
+    "hypoventilation",
+    "toxicology"
+  ],
+  "explanation": "Low pH = acidaemia. High PaCO2 indicates a primary respiratory acidosis. For acute respiratory acidosis, expected HCO3 is ~26.2; measured 26.0 is appropriate acute compensation. This pattern fits acute hypoventilation, such as opioid toxicity.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "opioid_toxicity",
+  "difficulty_level": 1,
+  "difficulty_label": "beginner",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "final_diagnosis"
+  ],
+  "case_pool": "core_respiratory",
+  "progression": {
+    "base_xp": 10
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "OPIOID_001",
+  "title": "Opioid toxicity (acute respiratory acidosis)",
+  "case_type": "ABG",
+  "category": "respiratory_acidosis",
+  "clinical_stem": "40F presents with low GCS and hypoventilation after being found collapsed at home.",
+  "inputs": {
+    "gas": {
+      "ph": 7.23,
+      "paco2_mmHg": 67,
+      "hco3_mmolL": 26.9
+    },
+    "electrolytes": {
+      "na_mmolL": 140,
+      "cl_mmolL": 105
+    },
+    "other": {
+      "lactate_mmolL": 1.0
+    },
+    "lactate_mmolL": 1.0
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Opioid toxicity",
+        "COPD",
+        "Pneumonia",
+        "Neuromuscular weakness",
+        "Alcoholic ketoacidosis"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Respiratory acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 8.0,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "Opioid toxicity",
+    "expected_compensation": {
+      "rule": "Acute respiratory acidosis",
+      "expected_hco3_mmolL": 26.7,
+      "acceptable_range_mmolL": [
+        24.7,
+        28.7
+      ]
+    }
+  },
+  "learning_objective": "Recognise acute respiratory acidosis due to hypoventilation with appropriate compensation",
+  "tags": [
+    "opioid",
+    "respiratory_acidosis",
+    "hypoventilation",
+    "toxicology"
+  ],
+  "explanation": "Low pH = acidaemia. High PaCO2 indicates a primary respiratory acidosis. For acute respiratory acidosis, expected HCO3 is ~26.7; measured 26.9 is appropriate acute compensation. This pattern fits acute hypoventilation, such as opioid toxicity.",
   "timing": {
     "timer_visible_by_default": false,
     "time_bonus_scope": "whole_case",
@@ -882,21 +507,271 @@ Number of cases: 8
   "title": "Opioid toxicity (acute respiratory acidosis)",
   "case_type": "ABG",
   "category": "respiratory_acidosis",
+  "clinical_stem": "40F presents with low GCS and hypoventilation after being found collapsed at home.",
+  "inputs": {
+    "gas": {
+      "ph": 7.27,
+      "paco2_mmHg": 58,
+      "hco3_mmolL": 25.9
+    },
+    "electrolytes": {
+      "na_mmolL": 142,
+      "cl_mmolL": 103
+    },
+    "other": {
+      "lactate_mmolL": 1.0
+    },
+    "lactate_mmolL": 1.0
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Opioid toxicity",
+        "COPD",
+        "Pneumonia",
+        "Neuromuscular weakness",
+        "Alcoholic ketoacidosis"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Respiratory acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 13.0,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "Opioid toxicity",
+    "expected_compensation": {
+      "rule": "Acute respiratory acidosis",
+      "expected_hco3_mmolL": 25.8,
+      "acceptable_range_mmolL": [
+        23.8,
+        27.8
+      ]
+    }
+  },
+  "learning_objective": "Recognise acute respiratory acidosis due to hypoventilation with appropriate compensation",
+  "tags": [
+    "opioid",
+    "respiratory_acidosis",
+    "hypoventilation",
+    "toxicology"
+  ],
+  "explanation": "Low pH = acidaemia. High PaCO2 indicates a primary respiratory acidosis. For acute respiratory acidosis, expected HCO3 is ~25.8; measured 25.9 is appropriate acute compensation. This pattern fits acute hypoventilation, such as opioid toxicity.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "opioid_toxicity",
+  "difficulty_level": 1,
+  "difficulty_label": "beginner",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "final_diagnosis"
+  ],
+  "case_pool": "core_respiratory",
+  "progression": {
+    "base_xp": 10
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "OPIOID_003",
+  "title": "Opioid toxicity (acute respiratory acidosis)",
+  "case_type": "ABG",
+  "category": "respiratory_acidosis",
   "clinical_stem": "40M presents with low GCS and hypoventilation after being found collapsed at home.",
   "inputs": {
     "gas": {
       "ph": 7.28,
-      "paco2_mmHg": 57,
+      "paco2_mmHg": 55,
+      "hco3_mmolL": 24.9
+    },
+    "electrolytes": {
+      "na_mmolL": 136,
+      "cl_mmolL": 100
+    },
+    "other": {
+      "lactate_mmolL": 1.6
+    },
+    "lactate_mmolL": 1.6
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Opioid toxicity",
+        "COPD",
+        "Pneumonia",
+        "Neuromuscular weakness",
+        "Alcoholic ketoacidosis"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Respiratory acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 11.0,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "Opioid toxicity",
+    "expected_compensation": {
+      "rule": "Acute respiratory acidosis",
+      "expected_hco3_mmolL": 25.5,
+      "acceptable_range_mmolL": [
+        23.5,
+        27.5
+      ]
+    }
+  },
+  "learning_objective": "Recognise acute respiratory acidosis due to hypoventilation with appropriate compensation",
+  "tags": [
+    "opioid",
+    "respiratory_acidosis",
+    "hypoventilation",
+    "toxicology"
+  ],
+  "explanation": "Low pH = acidaemia. High PaCO2 indicates a primary respiratory acidosis. For acute respiratory acidosis, expected HCO3 is ~25.5; measured 24.9 is appropriate acute compensation. This pattern fits acute hypoventilation, such as opioid toxicity.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "opioid_toxicity",
+  "difficulty_level": 1,
+  "difficulty_label": "beginner",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "final_diagnosis"
+  ],
+  "case_pool": "core_respiratory",
+  "progression": {
+    "base_xp": 10
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "OPIOID_004",
+  "title": "Opioid toxicity (acute respiratory acidosis)",
+  "case_type": "ABG",
+  "category": "respiratory_acidosis",
+  "clinical_stem": "32M is brought in drowsy with bradypnoea and decreased responsiveness.",
+  "inputs": {
+    "gas": {
+      "ph": 7.23,
+      "paco2_mmHg": 64,
       "hco3_mmolL": 26.1
     },
     "electrolytes": {
-      "na_mmolL": 139,
-      "cl_mmolL": 101
+      "na_mmolL": 141,
+      "cl_mmolL": 103
     },
     "other": {
-      "lactate_mmolL": 0.9
+      "lactate_mmolL": 1.4
     },
-    "lactate_mmolL": 0.9
+    "lactate_mmolL": 1.4
   },
   "questions_flow": [
     {
@@ -944,10 +819,10 @@ Number of cases: 8
     "final_diagnosis": "Opioid toxicity",
     "expected_compensation": {
       "rule": "Acute respiratory acidosis",
-      "expected_hco3_mmolL": 25.7,
+      "expected_hco3_mmolL": 26.4,
       "acceptable_range_mmolL": [
-        23.7,
-        27.7
+        24.4,
+        28.4
       ]
     }
   },
@@ -958,7 +833,132 @@ Number of cases: 8
     "hypoventilation",
     "toxicology"
   ],
-  "explanation": "Low pH = acidaemia. High PaCO2 indicates a primary respiratory acidosis. For acute respiratory acidosis, expected HCO3 is ~25.7; measured 26.1 is appropriate acute compensation. This pattern fits acute hypoventilation, such as opioid toxicity.",
+  "explanation": "Low pH = acidaemia. High PaCO2 indicates a primary respiratory acidosis. For acute respiratory acidosis, expected HCO3 is ~26.4; measured 26.1 is appropriate acute compensation. This pattern fits acute hypoventilation, such as opioid toxicity.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "opioid_toxicity",
+  "difficulty_level": 1,
+  "difficulty_label": "beginner",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "final_diagnosis"
+  ],
+  "case_pool": "core_respiratory",
+  "progression": {
+    "base_xp": 10
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "OPIOID_007",
+  "title": "Opioid toxicity (acute respiratory acidosis)",
+  "case_type": "ABG",
+  "category": "respiratory_acidosis",
+  "clinical_stem": "32M is brought in drowsy with bradypnoea and decreased responsiveness.",
+  "inputs": {
+    "gas": {
+      "ph": 7.19,
+      "paco2_mmHg": 73,
+      "hco3_mmolL": 27.1
+    },
+    "electrolytes": {
+      "na_mmolL": 139,
+      "cl_mmolL": 102
+    },
+    "other": {
+      "lactate_mmolL": 0.9
+    },
+    "lactate_mmolL": 0.9
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Opioid toxicity",
+        "COPD",
+        "Pneumonia",
+        "Neuromuscular weakness",
+        "Alcoholic ketoacidosis"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Respiratory acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 10.0,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "Opioid toxicity",
+    "expected_compensation": {
+      "rule": "Acute respiratory acidosis",
+      "expected_hco3_mmolL": 27.3,
+      "acceptable_range_mmolL": [
+        25.3,
+        29.3
+      ]
+    }
+  },
+  "learning_objective": "Recognise acute respiratory acidosis due to hypoventilation with appropriate compensation",
+  "tags": [
+    "opioid",
+    "respiratory_acidosis",
+    "hypoventilation",
+    "toxicology"
+  ],
+  "explanation": "Low pH = acidaemia. High PaCO2 indicates a primary respiratory acidosis. For acute respiratory acidosis, expected HCO3 is ~27.3; measured 27.1 is appropriate acute compensation. This pattern fits acute hypoventilation, such as opioid toxicity.",
   "timing": {
     "timer_visible_by_default": false,
     "time_bonus_scope": "whole_case",

@@ -3,20 +3,20 @@ Number of cases: 8
 ================================================================================
 
 {
-  "case_id": "DKA_VOMIT_008",
+  "case_id": "DKA_VOMIT_001",
   "title": "DKA with vomiting (mixed metabolic disorder)",
   "case_type": "ABG",
   "category": "mixed_disorder",
-  "clinical_stem": "24F is brought to ED with deep breathing and abdominal pain.",
+  "clinical_stem": "24M is brought to ED with persistent vomiting and missed insulin doses and dehydration and deep breathing.",
   "inputs": {
     "gas": {
       "ph": 7.22,
-      "paco2_mmHg": 37.4,
-      "hco3_mmolL": 14.8
+      "paco2_mmHg": 34.9,
+      "hco3_mmolL": 13.9
     },
     "electrolytes": {
-      "na_mmolL": 141,
-      "cl_mmolL": 97,
+      "na_mmolL": 139,
+      "cl_mmolL": 99,
       "glucose_mmolL": 4.7
     }
   },
@@ -72,7 +72,8 @@ Number of cases: 8
       "options": [
         "None",
         "Metabolic alkalosis",
-        "Non-anion gap metabolic acidosis"
+        "Non-anion gap metabolic acidosis",
+        "High anion gap metabolic acidosis"
       ]
     },
     {
@@ -92,7 +93,123 @@ Number of cases: 8
     "ph_status": "Acidaemia",
     "primary_disorder": "Metabolic acidosis",
     "compensation": "Inappropriate",
-    "anion_gap_value": 29.3,
+    "anion_gap_value": 26.2,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "DKA with vomiting",
+    "additional_metabolic_process": "Metabolic alkalosis"
+  },
+  "patient_gender": "M",
+  "archetype": "dka_vomiting",
+  "difficulty_level": 4,
+  "difficulty_label": "master",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "mixed_disorder_detection",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 40
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "DKA_VOMIT_005",
+  "title": "DKA with vomiting (mixed metabolic disorder)",
+  "case_type": "ABG",
+  "category": "mixed_disorder",
+  "clinical_stem": "30F attends ED with missed insulin doses and tachypnoea.",
+  "inputs": {
+    "gas": {
+      "ph": 7.24,
+      "paco2_mmHg": 31.2,
+      "hco3_mmolL": 12.9
+    },
+    "electrolytes": {
+      "na_mmolL": 140,
+      "cl_mmolL": 97,
+      "glucose_mmolL": 5.1
+    }
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "additional_metabolic_process",
+      "label": "Additional metabolic disorder",
+      "prompt": "Is an additional metabolic disorder present?",
+      "options": [
+        "None",
+        "Metabolic alkalosis",
+        "Non-anion gap metabolic acidosis",
+        "High anion gap metabolic acidosis"
+      ]
+    },
+    {
+      "step": 6,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "DKA with vomiting",
+        "Salicylate toxicity",
+        "Renal failure",
+        "Alcoholic ketoacidosis",
+        "Hypoventilation"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Inappropriate",
+    "anion_gap_value": 30.2,
     "anion_gap_category": "Raised",
     "final_diagnosis": "DKA with vomiting",
     "additional_metabolic_process": "Metabolic alkalosis"
@@ -118,19 +235,483 @@ Number of cases: 8
 --------------------------------------------------------------------------------
 
 {
-  "case_id": "DKA_VOMIT_002",
+  "case_id": "DKA_VOMIT_006",
   "title": "DKA with vomiting (mixed metabolic disorder)",
   "case_type": "ABG",
   "category": "mixed_disorder",
-  "clinical_stem": "28M attends ED with type 1 diabetes and reduced oral intake and deep breathing and persistent vomiting.",
+  "clinical_stem": "28F presents to ED with persistent vomiting, deep breathing, type 1 diabetes, and dehydration.",
   "inputs": {
     "gas": {
-      "ph": 7.22,
-      "paco2_mmHg": 36.2,
-      "hco3_mmolL": 14.3
+      "ph": 7.31,
+      "paco2_mmHg": 30.7,
+      "hco3_mmolL": 15.0
     },
     "electrolytes": {
-      "na_mmolL": 139,
+      "na_mmolL": 143,
+      "cl_mmolL": 96,
+      "glucose_mmolL": 4.8
+    }
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "additional_metabolic_process",
+      "label": "Additional metabolic disorder",
+      "prompt": "Is an additional metabolic disorder present?",
+      "options": [
+        "None",
+        "Metabolic alkalosis",
+        "Non-anion gap metabolic acidosis",
+        "High anion gap metabolic acidosis"
+      ]
+    },
+    {
+      "step": 6,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "DKA with vomiting",
+        "Salicylate toxicity",
+        "Renal failure",
+        "Alcoholic ketoacidosis",
+        "Hypoventilation"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Inappropriate",
+    "anion_gap_value": 32.1,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "DKA with vomiting",
+    "additional_metabolic_process": "Metabolic alkalosis"
+  },
+  "patient_gender": "F",
+  "archetype": "dka_vomiting",
+  "difficulty_level": 4,
+  "difficulty_label": "master",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "mixed_disorder_detection",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 40
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "DKA_VOMIT_007",
+  "title": "DKA with vomiting (mixed metabolic disorder)",
+  "case_type": "ABG",
+  "category": "mixed_disorder",
+  "clinical_stem": "28F presents to ED with missed insulin doses and deep breathing.",
+  "inputs": {
+    "gas": {
+      "ph": 7.19,
+      "paco2_mmHg": 32.7,
+      "hco3_mmolL": 12.0
+    },
+    "electrolytes": {
+      "na_mmolL": 142,
+      "cl_mmolL": 95,
+      "glucose_mmolL": 4.7
+    }
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "additional_metabolic_process",
+      "label": "Additional metabolic disorder",
+      "prompt": "Is an additional metabolic disorder present?",
+      "options": [
+        "None",
+        "Metabolic alkalosis",
+        "Non-anion gap metabolic acidosis",
+        "High anion gap metabolic acidosis"
+      ]
+    },
+    {
+      "step": 6,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "DKA with vomiting",
+        "Salicylate toxicity",
+        "Renal failure",
+        "Alcoholic ketoacidosis",
+        "Hypoventilation"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Inappropriate",
+    "anion_gap_value": 35.1,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "DKA with vomiting",
+    "additional_metabolic_process": "Metabolic alkalosis"
+  },
+  "patient_gender": "F",
+  "archetype": "dka_vomiting",
+  "difficulty_level": 4,
+  "difficulty_label": "master",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "mixed_disorder_detection",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 40
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "DKA_VOMIT_003",
+  "title": "DKA with vomiting (mixed metabolic disorder)",
+  "case_type": "ABG",
+  "category": "mixed_disorder",
+  "clinical_stem": "30M presents to ED with deep breathing and dehydration. Other features include abdominal pain.",
+  "inputs": {
+    "gas": {
+      "ph": 7.19,
+      "paco2_mmHg": 33.4,
+      "hco3_mmolL": 12.4
+    },
+    "electrolytes": {
+      "na_mmolL": 143,
+      "cl_mmolL": 99,
+      "glucose_mmolL": 5.4
+    }
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "additional_metabolic_process",
+      "label": "Additional metabolic disorder",
+      "prompt": "Is an additional metabolic disorder present?",
+      "options": [
+        "None",
+        "Metabolic alkalosis",
+        "Non-anion gap metabolic acidosis",
+        "High anion gap metabolic acidosis"
+      ]
+    },
+    {
+      "step": 6,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "DKA with vomiting",
+        "Salicylate toxicity",
+        "Renal failure",
+        "Alcoholic ketoacidosis",
+        "Hypoventilation"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Inappropriate",
+    "anion_gap_value": 31.7,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "DKA with vomiting",
+    "additional_metabolic_process": "Metabolic alkalosis"
+  },
+  "patient_gender": "M",
+  "archetype": "dka_vomiting",
+  "difficulty_level": 4,
+  "difficulty_label": "master",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "mixed_disorder_detection",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 40
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "DKA_VOMIT_008",
+  "title": "DKA with vomiting (mixed metabolic disorder)",
+  "case_type": "ABG",
+  "category": "mixed_disorder",
+  "clinical_stem": "24M is brought to ED with persistent vomiting, missed insulin doses, reduced oral intake, and tachypnoea.",
+  "inputs": {
+    "gas": {
+      "ph": 7.19,
+      "paco2_mmHg": 34.2,
+      "hco3_mmolL": 12.7
+    },
+    "electrolytes": {
+      "na_mmolL": 141,
+      "cl_mmolL": 96,
+      "glucose_mmolL": 5.7
+    }
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "additional_metabolic_process",
+      "label": "Additional metabolic disorder",
+      "prompt": "Is an additional metabolic disorder present?",
+      "options": [
+        "None",
+        "Metabolic alkalosis",
+        "Non-anion gap metabolic acidosis",
+        "High anion gap metabolic acidosis"
+      ]
+    },
+    {
+      "step": 6,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "DKA with vomiting",
+        "Salicylate toxicity",
+        "Renal failure",
+        "Alcoholic ketoacidosis",
+        "Hypoventilation"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Inappropriate",
+    "anion_gap_value": 32.2,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "DKA with vomiting",
+    "additional_metabolic_process": "Metabolic alkalosis"
+  },
+  "patient_gender": "M",
+  "archetype": "dka_vomiting",
+  "difficulty_level": 4,
+  "difficulty_label": "master",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "mixed_disorder_detection",
+    "final_diagnosis"
+  ],
+  "case_pool": "core",
+  "progression": {
+    "base_xp": 40
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "DKA_VOMIT_004",
+  "title": "DKA with vomiting (mixed metabolic disorder)",
+  "case_type": "ABG",
+  "category": "mixed_disorder",
+  "clinical_stem": "28M attends ED with abdominal pain, dehydration, and missed insulin doses.",
+  "inputs": {
+    "gas": {
+      "ph": 7.17,
+      "paco2_mmHg": 35.7,
+      "hco3_mmolL": 12.5
+    },
+    "electrolytes": {
+      "na_mmolL": 144,
       "cl_mmolL": 98,
       "glucose_mmolL": 4.8
     }
@@ -187,7 +768,8 @@ Number of cases: 8
       "options": [
         "None",
         "Metabolic alkalosis",
-        "Non-anion gap metabolic acidosis"
+        "Non-anion gap metabolic acidosis",
+        "High anion gap metabolic acidosis"
       ]
     },
     {
@@ -207,7 +789,7 @@ Number of cases: 8
     "ph_status": "Acidaemia",
     "primary_disorder": "Metabolic acidosis",
     "compensation": "Inappropriate",
-    "anion_gap_value": 26.8,
+    "anion_gap_value": 33.5,
     "anion_gap_category": "Raised",
     "final_diagnosis": "DKA with vomiting",
     "additional_metabolic_process": "Metabolic alkalosis"
@@ -233,366 +815,21 @@ Number of cases: 8
 --------------------------------------------------------------------------------
 
 {
-  "case_id": "DKA_VOMIT_003",
+  "case_id": "DKA_VOMIT_002",
   "title": "DKA with vomiting (mixed metabolic disorder)",
   "case_type": "ABG",
   "category": "mixed_disorder",
-  "clinical_stem": "24M is brought to ED with dehydration and deep breathing.",
+  "clinical_stem": "30F attends ED with dehydration, type 1 diabetes, tachypnoea, and abdominal pain.",
   "inputs": {
     "gas": {
-      "ph": 7.27,
-      "paco2_mmHg": 34.2,
-      "hco3_mmolL": 15.1
-    },
-    "electrolytes": {
-      "na_mmolL": 140,
-      "cl_mmolL": 99,
-      "glucose_mmolL": 4.9
-    }
-  },
-  "questions_flow": [
-    {
-      "step": 1,
-      "key": "ph_status",
-      "label": "pH",
-      "prompt": "What is the pH status?",
-      "options": [
-        "Acidaemia",
-        "Alkalaemia",
-        "Normal"
-      ]
-    },
-    {
-      "step": 2,
-      "key": "primary_disorder",
-      "label": "Primary acid-base disorder",
-      "prompt": "What is the primary acid-base disorder?",
-      "options": [
-        "Respiratory acidosis",
-        "Respiratory alkalosis",
-        "Metabolic acidosis",
-        "Metabolic alkalosis"
-      ]
-    },
-    {
-      "step": 3,
-      "key": "compensation",
-      "label": "Compensation",
-      "prompt": "Is the physiological compensation appropriate?",
-      "options": [
-        "Appropriate",
-        "Inappropriate"
-      ]
-    },
-    {
-      "step": 4,
-      "key": "anion_gap",
-      "label": "Anion gap",
-      "prompt": "What is the anion gap status?",
-      "options": [
-        "Raised",
-        "Normal"
-      ]
-    },
-    {
-      "step": 5,
-      "key": "additional_metabolic_process",
-      "label": "Additional metabolic disorder",
-      "prompt": "Is an additional metabolic disorder present?",
-      "options": [
-        "None",
-        "Metabolic alkalosis",
-        "Non-anion gap metabolic acidosis"
-      ]
-    },
-    {
-      "step": 6,
-      "key": "final_diagnosis",
-      "prompt": "Most likely diagnosis?",
-      "options": [
-        "DKA with vomiting",
-        "Salicylate toxicity",
-        "Renal failure",
-        "Alcoholic ketoacidosis",
-        "Hypoventilation"
-      ]
-    }
-  ],
-  "answer_key": {
-    "ph_status": "Acidaemia",
-    "primary_disorder": "Metabolic acidosis",
-    "compensation": "Inappropriate",
-    "anion_gap_value": 26.0,
-    "anion_gap_category": "Raised",
-    "final_diagnosis": "DKA with vomiting",
-    "additional_metabolic_process": "Metabolic alkalosis"
-  },
-  "patient_gender": "M",
-  "archetype": "dka_vomiting",
-  "difficulty_level": 4,
-  "difficulty_label": "master",
-  "skills_tested": [
-    "ph_status",
-    "primary_disorder",
-    "compensation",
-    "anion_gap",
-    "mixed_disorder_detection",
-    "final_diagnosis"
-  ],
-  "case_pool": "core",
-  "progression": {
-    "base_xp": 40
-  }
-}
-
---------------------------------------------------------------------------------
-
-{
-  "case_id": "DKA_VOMIT_001",
-  "title": "DKA with vomiting (mixed metabolic disorder)",
-  "case_type": "ABG",
-  "category": "mixed_disorder",
-  "clinical_stem": "28F is brought to ED with persistent vomiting, deep breathing, and reduced oral intake.",
-  "inputs": {
-    "gas": {
-      "ph": 7.27,
-      "paco2_mmHg": 36.3,
-      "hco3_mmolL": 16.0
-    },
-    "electrolytes": {
-      "na_mmolL": 143,
-      "cl_mmolL": 100,
-      "glucose_mmolL": 4.4
-    }
-  },
-  "questions_flow": [
-    {
-      "step": 1,
-      "key": "ph_status",
-      "label": "pH",
-      "prompt": "What is the pH status?",
-      "options": [
-        "Acidaemia",
-        "Alkalaemia",
-        "Normal"
-      ]
-    },
-    {
-      "step": 2,
-      "key": "primary_disorder",
-      "label": "Primary acid-base disorder",
-      "prompt": "What is the primary acid-base disorder?",
-      "options": [
-        "Respiratory acidosis",
-        "Respiratory alkalosis",
-        "Metabolic acidosis",
-        "Metabolic alkalosis"
-      ]
-    },
-    {
-      "step": 3,
-      "key": "compensation",
-      "label": "Compensation",
-      "prompt": "Is the physiological compensation appropriate?",
-      "options": [
-        "Appropriate",
-        "Inappropriate"
-      ]
-    },
-    {
-      "step": 4,
-      "key": "anion_gap",
-      "label": "Anion gap",
-      "prompt": "What is the anion gap status?",
-      "options": [
-        "Raised",
-        "Normal"
-      ]
-    },
-    {
-      "step": 5,
-      "key": "additional_metabolic_process",
-      "label": "Additional metabolic disorder",
-      "prompt": "Is an additional metabolic disorder present?",
-      "options": [
-        "None",
-        "Metabolic alkalosis",
-        "Non-anion gap metabolic acidosis"
-      ]
-    },
-    {
-      "step": 6,
-      "key": "final_diagnosis",
-      "prompt": "Most likely diagnosis?",
-      "options": [
-        "DKA with vomiting",
-        "Salicylate toxicity",
-        "Renal failure",
-        "Alcoholic ketoacidosis",
-        "Hypoventilation"
-      ]
-    }
-  ],
-  "answer_key": {
-    "ph_status": "Acidaemia",
-    "primary_disorder": "Metabolic acidosis",
-    "compensation": "Inappropriate",
-    "anion_gap_value": 26.9,
-    "anion_gap_category": "Raised",
-    "final_diagnosis": "DKA with vomiting",
-    "additional_metabolic_process": "Metabolic alkalosis"
-  },
-  "patient_gender": "F",
-  "archetype": "dka_vomiting",
-  "difficulty_level": 4,
-  "difficulty_label": "master",
-  "skills_tested": [
-    "ph_status",
-    "primary_disorder",
-    "compensation",
-    "anion_gap",
-    "mixed_disorder_detection",
-    "final_diagnosis"
-  ],
-  "case_pool": "core",
-  "progression": {
-    "base_xp": 40
-  }
-}
-
---------------------------------------------------------------------------------
-
-{
-  "case_id": "DKA_VOMIT_007",
-  "title": "DKA with vomiting (mixed metabolic disorder)",
-  "case_type": "ABG",
-  "category": "mixed_disorder",
-  "clinical_stem": "30M is brought to ED with deep breathing and reduced oral intake and persistent vomiting and missed insulin doses.",
-  "inputs": {
-    "gas": {
-      "ph": 7.35,
-      "paco2_mmHg": 31.3,
-      "hco3_mmolL": 16.6
-    },
-    "electrolytes": {
-      "na_mmolL": 140,
-      "cl_mmolL": 95,
-      "glucose_mmolL": 5.2
-    }
-  },
-  "questions_flow": [
-    {
-      "step": 1,
-      "key": "ph_status",
-      "label": "pH",
-      "prompt": "What is the pH status?",
-      "options": [
-        "Acidaemia",
-        "Alkalaemia",
-        "Normal"
-      ]
-    },
-    {
-      "step": 2,
-      "key": "primary_disorder",
-      "label": "Primary acid-base disorder",
-      "prompt": "What is the primary acid-base disorder?",
-      "options": [
-        "Respiratory acidosis",
-        "Respiratory alkalosis",
-        "Metabolic acidosis",
-        "Metabolic alkalosis"
-      ]
-    },
-    {
-      "step": 3,
-      "key": "compensation",
-      "label": "Compensation",
-      "prompt": "Is the physiological compensation appropriate?",
-      "options": [
-        "Appropriate",
-        "Inappropriate"
-      ]
-    },
-    {
-      "step": 4,
-      "key": "anion_gap",
-      "label": "Anion gap",
-      "prompt": "What is the anion gap status?",
-      "options": [
-        "Raised",
-        "Normal"
-      ]
-    },
-    {
-      "step": 5,
-      "key": "additional_metabolic_process",
-      "label": "Additional metabolic disorder",
-      "prompt": "Is an additional metabolic disorder present?",
-      "options": [
-        "None",
-        "Metabolic alkalosis",
-        "Non-anion gap metabolic acidosis"
-      ]
-    },
-    {
-      "step": 6,
-      "key": "final_diagnosis",
-      "prompt": "Most likely diagnosis?",
-      "options": [
-        "DKA with vomiting",
-        "Salicylate toxicity",
-        "Renal failure",
-        "Alcoholic ketoacidosis",
-        "Hypoventilation"
-      ]
-    }
-  ],
-  "answer_key": {
-    "ph_status": "Normal",
-    "primary_disorder": "Metabolic acidosis",
-    "compensation": "Inappropriate",
-    "anion_gap_value": 28.5,
-    "anion_gap_category": "Raised",
-    "final_diagnosis": "DKA with vomiting",
-    "additional_metabolic_process": "Metabolic alkalosis"
-  },
-  "patient_gender": "M",
-  "archetype": "dka_vomiting",
-  "difficulty_level": 4,
-  "difficulty_label": "master",
-  "skills_tested": [
-    "ph_status",
-    "primary_disorder",
-    "compensation",
-    "anion_gap",
-    "mixed_disorder_detection",
-    "final_diagnosis"
-  ],
-  "case_pool": "core",
-  "progression": {
-    "base_xp": 40
-  }
-}
-
---------------------------------------------------------------------------------
-
-{
-  "case_id": "DKA_VOMIT_005",
-  "title": "DKA with vomiting (mixed metabolic disorder)",
-  "case_type": "ABG",
-  "category": "mixed_disorder",
-  "clinical_stem": "24F is brought to ED with missed insulin doses and abdominal pain.",
-  "inputs": {
-    "gas": {
-      "ph": 7.18,
-      "paco2_mmHg": 35.4,
-      "hco3_mmolL": 12.8
+      "ph": 7.3,
+      "paco2_mmHg": 33.8,
+      "hco3_mmolL": 16.1
     },
     "electrolytes": {
       "na_mmolL": 142,
-      "cl_mmolL": 96,
-      "glucose_mmolL": 5.4
+      "cl_mmolL": 98,
+      "glucose_mmolL": 5.1
     }
   },
   "questions_flow": [
@@ -647,7 +884,8 @@ Number of cases: 8
       "options": [
         "None",
         "Metabolic alkalosis",
-        "Non-anion gap metabolic acidosis"
+        "Non-anion gap metabolic acidosis",
+        "High anion gap metabolic acidosis"
       ]
     },
     {
@@ -667,242 +905,12 @@ Number of cases: 8
     "ph_status": "Acidaemia",
     "primary_disorder": "Metabolic acidosis",
     "compensation": "Inappropriate",
-    "anion_gap_value": 33.1,
+    "anion_gap_value": 27.8,
     "anion_gap_category": "Raised",
     "final_diagnosis": "DKA with vomiting",
     "additional_metabolic_process": "Metabolic alkalosis"
   },
   "patient_gender": "F",
-  "archetype": "dka_vomiting",
-  "difficulty_level": 4,
-  "difficulty_label": "master",
-  "skills_tested": [
-    "ph_status",
-    "primary_disorder",
-    "compensation",
-    "anion_gap",
-    "mixed_disorder_detection",
-    "final_diagnosis"
-  ],
-  "case_pool": "core",
-  "progression": {
-    "base_xp": 40
-  }
-}
-
---------------------------------------------------------------------------------
-
-{
-  "case_id": "DKA_VOMIT_006",
-  "title": "DKA with vomiting (mixed metabolic disorder)",
-  "case_type": "ABG",
-  "category": "mixed_disorder",
-  "clinical_stem": "28F attends ED with reduced oral intake and tachypnoea.",
-  "inputs": {
-    "gas": {
-      "ph": 7.27,
-      "paco2_mmHg": 39.4,
-      "hco3_mmolL": 17.4
-    },
-    "electrolytes": {
-      "na_mmolL": 139,
-      "cl_mmolL": 97,
-      "glucose_mmolL": 4.6
-    }
-  },
-  "questions_flow": [
-    {
-      "step": 1,
-      "key": "ph_status",
-      "label": "pH",
-      "prompt": "What is the pH status?",
-      "options": [
-        "Acidaemia",
-        "Alkalaemia",
-        "Normal"
-      ]
-    },
-    {
-      "step": 2,
-      "key": "primary_disorder",
-      "label": "Primary acid-base disorder",
-      "prompt": "What is the primary acid-base disorder?",
-      "options": [
-        "Respiratory acidosis",
-        "Respiratory alkalosis",
-        "Metabolic acidosis",
-        "Metabolic alkalosis"
-      ]
-    },
-    {
-      "step": 3,
-      "key": "compensation",
-      "label": "Compensation",
-      "prompt": "Is the physiological compensation appropriate?",
-      "options": [
-        "Appropriate",
-        "Inappropriate"
-      ]
-    },
-    {
-      "step": 4,
-      "key": "anion_gap",
-      "label": "Anion gap",
-      "prompt": "What is the anion gap status?",
-      "options": [
-        "Raised",
-        "Normal"
-      ]
-    },
-    {
-      "step": 5,
-      "key": "additional_metabolic_process",
-      "label": "Additional metabolic disorder",
-      "prompt": "Is an additional metabolic disorder present?",
-      "options": [
-        "None",
-        "Metabolic alkalosis",
-        "Non-anion gap metabolic acidosis"
-      ]
-    },
-    {
-      "step": 6,
-      "key": "final_diagnosis",
-      "prompt": "Most likely diagnosis?",
-      "options": [
-        "DKA with vomiting",
-        "Salicylate toxicity",
-        "Renal failure",
-        "Alcoholic ketoacidosis",
-        "Hypoventilation"
-      ]
-    }
-  ],
-  "answer_key": {
-    "ph_status": "Acidaemia",
-    "primary_disorder": "Metabolic acidosis",
-    "compensation": "Inappropriate",
-    "anion_gap_value": 24.6,
-    "anion_gap_category": "Raised",
-    "final_diagnosis": "DKA with vomiting",
-    "additional_metabolic_process": "Metabolic alkalosis"
-  },
-  "patient_gender": "F",
-  "archetype": "dka_vomiting",
-  "difficulty_level": 4,
-  "difficulty_label": "master",
-  "skills_tested": [
-    "ph_status",
-    "primary_disorder",
-    "compensation",
-    "anion_gap",
-    "mixed_disorder_detection",
-    "final_diagnosis"
-  ],
-  "case_pool": "core",
-  "progression": {
-    "base_xp": 40
-  }
-}
-
---------------------------------------------------------------------------------
-
-{
-  "case_id": "DKA_VOMIT_004",
-  "title": "DKA with vomiting (mixed metabolic disorder)",
-  "case_type": "ABG",
-  "category": "mixed_disorder",
-  "clinical_stem": "28M attends ED with persistent vomiting and missed insulin doses.",
-  "inputs": {
-    "gas": {
-      "ph": 7.15,
-      "paco2_mmHg": 39.7,
-      "hco3_mmolL": 13.4
-    },
-    "electrolytes": {
-      "na_mmolL": 141,
-      "cl_mmolL": 95,
-      "glucose_mmolL": 4.6
-    }
-  },
-  "questions_flow": [
-    {
-      "step": 1,
-      "key": "ph_status",
-      "label": "pH",
-      "prompt": "What is the pH status?",
-      "options": [
-        "Acidaemia",
-        "Alkalaemia",
-        "Normal"
-      ]
-    },
-    {
-      "step": 2,
-      "key": "primary_disorder",
-      "label": "Primary acid-base disorder",
-      "prompt": "What is the primary acid-base disorder?",
-      "options": [
-        "Respiratory acidosis",
-        "Respiratory alkalosis",
-        "Metabolic acidosis",
-        "Metabolic alkalosis"
-      ]
-    },
-    {
-      "step": 3,
-      "key": "compensation",
-      "label": "Compensation",
-      "prompt": "Is the physiological compensation appropriate?",
-      "options": [
-        "Appropriate",
-        "Inappropriate"
-      ]
-    },
-    {
-      "step": 4,
-      "key": "anion_gap",
-      "label": "Anion gap",
-      "prompt": "What is the anion gap status?",
-      "options": [
-        "Raised",
-        "Normal"
-      ]
-    },
-    {
-      "step": 5,
-      "key": "additional_metabolic_process",
-      "label": "Additional metabolic disorder",
-      "prompt": "Is an additional metabolic disorder present?",
-      "options": [
-        "None",
-        "Metabolic alkalosis",
-        "Non-anion gap metabolic acidosis"
-      ]
-    },
-    {
-      "step": 6,
-      "key": "final_diagnosis",
-      "prompt": "Most likely diagnosis?",
-      "options": [
-        "DKA with vomiting",
-        "Salicylate toxicity",
-        "Renal failure",
-        "Alcoholic ketoacidosis",
-        "Hypoventilation"
-      ]
-    }
-  ],
-  "answer_key": {
-    "ph_status": "Acidaemia",
-    "primary_disorder": "Metabolic acidosis",
-    "compensation": "Inappropriate",
-    "anion_gap_value": 32.7,
-    "anion_gap_category": "Raised",
-    "final_diagnosis": "DKA with vomiting",
-    "additional_metabolic_process": "Metabolic alkalosis"
-  },
-  "patient_gender": "M",
   "archetype": "dka_vomiting",
   "difficulty_level": 4,
   "difficulty_label": "master",

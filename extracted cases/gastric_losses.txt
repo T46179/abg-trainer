@@ -3,25 +3,25 @@ Number of cases: 8
 ================================================================================
 
 {
-  "case_id": "SIMPLE_MET_ALK_001",
+  "case_id": "SIMPLE_MET_ALK_006",
   "title": "Simple metabolic alkalosis",
   "case_type": "ABG",
   "category": "metabolic_alkalosis",
-  "clinical_stem": "41F presents to ED with postural light-headedness, general weakness, and nausea.",
+  "clinical_stem": "57F presents for assessment with fatigue and abdominal discomfort.",
   "inputs": {
     "gas": {
-      "ph": 7.48,
-      "paco2_mmHg": 44.9,
-      "hco3_mmolL": 32
+      "ph": 7.47,
+      "paco2_mmHg": 47.3,
+      "hco3_mmolL": 33
     },
     "electrolytes": {
       "na_mmolL": 139,
-      "cl_mmolL": 96
+      "cl_mmolL": 95
     },
     "other": {
-      "lactate_mmolL": 1.1
+      "lactate_mmolL": 1.2
     },
-    "lactate_mmolL": 1.1
+    "lactate_mmolL": 1.2
   },
   "questions_flow": [
     {
@@ -69,10 +69,10 @@ Number of cases: 8
     "final_diagnosis": "Gastric losses",
     "expected_compensation": {
       "rule": "Metabolic alkalosis compensation",
-      "expected_paco2_mmHg": 45.6,
+      "expected_paco2_mmHg": 46.3,
       "acceptable_range_mmHg": [
-        42.6,
-        48.6
+        43.3,
+        49.3
       ]
     }
   },
@@ -83,7 +83,7 @@ Number of cases: 8
     "gastric_losses",
     "chloride_responsive"
   ],
-  "explanation": "High pH indicates alkalaemia. Elevated HCO3 indicates a primary metabolic alkalosis. PaCO2 is in the expected compensatory direction: metabolic alkalosis compensation predicts ~45.6 mmHg, and the measured PaCO2 is 44.9. Anion gap is 139 - (96 + 32) = 11, which is normal. The low chloride and clinical context fit chloride-responsive metabolic alkalosis from gastric losses.",
+  "explanation": "High pH indicates alkalaemia. Elevated HCO3 indicates a primary metabolic alkalosis. PaCO2 is in the expected compensatory direction: metabolic alkalosis compensation predicts ~46.3 mmHg, and the measured PaCO2 is 47.3. Anion gap is 139 - (95 + 33) = 11, which is normal. The low chloride and clinical context fit chloride-responsive metabolic alkalosis from gastric losses.",
   "timing": {
     "timer_visible_by_default": false,
     "time_bonus_scope": "whole_case",
@@ -128,20 +128,20 @@ Number of cases: 8
 --------------------------------------------------------------------------------
 
 {
-  "case_id": "SIMPLE_MET_ALK_004",
+  "case_id": "SIMPLE_MET_ALK_001",
   "title": "Simple metabolic alkalosis",
   "case_type": "ABG",
   "category": "metabolic_alkalosis",
-  "clinical_stem": "34M presents for assessment with abdominal discomfort and fatigue.",
+  "clinical_stem": "57M presents for assessment after ongoing upper gastrointestinal losses, with dry mucous membranes and persistent retching.",
   "inputs": {
     "gas": {
       "ph": 7.48,
-      "paco2_mmHg": 48.6,
-      "hco3_mmolL": 35
+      "paco2_mmHg": 43.5,
+      "hco3_mmolL": 31
     },
     "electrolytes": {
-      "na_mmolL": 141,
-      "cl_mmolL": 94
+      "na_mmolL": 136,
+      "cl_mmolL": 96
     },
     "other": {
       "lactate_mmolL": 0.9
@@ -189,15 +189,15 @@ Number of cases: 8
     "ph_status": "Alkalaemia",
     "primary_disorder": "Metabolic alkalosis",
     "compensation": "Appropriate",
-    "anion_gap_value": 12,
+    "anion_gap_value": 9,
     "anion_gap_category": "Normal",
     "final_diagnosis": "Gastric losses",
     "expected_compensation": {
       "rule": "Metabolic alkalosis compensation",
-      "expected_paco2_mmHg": 47.7,
+      "expected_paco2_mmHg": 44.9,
       "acceptable_range_mmHg": [
-        44.7,
-        50.7
+        41.9,
+        47.9
       ]
     }
   },
@@ -208,7 +208,7 @@ Number of cases: 8
     "gastric_losses",
     "chloride_responsive"
   ],
-  "explanation": "High pH indicates alkalaemia. Elevated HCO3 indicates a primary metabolic alkalosis. PaCO2 is in the expected compensatory direction: metabolic alkalosis compensation predicts ~47.7 mmHg, and the measured PaCO2 is 48.6. Anion gap is 141 - (94 + 35) = 12, which is normal. The low chloride and clinical context fit chloride-responsive metabolic alkalosis from gastric losses.",
+  "explanation": "High pH indicates alkalaemia. Elevated HCO3 indicates a primary metabolic alkalosis. PaCO2 is in the expected compensatory direction: metabolic alkalosis compensation predicts ~44.9 mmHg, and the measured PaCO2 is 43.5. Anion gap is 136 - (96 + 31) = 9, which is normal. The low chloride and clinical context fit chloride-responsive metabolic alkalosis from gastric losses.",
   "timing": {
     "timer_visible_by_default": false,
     "time_bonus_scope": "whole_case",
@@ -253,25 +253,150 @@ Number of cases: 8
 --------------------------------------------------------------------------------
 
 {
-  "case_id": "SIMPLE_MET_ALK_006",
+  "case_id": "SIMPLE_MET_ALK_002",
   "title": "Simple metabolic alkalosis",
   "case_type": "ABG",
   "category": "metabolic_alkalosis",
-  "clinical_stem": "26F is reviewed in ED with abdominal discomfort, postural light-headedness, and persistent retching.",
+  "clinical_stem": "34F is reviewed in ED with recurrent vomiting and general weakness and abdominal discomfort.",
   "inputs": {
     "gas": {
-      "ph": 7.46,
-      "paco2_mmHg": 47.7,
+      "ph": 7.49,
+      "paco2_mmHg": 47.5,
+      "hco3_mmolL": 35
+    },
+    "electrolytes": {
+      "na_mmolL": 139,
+      "cl_mmolL": 96
+    },
+    "other": {
+      "lactate_mmolL": 1.3
+    },
+    "lactate_mmolL": 1.3
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Gastric losses",
+        "GI bicarbonate loss",
+        "DKA",
+        "Hyperventilation",
+        "Alcoholic ketoacidosis"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Alkalaemia",
+    "primary_disorder": "Metabolic alkalosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 8,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "Gastric losses",
+    "expected_compensation": {
+      "rule": "Metabolic alkalosis compensation",
+      "expected_paco2_mmHg": 47.7,
+      "acceptable_range_mmHg": [
+        44.7,
+        50.7
+      ]
+    }
+  },
+  "learning_objective": "Recognise a simple metabolic alkalosis pattern with elevated bicarbonate and compensatory CO2 retention",
+  "tags": [
+    "simple_metabolic_alkalosis",
+    "metabolic_alkalosis",
+    "gastric_losses",
+    "chloride_responsive"
+  ],
+  "explanation": "High pH indicates alkalaemia. Elevated HCO3 indicates a primary metabolic alkalosis. PaCO2 is in the expected compensatory direction: metabolic alkalosis compensation predicts ~47.7 mmHg, and the measured PaCO2 is 47.5. Anion gap is 139 - (96 + 35) = 8, which is normal. The low chloride and clinical context fit chloride-responsive metabolic alkalosis from gastric losses.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "simple_metabolic_alkalosis",
+  "difficulty_level": 1,
+  "difficulty_label": "beginner",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "final_diagnosis"
+  ],
+  "case_pool": "core_metabolic",
+  "progression": {
+    "base_xp": 10
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "SIMPLE_MET_ALK_008",
+  "title": "Simple metabolic alkalosis",
+  "case_type": "ABG",
+  "category": "metabolic_alkalosis",
+  "clinical_stem": "57F presents to ED with general weakness, dry mucous membranes, reduced oral intake, and several days of upper gastrointestinal fluid loss.",
+  "inputs": {
+    "gas": {
+      "ph": 7.49,
+      "paco2_mmHg": 44.6,
       "hco3_mmolL": 33
     },
     "electrolytes": {
-      "na_mmolL": 138,
-      "cl_mmolL": 95
+      "na_mmolL": 135,
+      "cl_mmolL": 92
     },
     "other": {
-      "lactate_mmolL": 0.9
+      "lactate_mmolL": 1.4
     },
-    "lactate_mmolL": 0.9
+    "lactate_mmolL": 1.4
   },
   "questions_flow": [
     {
@@ -333,7 +458,7 @@ Number of cases: 8
     "gastric_losses",
     "chloride_responsive"
   ],
-  "explanation": "High pH indicates alkalaemia. Elevated HCO3 indicates a primary metabolic alkalosis. PaCO2 is in the expected compensatory direction: metabolic alkalosis compensation predicts ~46.3 mmHg, and the measured PaCO2 is 47.7. Anion gap is 138 - (95 + 33) = 10, which is normal. The low chloride and clinical context fit chloride-responsive metabolic alkalosis from gastric losses.",
+  "explanation": "High pH indicates alkalaemia. Elevated HCO3 indicates a primary metabolic alkalosis. PaCO2 is in the expected compensatory direction: metabolic alkalosis compensation predicts ~46.3 mmHg, and the measured PaCO2 is 44.6. Anion gap is 135 - (92 + 33) = 10, which is normal. The low chloride and clinical context fit chloride-responsive metabolic alkalosis from gastric losses.",
   "timing": {
     "timer_visible_by_default": false,
     "time_bonus_scope": "whole_case",
@@ -382,16 +507,141 @@ Number of cases: 8
   "title": "Simple metabolic alkalosis",
   "case_type": "ABG",
   "category": "metabolic_alkalosis",
-  "clinical_stem": "34M is reviewed in ED with abdominal discomfort and general weakness.",
+  "clinical_stem": "57M presents to ED with general weakness. Other features include dry mucous membranes and reduced oral intake.",
   "inputs": {
     "gas": {
-      "ph": 7.49,
-      "paco2_mmHg": 45.3,
+      "ph": 7.48,
+      "paco2_mmHg": 46.2,
       "hco3_mmolL": 33
     },
     "electrolytes": {
-      "na_mmolL": 141,
-      "cl_mmolL": 99
+      "na_mmolL": 137,
+      "cl_mmolL": 95
+    },
+    "other": {
+      "lactate_mmolL": 1.4
+    },
+    "lactate_mmolL": 1.4
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Gastric losses",
+        "GI bicarbonate loss",
+        "DKA",
+        "Hyperventilation",
+        "Alcoholic ketoacidosis"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Alkalaemia",
+    "primary_disorder": "Metabolic alkalosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 9,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "Gastric losses",
+    "expected_compensation": {
+      "rule": "Metabolic alkalosis compensation",
+      "expected_paco2_mmHg": 46.3,
+      "acceptable_range_mmHg": [
+        43.3,
+        49.3
+      ]
+    }
+  },
+  "learning_objective": "Recognise a simple metabolic alkalosis pattern with elevated bicarbonate and compensatory CO2 retention",
+  "tags": [
+    "simple_metabolic_alkalosis",
+    "metabolic_alkalosis",
+    "gastric_losses",
+    "chloride_responsive"
+  ],
+  "explanation": "High pH indicates alkalaemia. Elevated HCO3 indicates a primary metabolic alkalosis. PaCO2 is in the expected compensatory direction: metabolic alkalosis compensation predicts ~46.3 mmHg, and the measured PaCO2 is 46.2. Anion gap is 137 - (95 + 33) = 9, which is normal. The low chloride and clinical context fit chloride-responsive metabolic alkalosis from gastric losses.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "simple_metabolic_alkalosis",
+  "difficulty_level": 1,
+  "difficulty_label": "beginner",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "final_diagnosis"
+  ],
+  "case_pool": "core_metabolic",
+  "progression": {
+    "base_xp": 10
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "SIMPLE_MET_ALK_007",
+  "title": "Simple metabolic alkalosis",
+  "case_type": "ABG",
+  "category": "metabolic_alkalosis",
+  "clinical_stem": "26F is reviewed in ED after ongoing upper gastrointestinal losses, with postural light-headedness and recurrent vomiting.",
+  "inputs": {
+    "gas": {
+      "ph": 7.46,
+      "paco2_mmHg": 45.1,
+      "hco3_mmolL": 31
+    },
+    "electrolytes": {
+      "na_mmolL": 142,
+      "cl_mmolL": 100
     },
     "other": {
       "lactate_mmolL": 0.9
@@ -439,265 +689,15 @@ Number of cases: 8
     "ph_status": "Alkalaemia",
     "primary_disorder": "Metabolic alkalosis",
     "compensation": "Appropriate",
-    "anion_gap_value": 9,
-    "anion_gap_category": "Normal",
-    "final_diagnosis": "Gastric losses",
-    "expected_compensation": {
-      "rule": "Metabolic alkalosis compensation",
-      "expected_paco2_mmHg": 46.3,
-      "acceptable_range_mmHg": [
-        43.3,
-        49.3
-      ]
-    }
-  },
-  "learning_objective": "Recognise a simple metabolic alkalosis pattern with elevated bicarbonate and compensatory CO2 retention",
-  "tags": [
-    "simple_metabolic_alkalosis",
-    "metabolic_alkalosis",
-    "gastric_losses",
-    "chloride_responsive"
-  ],
-  "explanation": "High pH indicates alkalaemia. Elevated HCO3 indicates a primary metabolic alkalosis. PaCO2 is in the expected compensatory direction: metabolic alkalosis compensation predicts ~46.3 mmHg, and the measured PaCO2 is 45.3. Anion gap is 141 - (99 + 33) = 9, which is normal. The low chloride and clinical context fit chloride-responsive metabolic alkalosis from gastric losses.",
-  "timing": {
-    "timer_visible_by_default": false,
-    "time_bonus_scope": "whole_case",
-    "time_bonus_tiers_seconds_inclusive": [
-      {
-        "max_seconds": 30,
-        "bonus": 10
-      },
-      {
-        "max_seconds": 45,
-        "bonus": 7
-      },
-      {
-        "max_seconds": 60,
-        "bonus": 5
-      },
-      {
-        "max_seconds": 90,
-        "bonus": 3
-      },
-      {
-        "max_seconds": 999999,
-        "bonus": 0
-      }
-    ]
-  },
-  "patient_gender": "M",
-  "archetype": "simple_metabolic_alkalosis",
-  "difficulty_level": 1,
-  "difficulty_label": "beginner",
-  "skills_tested": [
-    "ph_status",
-    "primary_disorder",
-    "final_diagnosis"
-  ],
-  "case_pool": "core_metabolic",
-  "progression": {
-    "base_xp": 10
-  }
-}
-
---------------------------------------------------------------------------------
-
-{
-  "case_id": "SIMPLE_MET_ALK_008",
-  "title": "Simple metabolic alkalosis",
-  "case_type": "ABG",
-  "category": "metabolic_alkalosis",
-  "clinical_stem": "57M attends ED after ongoing upper gastrointestinal losses, with several days of upper gastrointestinal fluid loss and malaise.",
-  "inputs": {
-    "gas": {
-      "ph": 7.48,
-      "paco2_mmHg": 45.8,
-      "hco3_mmolL": 33
-    },
-    "electrolytes": {
-      "na_mmolL": 138,
-      "cl_mmolL": 96
-    },
-    "other": {
-      "lactate_mmolL": 1.1
-    },
-    "lactate_mmolL": 1.1
-  },
-  "questions_flow": [
-    {
-      "step": 1,
-      "key": "ph_status",
-      "label": "pH",
-      "prompt": "What is the pH status?",
-      "options": [
-        "Acidaemia",
-        "Alkalaemia",
-        "Normal"
-      ]
-    },
-    {
-      "step": 2,
-      "key": "primary_disorder",
-      "label": "Primary acid-base disorder",
-      "prompt": "What is the primary acid-base disorder?",
-      "options": [
-        "Respiratory acidosis",
-        "Respiratory alkalosis",
-        "Metabolic acidosis",
-        "Metabolic alkalosis"
-      ]
-    },
-    {
-      "step": 3,
-      "key": "final_diagnosis",
-      "prompt": "Most likely diagnosis?",
-      "options": [
-        "Gastric losses",
-        "GI bicarbonate loss",
-        "DKA",
-        "Hyperventilation",
-        "Alcoholic ketoacidosis"
-      ]
-    }
-  ],
-  "answer_key": {
-    "ph_status": "Alkalaemia",
-    "primary_disorder": "Metabolic alkalosis",
-    "compensation": "Appropriate",
-    "anion_gap_value": 9,
-    "anion_gap_category": "Normal",
-    "final_diagnosis": "Gastric losses",
-    "expected_compensation": {
-      "rule": "Metabolic alkalosis compensation",
-      "expected_paco2_mmHg": 46.3,
-      "acceptable_range_mmHg": [
-        43.3,
-        49.3
-      ]
-    }
-  },
-  "learning_objective": "Recognise a simple metabolic alkalosis pattern with elevated bicarbonate and compensatory CO2 retention",
-  "tags": [
-    "simple_metabolic_alkalosis",
-    "metabolic_alkalosis",
-    "gastric_losses",
-    "chloride_responsive"
-  ],
-  "explanation": "High pH indicates alkalaemia. Elevated HCO3 indicates a primary metabolic alkalosis. PaCO2 is in the expected compensatory direction: metabolic alkalosis compensation predicts ~46.3 mmHg, and the measured PaCO2 is 45.8. Anion gap is 138 - (96 + 33) = 9, which is normal. The low chloride and clinical context fit chloride-responsive metabolic alkalosis from gastric losses.",
-  "timing": {
-    "timer_visible_by_default": false,
-    "time_bonus_scope": "whole_case",
-    "time_bonus_tiers_seconds_inclusive": [
-      {
-        "max_seconds": 30,
-        "bonus": 10
-      },
-      {
-        "max_seconds": 45,
-        "bonus": 7
-      },
-      {
-        "max_seconds": 60,
-        "bonus": 5
-      },
-      {
-        "max_seconds": 90,
-        "bonus": 3
-      },
-      {
-        "max_seconds": 999999,
-        "bonus": 0
-      }
-    ]
-  },
-  "patient_gender": "M",
-  "archetype": "simple_metabolic_alkalosis",
-  "difficulty_level": 1,
-  "difficulty_label": "beginner",
-  "skills_tested": [
-    "ph_status",
-    "primary_disorder",
-    "final_diagnosis"
-  ],
-  "case_pool": "core_metabolic",
-  "progression": {
-    "base_xp": 10
-  }
-}
-
---------------------------------------------------------------------------------
-
-{
-  "case_id": "SIMPLE_MET_ALK_002",
-  "title": "Simple metabolic alkalosis",
-  "case_type": "ABG",
-  "category": "metabolic_alkalosis",
-  "clinical_stem": "57F presents to ED after ongoing upper gastrointestinal losses, with dry mucous membranes and nausea.",
-  "inputs": {
-    "gas": {
-      "ph": 7.49,
-      "paco2_mmHg": 45.0,
-      "hco3_mmolL": 33
-    },
-    "electrolytes": {
-      "na_mmolL": 141,
-      "cl_mmolL": 97
-    },
-    "other": {
-      "lactate_mmolL": 1.1
-    },
-    "lactate_mmolL": 1.1
-  },
-  "questions_flow": [
-    {
-      "step": 1,
-      "key": "ph_status",
-      "label": "pH",
-      "prompt": "What is the pH status?",
-      "options": [
-        "Acidaemia",
-        "Alkalaemia",
-        "Normal"
-      ]
-    },
-    {
-      "step": 2,
-      "key": "primary_disorder",
-      "label": "Primary acid-base disorder",
-      "prompt": "What is the primary acid-base disorder?",
-      "options": [
-        "Respiratory acidosis",
-        "Respiratory alkalosis",
-        "Metabolic acidosis",
-        "Metabolic alkalosis"
-      ]
-    },
-    {
-      "step": 3,
-      "key": "final_diagnosis",
-      "prompt": "Most likely diagnosis?",
-      "options": [
-        "Gastric losses",
-        "GI bicarbonate loss",
-        "DKA",
-        "Hyperventilation",
-        "Alcoholic ketoacidosis"
-      ]
-    }
-  ],
-  "answer_key": {
-    "ph_status": "Alkalaemia",
-    "primary_disorder": "Metabolic alkalosis",
-    "compensation": "Appropriate",
     "anion_gap_value": 11,
     "anion_gap_category": "Normal",
     "final_diagnosis": "Gastric losses",
     "expected_compensation": {
       "rule": "Metabolic alkalosis compensation",
-      "expected_paco2_mmHg": 46.3,
+      "expected_paco2_mmHg": 44.9,
       "acceptable_range_mmHg": [
-        43.3,
-        49.3
+        41.9,
+        47.9
       ]
     }
   },
@@ -708,7 +708,7 @@ Number of cases: 8
     "gastric_losses",
     "chloride_responsive"
   ],
-  "explanation": "High pH indicates alkalaemia. Elevated HCO3 indicates a primary metabolic alkalosis. PaCO2 is in the expected compensatory direction: metabolic alkalosis compensation predicts ~46.3 mmHg, and the measured PaCO2 is 45.0. Anion gap is 141 - (97 + 33) = 11, which is normal. The low chloride and clinical context fit chloride-responsive metabolic alkalosis from gastric losses.",
+  "explanation": "High pH indicates alkalaemia. Elevated HCO3 indicates a primary metabolic alkalosis. PaCO2 is in the expected compensatory direction: metabolic alkalosis compensation predicts ~44.9 mmHg, and the measured PaCO2 is 45.1. Anion gap is 142 - (100 + 31) = 11, which is normal. The low chloride and clinical context fit chloride-responsive metabolic alkalosis from gastric losses.",
   "timing": {
     "timer_visible_by_default": false,
     "time_bonus_scope": "whole_case",
@@ -753,25 +753,25 @@ Number of cases: 8
 --------------------------------------------------------------------------------
 
 {
-  "case_id": "SIMPLE_MET_ALK_007",
+  "case_id": "SIMPLE_MET_ALK_004",
   "title": "Simple metabolic alkalosis",
   "case_type": "ABG",
   "category": "metabolic_alkalosis",
-  "clinical_stem": "57M presents to ED with malaise and persistent retching.",
+  "clinical_stem": "26M presents for assessment with abdominal discomfort and malaise.",
   "inputs": {
     "gas": {
       "ph": 7.48,
-      "paco2_mmHg": 43.3,
-      "hco3_mmolL": 31
+      "paco2_mmHg": 44.9,
+      "hco3_mmolL": 32
     },
     "electrolytes": {
-      "na_mmolL": 140,
+      "na_mmolL": 138,
       "cl_mmolL": 97
     },
     "other": {
-      "lactate_mmolL": 1.0
+      "lactate_mmolL": 1.2
     },
-    "lactate_mmolL": 1.0
+    "lactate_mmolL": 1.2
   },
   "questions_flow": [
     {
@@ -814,15 +814,15 @@ Number of cases: 8
     "ph_status": "Alkalaemia",
     "primary_disorder": "Metabolic alkalosis",
     "compensation": "Appropriate",
-    "anion_gap_value": 12,
+    "anion_gap_value": 9,
     "anion_gap_category": "Normal",
     "final_diagnosis": "Gastric losses",
     "expected_compensation": {
       "rule": "Metabolic alkalosis compensation",
-      "expected_paco2_mmHg": 44.9,
+      "expected_paco2_mmHg": 45.6,
       "acceptable_range_mmHg": [
-        41.9,
-        47.9
+        42.6,
+        48.6
       ]
     }
   },
@@ -833,7 +833,7 @@ Number of cases: 8
     "gastric_losses",
     "chloride_responsive"
   ],
-  "explanation": "High pH indicates alkalaemia. Elevated HCO3 indicates a primary metabolic alkalosis. PaCO2 is in the expected compensatory direction: metabolic alkalosis compensation predicts ~44.9 mmHg, and the measured PaCO2 is 43.3. Anion gap is 140 - (97 + 31) = 12, which is normal. The low chloride and clinical context fit chloride-responsive metabolic alkalosis from gastric losses.",
+  "explanation": "High pH indicates alkalaemia. Elevated HCO3 indicates a primary metabolic alkalosis. PaCO2 is in the expected compensatory direction: metabolic alkalosis compensation predicts ~45.6 mmHg, and the measured PaCO2 is 44.9. Anion gap is 138 - (97 + 32) = 9, which is normal. The low chloride and clinical context fit chloride-responsive metabolic alkalosis from gastric losses.",
   "timing": {
     "timer_visible_by_default": false,
     "time_bonus_scope": "whole_case",
@@ -882,15 +882,15 @@ Number of cases: 8
   "title": "Simple metabolic alkalosis",
   "case_type": "ABG",
   "category": "metabolic_alkalosis",
-  "clinical_stem": "57F attends ED with postural light-headedness and reduced oral intake. Other features include malaise.",
+  "clinical_stem": "49F attends ED with mild volume depletion and persistent retching. Other features include fatigue.",
   "inputs": {
     "gas": {
-      "ph": 7.48,
-      "paco2_mmHg": 45.7,
-      "hco3_mmolL": 33
+      "ph": 7.46,
+      "paco2_mmHg": 45.4,
+      "hco3_mmolL": 31
     },
     "electrolytes": {
-      "na_mmolL": 141,
+      "na_mmolL": 139,
       "cl_mmolL": 99
     },
     "other": {
@@ -944,10 +944,10 @@ Number of cases: 8
     "final_diagnosis": "Gastric losses",
     "expected_compensation": {
       "rule": "Metabolic alkalosis compensation",
-      "expected_paco2_mmHg": 46.3,
+      "expected_paco2_mmHg": 44.9,
       "acceptable_range_mmHg": [
-        43.3,
-        49.3
+        41.9,
+        47.9
       ]
     }
   },
@@ -958,7 +958,7 @@ Number of cases: 8
     "gastric_losses",
     "chloride_responsive"
   ],
-  "explanation": "High pH indicates alkalaemia. Elevated HCO3 indicates a primary metabolic alkalosis. PaCO2 is in the expected compensatory direction: metabolic alkalosis compensation predicts ~46.3 mmHg, and the measured PaCO2 is 45.7. Anion gap is 141 - (99 + 33) = 9, which is normal. The low chloride and clinical context fit chloride-responsive metabolic alkalosis from gastric losses.",
+  "explanation": "High pH indicates alkalaemia. Elevated HCO3 indicates a primary metabolic alkalosis. PaCO2 is in the expected compensatory direction: metabolic alkalosis compensation predicts ~44.9 mmHg, and the measured PaCO2 is 45.4. Anion gap is 139 - (99 + 31) = 9, which is normal. The low chloride and clinical context fit chloride-responsive metabolic alkalosis from gastric losses.",
   "timing": {
     "timer_visible_by_default": false,
     "time_bonus_scope": "whole_case",

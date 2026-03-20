@@ -184,6 +184,10 @@ def estimate_ph(hco3, paco2):
     return calculate_ph_from_hco3_paco2(hco3, paco2)
 
 
+def acute_respiratory_acidosis_expected_hco3(paco2):
+    return 24 + ((paco2 - 40) / 10)
+
+
 def chronic_respiratory_acidosis_expected_hco3(paco2):
     return 24 + 4 * ((paco2 - 40) / 10)
 
@@ -202,6 +206,19 @@ def anion_gap_category(ag):
 
 def calc_anion_gap(na, cl, hco3):
     return r_ag(na - (cl + hco3))
+
+
+def isolated_hagma_expected_hco3(anion_gap, *, normal_anion_gap=12, normal_hco3=24):
+    return r_gas(normal_hco3 - (anion_gap - normal_anion_gap))
+
+
+def hagma_bicarbonate_preservation(anion_gap, hco3, *, normal_anion_gap=12, normal_hco3=24):
+    expected_hco3 = isolated_hagma_expected_hco3(
+        anion_gap,
+        normal_anion_gap=normal_anion_gap,
+        normal_hco3=normal_hco3,
+    )
+    return r_gas(hco3 - expected_hco3)
 
 
 def derived_ph_status(ph):

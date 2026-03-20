@@ -5,14 +5,18 @@ archetype-specific expectations, duplicate IDs, and retry logic for case
 generation until a valid case is produced.
 """
 
+from .config import OPTIONS
 from .generators.common import diagnosis_labels_conflict, normalize_diagnosis_option
 from .physiology import (
+    acute_respiratory_acidosis_expected_hco3,
     anion_gap_category,
     calc_anion_gap,
     chronic_respiratory_acidosis_expected_hco3,
     derived_ph_status,
     estimate_ph,
+    hagma_bicarbonate_preservation,
     in_range,
+    isolated_hagma_expected_hco3,
     metabolic_alkalosis_expected_paco2,
     respiratory_alkalosis_expected_hco3_acute,
     winters_expected_paco2,
@@ -153,6 +157,12 @@ def validate_case(case):
 
     if case.get("difficulty_level") == 4 and glucose is None:
         errors.append(f"{case_id}: master-level cases should include glucose_mmolL")
+
+    compensation_steps = [question for question in case.get("questions_flow", []) if question.get("key") == "compensation"]
+    if compensation_steps and answer_key.get("compensation") not in OPTIONS["compensation"]:
+        errors.append(
+            f"{case_id}: compensation answer '{answer_key.get('compensation')}' must be one of {OPTIONS['compensation']}"
+        )
 
     if not (6.8 <= ph <= 7.8):
         errors.append(f"{case_id}: implausible pH {ph}")
@@ -354,6 +364,70 @@ def validate_case(case):
                 f"{case_id}: COPD HCO3 outside chronic respiratory acidosis range ({hco3} not in {low}-{high})"
             )
 
+    elif archetype == "acute_copd_exacerbation":
+        expected_chronic_hco3 = round(chronic_respiratory_acidosis_expected_hco3(paco2), 1)
+        chronic_low = round(expected_chronic_hco3 - 2, 1)
+        chronic_high = round(expected_chronic_hco3 + 2, 1)
+        expected_acute_hco3 = round(acute_respiratory_acidosis_expected_hco3(paco2), 1)
+        acute_high = round(expected_acute_hco3 + 2, 1)
+
+        if answer_key.get("primary_disorder") != "Respiratory acidosis":
+            errors.append(f"{case_id}: acute COPD case should be respiratory acidosis")
+        if answer_key.get("final_diagnosis") != "COPD exacerbation":
+            errors.append(f"{case_id}: acute COPD final diagnosis mismatch")
+        if answer_key.get("compensation") != "Inappropriate":
+            errors.append(f"{case_id}: acute COPD compensation should be inappropriate under the binary model")
+        if paco2 <= 65:
+            errors.append(f"{case_id}: acute COPD case should have clearly elevated PaCO2")
+        if ph >= 7.35:
+            errors.append(f"{case_id}: acute COPD case should remain acidaemic")
+        if ag > 16:
+            errors.append(f"{case_id}: acute COPD case should keep a normal anion gap, got {ag}")
+        if hco3 >= chronic_low:
+            errors.append(
+                f"{case_id}: acute COPD HCO3 should sit below isolated chronic compensation ({hco3} not below {chronic_low})"
+            )
+        if hco3 <= acute_high:
+            errors.append(
+                f"{case_id}: acute COPD HCO3 should remain above the acute-only range to preserve chronic background ({hco3} not above {acute_high})"
+            )
+        if expected_compensation.get("rule") != "Chronic respiratory acidosis":
+            errors.append(f"{case_id}: acute COPD expected rule should reference chronic respiratory acidosis")
+        expected_range = expected_compensation.get("acceptable_range_mmolL")
+        if expected_range != [chronic_low, chronic_high]:
+            errors.append(
+                f"{case_id}: acute COPD expected HCO3 range should be [{chronic_low}, {chronic_high}], got {expected_range}"
+            )
+
+    elif archetype == "sepsis_respiratory_alkalosis":
+        expected_hco3 = round(respiratory_alkalosis_expected_hco3_acute(paco2), 1)
+        low = round(expected_hco3 - 2, 1)
+        high = round(expected_hco3 + 2, 1)
+
+        if answer_key.get("primary_disorder") != "Respiratory alkalosis":
+            errors.append(f"{case_id}: sepsis case should be respiratory alkalosis")
+        if answer_key.get("final_diagnosis") != "Sepsis":
+            errors.append(f"{case_id}: sepsis final diagnosis mismatch")
+        if answer_key.get("compensation") != "Appropriate":
+            errors.append(f"{case_id}: sepsis compensation should be appropriate under the binary model")
+        if paco2 >= 35:
+            errors.append(f"{case_id}: sepsis case should have reduced PaCO2")
+        if ph <= 7.45:
+            errors.append(f"{case_id}: sepsis case should remain alkalemic for teaching clarity")
+        if ag > 16:
+            errors.append(f"{case_id}: sepsis case should keep a normal anion gap, got {ag}")
+        if not in_range(hco3, low, high):
+            errors.append(
+                f"{case_id}: sepsis HCO3 should fit acute respiratory alkalosis compensation ({hco3} not in {low}-{high})"
+            )
+        if expected_compensation.get("rule") != "Acute respiratory alkalosis":
+            errors.append(f"{case_id}: sepsis expected rule should be acute respiratory alkalosis")
+        expected_range = expected_compensation.get("acceptable_range_mmolL")
+        if expected_range != [low, high]:
+            errors.append(
+                f"{case_id}: sepsis expected HCO3 range should be [{low}, {high}], got {expected_range}"
+            )
+
     elif archetype == "vomiting_metabolic_alkalosis":
         expected_paco2 = round(metabolic_alkalosis_expected_paco2(hco3), 1)
         low = round(expected_paco2 - 3, 1)
@@ -440,6 +514,57 @@ def validate_case(case):
                 f"{case_id}: simple respiratory acidosis HCO3 outside acute respiratory acidosis range ({hco3} not in {low}-{high})"
             )
 
+    elif archetype == "dka_vomiting":
+        expected_paco2 = round(winters_expected_paco2(hco3), 1)
+        low = round(expected_paco2 - 2, 1)
+        high = round(expected_paco2 + 2, 1)
+        pure_hagma_hco3 = isolated_hagma_expected_hco3(ag)
+        alkalosis_signal = hagma_bicarbonate_preservation(ag, hco3)
+
+        if answer_key.get("primary_disorder") != "Metabolic acidosis":
+            errors.append(f"{case_id}: DKA with vomiting should be metabolic acidosis")
+        if answer_key.get("final_diagnosis") != "DKA with vomiting":
+            errors.append(f"{case_id}: DKA with vomiting final diagnosis mismatch")
+        if answer_key.get("additional_metabolic_process") != "Metabolic alkalosis":
+            errors.append(f"{case_id}: DKA with vomiting should record additional metabolic alkalosis")
+        if answer_key.get("compensation") != "Appropriate":
+            errors.append(f"{case_id}: DKA with vomiting respiratory compensation should be appropriate")
+        if glucose is None:
+            errors.append(f"{case_id}: DKA with vomiting should include glucose")
+        elif glucose < 14:
+            errors.append(f"{case_id}: DKA with vomiting glucose should support DKA, got {glucose}")
+        if ag <= 16:
+            errors.append(f"{case_id}: DKA with vomiting should have raised AG, got {ag}")
+        if hco3 >= 22:
+            errors.append(f"{case_id}: DKA with vomiting bicarbonate should remain low overall, got {hco3}")
+        if alkalosis_signal < 4:
+            errors.append(
+                f"{case_id}: DKA with vomiting should preserve bicarbonate above isolated-HAGMA expectations by at least 4 mmol/L"
+            )
+        if hco3 <= pure_hagma_hco3:
+            errors.append(
+                f"{case_id}: DKA with vomiting bicarbonate should sit above isolated-HAGMA expectation ({hco3} not above {pure_hagma_hco3})"
+            )
+        if cl > 98:
+            errors.append(f"{case_id}: DKA with vomiting should have low/low-normal chloride, got {cl}")
+        if not in_range(paco2, low, high):
+            errors.append(
+                f"{case_id}: DKA with vomiting PaCO2 outside Winter range ({paco2} not in {low}-{high})"
+            )
+        if not (7.15 <= ph <= 7.40):
+            errors.append(f"{case_id}: DKA with vomiting pH should stay 7.15-7.40, got {ph}")
+        if expected_compensation.get("rule") != "Winter":
+            errors.append(f"{case_id}: DKA with vomiting expected rule should be Winter")
+        if expected_compensation.get("expected_paco2_mmHg") != expected_paco2:
+            errors.append(
+                f"{case_id}: DKA with vomiting expected PaCO2 should be {expected_paco2}, got {expected_compensation.get('expected_paco2_mmHg')}"
+            )
+        expected_range = expected_compensation.get("acceptable_range_mmHg")
+        if expected_range != [low, high]:
+            errors.append(
+                f"{case_id}: DKA with vomiting expected PaCO2 range should be [{low}, {high}], got {expected_range}"
+            )
+
     elif archetype == "salicylate_toxicity":
         if answer_key.get("primary_disorder") != "Metabolic acidosis":
             errors.append(
@@ -489,6 +614,80 @@ def validate_case(case):
             )
         if expected_compensation.get("rule") != "Winter":
             errors.append(f"{case_id}: mixed HAGMA/metabolic alkalosis expected rule should be Winter")
+
+    elif archetype == "respiratory_alkalosis_hagma":
+        expected_hco3 = round(respiratory_alkalosis_expected_hco3_acute(paco2), 1)
+        low = round(expected_hco3 - 2, 1)
+        high = round(expected_hco3 + 2, 1)
+
+        if answer_key.get("primary_disorder") != "Respiratory alkalosis":
+            errors.append(f"{case_id}: respiratory alkalosis/HAGMA should be respiratory alkalosis")
+        if answer_key.get("final_diagnosis") != "Respiratory alkalosis with concurrent high anion gap metabolic acidosis":
+            errors.append(f"{case_id}: respiratory alkalosis/HAGMA final diagnosis mismatch")
+        if answer_key.get("additional_metabolic_process") != "High anion gap metabolic acidosis":
+            errors.append(f"{case_id}: respiratory alkalosis/HAGMA should record additional HAGMA")
+        if answer_key.get("compensation") != "Inappropriate":
+            errors.append(f"{case_id}: respiratory alkalosis/HAGMA compensation should be inappropriate")
+        if paco2 >= 35:
+            errors.append(f"{case_id}: respiratory alkalosis/HAGMA should have clearly reduced PaCO2")
+        if hco3 >= low:
+            errors.append(
+                f"{case_id}: respiratory alkalosis/HAGMA HCO3 should fall below the expected respiratory compensation range ({hco3} not below {low})"
+            )
+        if ag <= 16:
+            errors.append(f"{case_id}: respiratory alkalosis/HAGMA should have raised AG, got {ag}")
+        if not (7.22 <= ph <= 7.44):
+            errors.append(f"{case_id}: respiratory alkalosis/HAGMA pH should stay 7.22-7.44, got {ph}")
+        if expected_compensation.get("rule") != "Acute respiratory alkalosis":
+            errors.append(f"{case_id}: respiratory alkalosis/HAGMA expected rule should be acute respiratory alkalosis")
+        expected_range = expected_compensation.get("acceptable_range_mmolL")
+        if expected_range != [low, high]:
+            errors.append(
+                f"{case_id}: respiratory alkalosis/HAGMA expected HCO3 range should be [{low}, {high}], got {expected_range}"
+            )
+
+    elif archetype == "respiratory_acidosis_hagma":
+        compensation_rule = answer_key.get("expected_compensation", {}).get("rule")
+        if compensation_rule == "Acute respiratory acidosis":
+            expected_hco3 = round(acute_respiratory_acidosis_expected_hco3(paco2), 1)
+        elif compensation_rule == "Chronic respiratory acidosis":
+            expected_hco3 = round(chronic_respiratory_acidosis_expected_hco3(paco2), 1)
+        else:
+            expected_hco3 = None
+            errors.append(
+                f"{case_id}: respiratory acidosis/HAGMA expected rule should be acute or chronic respiratory acidosis"
+            )
+
+        if expected_hco3 is None:
+            low = None
+            high = None
+        else:
+            low = round(expected_hco3 - 2, 1)
+            high = round(expected_hco3 + 2, 1)
+
+        if answer_key.get("primary_disorder") != "Respiratory acidosis":
+            errors.append(f"{case_id}: respiratory acidosis/HAGMA should be respiratory acidosis")
+        if answer_key.get("final_diagnosis") != "Respiratory acidosis with concurrent high anion gap metabolic acidosis":
+            errors.append(f"{case_id}: respiratory acidosis/HAGMA final diagnosis mismatch")
+        if answer_key.get("additional_metabolic_process") != "High anion gap metabolic acidosis":
+            errors.append(f"{case_id}: respiratory acidosis/HAGMA should record additional HAGMA")
+        if answer_key.get("compensation") != "Inappropriate":
+            errors.append(f"{case_id}: respiratory acidosis/HAGMA compensation should be inappropriate")
+        if paco2 <= 55:
+            errors.append(f"{case_id}: respiratory acidosis/HAGMA should have clearly elevated PaCO2")
+        if ag <= 16:
+            errors.append(f"{case_id}: respiratory acidosis/HAGMA should have raised AG, got {ag}")
+        if low is not None and hco3 >= low:
+            errors.append(
+                f"{case_id}: respiratory acidosis/HAGMA HCO3 should fall below the expected respiratory compensation range ({hco3} not below {low})"
+            )
+        if not (7.10 <= ph <= 7.40):
+            errors.append(f"{case_id}: respiratory acidosis/HAGMA pH should stay 7.10-7.40, got {ph}")
+        expected_range = expected_compensation.get("acceptable_range_mmolL")
+        if low is not None and expected_range != [low, high]:
+            errors.append(
+                f"{case_id}: respiratory acidosis/HAGMA expected HCO3 range should be [{low}, {high}], got {expected_range}"
+            )
 
     elif archetype == "lactic_acidosis":
         expected_paco2 = round(winters_expected_paco2(hco3), 1)

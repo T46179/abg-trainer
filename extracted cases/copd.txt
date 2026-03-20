@@ -3,20 +3,155 @@ Number of cases: 8
 ================================================================================
 
 {
-  "case_id": "COPD_005",
+  "case_id": "COPD_001",
   "title": "COPD (chronic respiratory acidosis with metabolic compensation)",
   "case_type": "ABG",
   "category": "respiratory_acidosis",
   "clinical_stem": "72F with longstanding breathlessness presents with increased sputum and fatigue.",
   "inputs": {
     "gas": {
-      "ph": 7.34,
-      "paco2_mmHg": 65,
-      "hco3_mmolL": 33.9
+      "ph": 7.35,
+      "paco2_mmHg": 58,
+      "hco3_mmolL": 31.0
     },
     "electrolytes": {
-      "na_mmolL": 140,
-      "cl_mmolL": 93
+      "na_mmolL": 137,
+      "cl_mmolL": 92
+    },
+    "other": {
+      "lactate_mmolL": 0.9
+    },
+    "lactate_mmolL": 0.9
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "COPD",
+        "Opioid toxicity",
+        "Neuromuscular weakness",
+        "Pneumonia",
+        "Alcoholic ketoacidosis"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Normal",
+    "primary_disorder": "Respiratory acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 14.0,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "COPD",
+    "expected_compensation": {
+      "rule": "Chronic respiratory acidosis",
+      "expected_hco3_mmolL": 31.2,
+      "acceptable_range_mmolL": [
+        29.2,
+        33.2
+      ]
+    }
+  },
+  "learning_objective": "Recognise chronic respiratory acidosis with appropriate renal compensation",
+  "tags": [
+    "copd",
+    "chronic_respiratory_acidosis",
+    "compensation"
+  ],
+  "explanation": "pH is low or near-normal with elevated PaCO2, indicating respiratory acidosis. In chronic respiratory acidosis, HCO3 should rise by ~4 mmol/L per 10 mmHg PaCO2 above 40. Expected HCO3 is ~31.2; measured 31.0 is appropriately elevated, consistent with chronic respiratory compensation seen in COPD.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "copd_chronic_retainer",
+  "difficulty_level": 2,
+  "difficulty_label": "intermediate",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "final_diagnosis"
+  ],
+  "case_pool": "core_respiratory",
+  "progression": {
+    "base_xp": 15
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "COPD_004",
+  "title": "COPD (chronic respiratory acidosis with metabolic compensation)",
+  "case_type": "ABG",
+  "category": "respiratory_acidosis",
+  "clinical_stem": "68F smoker presents with worsening dyspnoea, productive cough, and chronic exercise limitation.",
+  "inputs": {
+    "gas": {
+      "ph": 7.33,
+      "paco2_mmHg": 74,
+      "hco3_mmolL": 38.0
+    },
+    "electrolytes": {
+      "na_mmolL": 137,
+      "cl_mmolL": 86
     },
     "other": {
       "lactate_mmolL": 1.2
@@ -79,10 +214,10 @@ Number of cases: 8
     "final_diagnosis": "COPD",
     "expected_compensation": {
       "rule": "Chronic respiratory acidosis",
-      "expected_hco3_mmolL": 34.0,
+      "expected_hco3_mmolL": 37.6,
       "acceptable_range_mmolL": [
-        32.0,
-        36.0
+        35.6,
+        39.6
       ]
     }
   },
@@ -92,7 +227,7 @@ Number of cases: 8
     "chronic_respiratory_acidosis",
     "compensation"
   ],
-  "explanation": "pH is low or near-normal with elevated PaCO2, indicating respiratory acidosis. In chronic respiratory acidosis, HCO3 should rise by ~4 mmol/L per 10 mmHg PaCO2 above 40. Expected HCO3 is ~34.0; measured 33.9 is appropriately elevated, consistent with chronic respiratory compensation seen in COPD.",
+  "explanation": "pH is low or near-normal with elevated PaCO2, indicating respiratory acidosis. In chronic respiratory acidosis, HCO3 should rise by ~4 mmol/L per 10 mmHg PaCO2 above 40. Expected HCO3 is ~37.6; measured 38.0 is appropriately elevated, consistent with chronic respiratory compensation seen in COPD.",
   "timing": {
     "timer_visible_by_default": false,
     "time_bonus_scope": "whole_case",
@@ -138,25 +273,160 @@ Number of cases: 8
 --------------------------------------------------------------------------------
 
 {
-  "case_id": "COPD_008",
+  "case_id": "COPD_007",
+  "title": "COPD (chronic respiratory acidosis with metabolic compensation)",
+  "case_type": "ABG",
+  "category": "respiratory_acidosis",
+  "clinical_stem": "72F with longstanding breathlessness presents with increased sputum and fatigue.",
+  "inputs": {
+    "gas": {
+      "ph": 7.33,
+      "paco2_mmHg": 75,
+      "hco3_mmolL": 38.0
+    },
+    "electrolytes": {
+      "na_mmolL": 142,
+      "cl_mmolL": 95
+    },
+    "other": {
+      "lactate_mmolL": 1.4
+    },
+    "lactate_mmolL": 1.4
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "COPD",
+        "Opioid toxicity",
+        "Neuromuscular weakness",
+        "Pneumonia",
+        "Alcoholic ketoacidosis"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Respiratory acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 9.0,
+    "anion_gap_category": "Normal",
+    "final_diagnosis": "COPD",
+    "expected_compensation": {
+      "rule": "Chronic respiratory acidosis",
+      "expected_hco3_mmolL": 38.0,
+      "acceptable_range_mmolL": [
+        36.0,
+        40.0
+      ]
+    }
+  },
+  "learning_objective": "Recognise chronic respiratory acidosis with appropriate renal compensation",
+  "tags": [
+    "copd",
+    "chronic_respiratory_acidosis",
+    "compensation"
+  ],
+  "explanation": "pH is low or near-normal with elevated PaCO2, indicating respiratory acidosis. In chronic respiratory acidosis, HCO3 should rise by ~4 mmol/L per 10 mmHg PaCO2 above 40. Expected HCO3 is ~38.0; measured 38.0 is appropriately elevated, consistent with chronic respiratory compensation seen in COPD.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "copd_chronic_retainer",
+  "difficulty_level": 2,
+  "difficulty_label": "intermediate",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "final_diagnosis"
+  ],
+  "case_pool": "core_respiratory",
+  "progression": {
+    "base_xp": 15
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "COPD_002",
   "title": "COPD (chronic respiratory acidosis with metabolic compensation)",
   "case_type": "ABG",
   "category": "respiratory_acidosis",
   "clinical_stem": "65F with chronic respiratory symptoms presents with worsening shortness of breath over several days.",
   "inputs": {
     "gas": {
-      "ph": 7.33,
-      "paco2_mmHg": 69,
-      "hco3_mmolL": 35.1
+      "ph": 7.34,
+      "paco2_mmHg": 61,
+      "hco3_mmolL": 32.1
     },
     "electrolytes": {
-      "na_mmolL": 138,
-      "cl_mmolL": 89
+      "na_mmolL": 142,
+      "cl_mmolL": 96
     },
     "other": {
-      "lactate_mmolL": 1.3
+      "lactate_mmolL": 1.8
     },
-    "lactate_mmolL": 1.3
+    "lactate_mmolL": 1.8
   },
   "questions_flow": [
     {
@@ -214,10 +484,10 @@ Number of cases: 8
     "final_diagnosis": "COPD",
     "expected_compensation": {
       "rule": "Chronic respiratory acidosis",
-      "expected_hco3_mmolL": 35.6,
+      "expected_hco3_mmolL": 32.4,
       "acceptable_range_mmolL": [
-        33.6,
-        37.6
+        30.4,
+        34.4
       ]
     }
   },
@@ -227,7 +497,7 @@ Number of cases: 8
     "chronic_respiratory_acidosis",
     "compensation"
   ],
-  "explanation": "pH is low or near-normal with elevated PaCO2, indicating respiratory acidosis. In chronic respiratory acidosis, HCO3 should rise by ~4 mmol/L per 10 mmHg PaCO2 above 40. Expected HCO3 is ~35.6; measured 35.1 is appropriately elevated, consistent with chronic respiratory compensation seen in COPD.",
+  "explanation": "pH is low or near-normal with elevated PaCO2, indicating respiratory acidosis. In chronic respiratory acidosis, HCO3 should rise by ~4 mmol/L per 10 mmHg PaCO2 above 40. Expected HCO3 is ~32.4; measured 32.1 is appropriately elevated, consistent with chronic respiratory compensation seen in COPD.",
   "timing": {
     "timer_visible_by_default": false,
     "time_bonus_scope": "whole_case",
@@ -273,160 +543,25 @@ Number of cases: 8
 --------------------------------------------------------------------------------
 
 {
-  "case_id": "COPD_007",
+  "case_id": "COPD_005",
   "title": "COPD (chronic respiratory acidosis with metabolic compensation)",
   "case_type": "ABG",
   "category": "respiratory_acidosis",
-  "clinical_stem": "65F with chronic respiratory symptoms presents with worsening shortness of breath over several days.",
-  "inputs": {
-    "gas": {
-      "ph": 7.35,
-      "paco2_mmHg": 68,
-      "hco3_mmolL": 36.0
-    },
-    "electrolytes": {
-      "na_mmolL": 136,
-      "cl_mmolL": 87
-    },
-    "other": {
-      "lactate_mmolL": 1.2
-    },
-    "lactate_mmolL": 1.2
-  },
-  "questions_flow": [
-    {
-      "step": 1,
-      "key": "ph_status",
-      "label": "pH",
-      "prompt": "What is the pH status?",
-      "options": [
-        "Acidaemia",
-        "Alkalaemia",
-        "Normal"
-      ]
-    },
-    {
-      "step": 2,
-      "key": "primary_disorder",
-      "label": "Primary acid-base disorder",
-      "prompt": "What is the primary acid-base disorder?",
-      "options": [
-        "Respiratory acidosis",
-        "Respiratory alkalosis",
-        "Metabolic acidosis",
-        "Metabolic alkalosis"
-      ]
-    },
-    {
-      "step": 3,
-      "key": "compensation",
-      "label": "Compensation",
-      "prompt": "Is the physiological compensation appropriate?",
-      "options": [
-        "Appropriate",
-        "Inappropriate"
-      ]
-    },
-    {
-      "step": 4,
-      "key": "final_diagnosis",
-      "prompt": "Most likely diagnosis?",
-      "options": [
-        "COPD",
-        "Opioid toxicity",
-        "Neuromuscular weakness",
-        "Pneumonia",
-        "Alcoholic ketoacidosis"
-      ]
-    }
-  ],
-  "answer_key": {
-    "ph_status": "Normal",
-    "primary_disorder": "Respiratory acidosis",
-    "compensation": "Appropriate",
-    "anion_gap_value": 13.0,
-    "anion_gap_category": "Normal",
-    "final_diagnosis": "COPD",
-    "expected_compensation": {
-      "rule": "Chronic respiratory acidosis",
-      "expected_hco3_mmolL": 35.2,
-      "acceptable_range_mmolL": [
-        33.2,
-        37.2
-      ]
-    }
-  },
-  "learning_objective": "Recognise chronic respiratory acidosis with appropriate renal compensation",
-  "tags": [
-    "copd",
-    "chronic_respiratory_acidosis",
-    "compensation"
-  ],
-  "explanation": "pH is low or near-normal with elevated PaCO2, indicating respiratory acidosis. In chronic respiratory acidosis, HCO3 should rise by ~4 mmol/L per 10 mmHg PaCO2 above 40. Expected HCO3 is ~35.2; measured 36.0 is appropriately elevated, consistent with chronic respiratory compensation seen in COPD.",
-  "timing": {
-    "timer_visible_by_default": false,
-    "time_bonus_scope": "whole_case",
-    "time_bonus_tiers_seconds_inclusive": [
-      {
-        "max_seconds": 30,
-        "bonus": 10
-      },
-      {
-        "max_seconds": 45,
-        "bonus": 7
-      },
-      {
-        "max_seconds": 60,
-        "bonus": 5
-      },
-      {
-        "max_seconds": 90,
-        "bonus": 3
-      },
-      {
-        "max_seconds": 999999,
-        "bonus": 0
-      }
-    ]
-  },
-  "patient_gender": "F",
-  "archetype": "copd_chronic_retainer",
-  "difficulty_level": 2,
-  "difficulty_label": "intermediate",
-  "skills_tested": [
-    "ph_status",
-    "primary_disorder",
-    "compensation",
-    "final_diagnosis"
-  ],
-  "case_pool": "core_respiratory",
-  "progression": {
-    "base_xp": 15
-  }
-}
-
---------------------------------------------------------------------------------
-
-{
-  "case_id": "COPD_006",
-  "title": "COPD (chronic respiratory acidosis with metabolic compensation)",
-  "case_type": "ABG",
-  "category": "respiratory_acidosis",
-  "clinical_stem": "68F smoker presents with worsening dyspnoea, productive cough, and chronic exercise limitation.",
+  "clinical_stem": "68M smoker presents with worsening dyspnoea, productive cough, and chronic exercise limitation.",
   "inputs": {
     "gas": {
       "ph": 7.33,
-      "paco2_mmHg": 72,
-      "hco3_mmolL": 37.0
+      "paco2_mmHg": 70,
+      "hco3_mmolL": 35.9
     },
     "electrolytes": {
-      "na_mmolL": 141,
-      "cl_mmolL": 94
+      "na_mmolL": 136,
+      "cl_mmolL": 92
     },
     "other": {
-      "lactate_mmolL": 1.9
+      "lactate_mmolL": 1.4
     },
-    "lactate_mmolL": 1.9
+    "lactate_mmolL": 1.4
   },
   "questions_flow": [
     {
@@ -479,15 +614,15 @@ Number of cases: 8
     "ph_status": "Acidaemia",
     "primary_disorder": "Respiratory acidosis",
     "compensation": "Appropriate",
-    "anion_gap_value": 10.0,
+    "anion_gap_value": 8.0,
     "anion_gap_category": "Normal",
     "final_diagnosis": "COPD",
     "expected_compensation": {
       "rule": "Chronic respiratory acidosis",
-      "expected_hco3_mmolL": 36.8,
+      "expected_hco3_mmolL": 36.0,
       "acceptable_range_mmolL": [
-        34.8,
-        38.8
+        34.0,
+        38.0
       ]
     }
   },
@@ -497,7 +632,7 @@ Number of cases: 8
     "chronic_respiratory_acidosis",
     "compensation"
   ],
-  "explanation": "pH is low or near-normal with elevated PaCO2, indicating respiratory acidosis. In chronic respiratory acidosis, HCO3 should rise by ~4 mmol/L per 10 mmHg PaCO2 above 40. Expected HCO3 is ~36.8; measured 37.0 is appropriately elevated, consistent with chronic respiratory compensation seen in COPD.",
+  "explanation": "pH is low or near-normal with elevated PaCO2, indicating respiratory acidosis. In chronic respiratory acidosis, HCO3 should rise by ~4 mmol/L per 10 mmHg PaCO2 above 40. Expected HCO3 is ~36.0; measured 35.9 is appropriately elevated, consistent with chronic respiratory compensation seen in COPD.",
   "timing": {
     "timer_visible_by_default": false,
     "time_bonus_scope": "whole_case",
@@ -524,7 +659,7 @@ Number of cases: 8
       }
     ]
   },
-  "patient_gender": "F",
+  "patient_gender": "M",
   "archetype": "copd_chronic_retainer",
   "difficulty_level": 2,
   "difficulty_label": "intermediate",
@@ -543,20 +678,20 @@ Number of cases: 8
 --------------------------------------------------------------------------------
 
 {
-  "case_id": "COPD_001",
+  "case_id": "COPD_006",
   "title": "COPD (chronic respiratory acidosis with metabolic compensation)",
   "case_type": "ABG",
   "category": "respiratory_acidosis",
-  "clinical_stem": "65F with chronic respiratory symptoms presents with worsening shortness of breath over several days.",
+  "clinical_stem": "68M smoker presents with worsening dyspnoea, productive cough, and chronic exercise limitation.",
   "inputs": {
     "gas": {
-      "ph": 7.36,
-      "paco2_mmHg": 56,
-      "hco3_mmolL": 30.9
+      "ph": 7.35,
+      "paco2_mmHg": 66,
+      "hco3_mmolL": 35.1
     },
     "electrolytes": {
-      "na_mmolL": 141,
-      "cl_mmolL": 98
+      "na_mmolL": 138,
+      "cl_mmolL": 91
     },
     "other": {
       "lactate_mmolL": 1.7
@@ -619,10 +754,10 @@ Number of cases: 8
     "final_diagnosis": "COPD",
     "expected_compensation": {
       "rule": "Chronic respiratory acidosis",
-      "expected_hco3_mmolL": 30.4,
+      "expected_hco3_mmolL": 34.4,
       "acceptable_range_mmolL": [
-        28.4,
-        32.4
+        32.4,
+        36.4
       ]
     }
   },
@@ -632,142 +767,7 @@ Number of cases: 8
     "chronic_respiratory_acidosis",
     "compensation"
   ],
-  "explanation": "pH is low or near-normal with elevated PaCO2, indicating respiratory acidosis. In chronic respiratory acidosis, HCO3 should rise by ~4 mmol/L per 10 mmHg PaCO2 above 40. Expected HCO3 is ~30.4; measured 30.9 is appropriately elevated, consistent with chronic respiratory compensation seen in COPD.",
-  "timing": {
-    "timer_visible_by_default": false,
-    "time_bonus_scope": "whole_case",
-    "time_bonus_tiers_seconds_inclusive": [
-      {
-        "max_seconds": 30,
-        "bonus": 10
-      },
-      {
-        "max_seconds": 45,
-        "bonus": 7
-      },
-      {
-        "max_seconds": 60,
-        "bonus": 5
-      },
-      {
-        "max_seconds": 90,
-        "bonus": 3
-      },
-      {
-        "max_seconds": 999999,
-        "bonus": 0
-      }
-    ]
-  },
-  "patient_gender": "F",
-  "archetype": "copd_chronic_retainer",
-  "difficulty_level": 2,
-  "difficulty_label": "intermediate",
-  "skills_tested": [
-    "ph_status",
-    "primary_disorder",
-    "compensation",
-    "final_diagnosis"
-  ],
-  "case_pool": "core_respiratory",
-  "progression": {
-    "base_xp": 15
-  }
-}
-
---------------------------------------------------------------------------------
-
-{
-  "case_id": "COPD_004",
-  "title": "COPD (chronic respiratory acidosis with metabolic compensation)",
-  "case_type": "ABG",
-  "category": "respiratory_acidosis",
-  "clinical_stem": "65M with chronic respiratory symptoms presents with worsening shortness of breath over several days.",
-  "inputs": {
-    "gas": {
-      "ph": 7.34,
-      "paco2_mmHg": 65,
-      "hco3_mmolL": 34.0
-    },
-    "electrolytes": {
-      "na_mmolL": 139,
-      "cl_mmolL": 94
-    },
-    "other": {
-      "lactate_mmolL": 1.2
-    },
-    "lactate_mmolL": 1.2
-  },
-  "questions_flow": [
-    {
-      "step": 1,
-      "key": "ph_status",
-      "label": "pH",
-      "prompt": "What is the pH status?",
-      "options": [
-        "Acidaemia",
-        "Alkalaemia",
-        "Normal"
-      ]
-    },
-    {
-      "step": 2,
-      "key": "primary_disorder",
-      "label": "Primary acid-base disorder",
-      "prompt": "What is the primary acid-base disorder?",
-      "options": [
-        "Respiratory acidosis",
-        "Respiratory alkalosis",
-        "Metabolic acidosis",
-        "Metabolic alkalosis"
-      ]
-    },
-    {
-      "step": 3,
-      "key": "compensation",
-      "label": "Compensation",
-      "prompt": "Is the physiological compensation appropriate?",
-      "options": [
-        "Appropriate",
-        "Inappropriate"
-      ]
-    },
-    {
-      "step": 4,
-      "key": "final_diagnosis",
-      "prompt": "Most likely diagnosis?",
-      "options": [
-        "COPD",
-        "Opioid toxicity",
-        "Neuromuscular weakness",
-        "Pneumonia",
-        "Alcoholic ketoacidosis"
-      ]
-    }
-  ],
-  "answer_key": {
-    "ph_status": "Acidaemia",
-    "primary_disorder": "Respiratory acidosis",
-    "compensation": "Appropriate",
-    "anion_gap_value": 11.0,
-    "anion_gap_category": "Normal",
-    "final_diagnosis": "COPD",
-    "expected_compensation": {
-      "rule": "Chronic respiratory acidosis",
-      "expected_hco3_mmolL": 34.0,
-      "acceptable_range_mmolL": [
-        32.0,
-        36.0
-      ]
-    }
-  },
-  "learning_objective": "Recognise chronic respiratory acidosis with appropriate renal compensation",
-  "tags": [
-    "copd",
-    "chronic_respiratory_acidosis",
-    "compensation"
-  ],
-  "explanation": "pH is low or near-normal with elevated PaCO2, indicating respiratory acidosis. In chronic respiratory acidosis, HCO3 should rise by ~4 mmol/L per 10 mmHg PaCO2 above 40. Expected HCO3 is ~34.0; measured 34.0 is appropriately elevated, consistent with chronic respiratory compensation seen in COPD.",
+  "explanation": "pH is low or near-normal with elevated PaCO2, indicating respiratory acidosis. In chronic respiratory acidosis, HCO3 should rise by ~4 mmol/L per 10 mmHg PaCO2 above 40. Expected HCO3 is ~34.4; measured 35.1 is appropriately elevated, consistent with chronic respiratory compensation seen in COPD.",
   "timing": {
     "timer_visible_by_default": false,
     "time_bonus_scope": "whole_case",
@@ -813,25 +813,25 @@ Number of cases: 8
 --------------------------------------------------------------------------------
 
 {
-  "case_id": "COPD_003",
+  "case_id": "COPD_008",
   "title": "COPD (chronic respiratory acidosis with metabolic compensation)",
   "case_type": "ABG",
   "category": "respiratory_acidosis",
   "clinical_stem": "68M smoker presents with worsening dyspnoea, productive cough, and chronic exercise limitation.",
   "inputs": {
     "gas": {
-      "ph": 7.35,
-      "paco2_mmHg": 61,
-      "hco3_mmolL": 32.9
+      "ph": 7.36,
+      "paco2_mmHg": 55,
+      "hco3_mmolL": 30.0
     },
     "electrolytes": {
-      "na_mmolL": 140,
-      "cl_mmolL": 98
+      "na_mmolL": 141,
+      "cl_mmolL": 102
     },
     "other": {
-      "lactate_mmolL": 1.9
+      "lactate_mmolL": 1.3
     },
-    "lactate_mmolL": 1.9
+    "lactate_mmolL": 1.3
   },
   "questions_flow": [
     {
@@ -889,10 +889,10 @@ Number of cases: 8
     "final_diagnosis": "COPD",
     "expected_compensation": {
       "rule": "Chronic respiratory acidosis",
-      "expected_hco3_mmolL": 32.4,
+      "expected_hco3_mmolL": 30.0,
       "acceptable_range_mmolL": [
-        30.4,
-        34.4
+        28.0,
+        32.0
       ]
     }
   },
@@ -902,7 +902,7 @@ Number of cases: 8
     "chronic_respiratory_acidosis",
     "compensation"
   ],
-  "explanation": "pH is low or near-normal with elevated PaCO2, indicating respiratory acidosis. In chronic respiratory acidosis, HCO3 should rise by ~4 mmol/L per 10 mmHg PaCO2 above 40. Expected HCO3 is ~32.4; measured 32.9 is appropriately elevated, consistent with chronic respiratory compensation seen in COPD.",
+  "explanation": "pH is low or near-normal with elevated PaCO2, indicating respiratory acidosis. In chronic respiratory acidosis, HCO3 should rise by ~4 mmol/L per 10 mmHg PaCO2 above 40. Expected HCO3 is ~30.0; measured 30.0 is appropriately elevated, consistent with chronic respiratory compensation seen in COPD.",
   "timing": {
     "timer_visible_by_default": false,
     "time_bonus_scope": "whole_case",
@@ -948,25 +948,25 @@ Number of cases: 8
 --------------------------------------------------------------------------------
 
 {
-  "case_id": "COPD_002",
+  "case_id": "COPD_003",
   "title": "COPD (chronic respiratory acidosis with metabolic compensation)",
   "case_type": "ABG",
   "category": "respiratory_acidosis",
   "clinical_stem": "68M smoker presents with worsening dyspnoea, productive cough, and chronic exercise limitation.",
   "inputs": {
     "gas": {
-      "ph": 7.33,
-      "paco2_mmHg": 74,
-      "hco3_mmolL": 37.9
+      "ph": 7.36,
+      "paco2_mmHg": 55,
+      "hco3_mmolL": 30.1
     },
     "electrolytes": {
-      "na_mmolL": 138,
-      "cl_mmolL": 89
+      "na_mmolL": 137,
+      "cl_mmolL": 98
     },
     "other": {
-      "lactate_mmolL": 1.6
+      "lactate_mmolL": 1.1
     },
-    "lactate_mmolL": 1.6
+    "lactate_mmolL": 1.1
   },
   "questions_flow": [
     {
@@ -1016,18 +1016,18 @@ Number of cases: 8
     }
   ],
   "answer_key": {
-    "ph_status": "Acidaemia",
+    "ph_status": "Normal",
     "primary_disorder": "Respiratory acidosis",
     "compensation": "Appropriate",
-    "anion_gap_value": 11.0,
+    "anion_gap_value": 9.0,
     "anion_gap_category": "Normal",
     "final_diagnosis": "COPD",
     "expected_compensation": {
       "rule": "Chronic respiratory acidosis",
-      "expected_hco3_mmolL": 37.6,
+      "expected_hco3_mmolL": 30.0,
       "acceptable_range_mmolL": [
-        35.6,
-        39.6
+        28.0,
+        32.0
       ]
     }
   },
@@ -1037,7 +1037,7 @@ Number of cases: 8
     "chronic_respiratory_acidosis",
     "compensation"
   ],
-  "explanation": "pH is low or near-normal with elevated PaCO2, indicating respiratory acidosis. In chronic respiratory acidosis, HCO3 should rise by ~4 mmol/L per 10 mmHg PaCO2 above 40. Expected HCO3 is ~37.6; measured 37.9 is appropriately elevated, consistent with chronic respiratory compensation seen in COPD.",
+  "explanation": "pH is low or near-normal with elevated PaCO2, indicating respiratory acidosis. In chronic respiratory acidosis, HCO3 should rise by ~4 mmol/L per 10 mmHg PaCO2 above 40. Expected HCO3 is ~30.0; measured 30.1 is appropriately elevated, consistent with chronic respiratory compensation seen in COPD.",
   "timing": {
     "timer_visible_by_default": false,
     "time_bonus_scope": "whole_case",

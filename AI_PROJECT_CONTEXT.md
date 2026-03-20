@@ -1,6 +1,6 @@
 # AI Project Context: ABG Trainer
 
-Last updated: 2026-03-19
+Last updated: 2026-03-20
 
 This document summarizes the architecture and case schema so external AI tools can understand the project even when only this file is provided.
 
@@ -293,6 +293,7 @@ Key field roles:
   - Intended as lightweight future-facing metadata and not yet used by frontend logic.
 - `answer_key`
   - Contains the correct interpretation used by the scoring logic.
+  - `additional_metabolic_process` is currently used on Master mixed-disorder flows and supports `"None"`, `"Metabolic alkalosis"`, `"Non-anion gap metabolic acidosis"`, and `"High anion gap metabolic acidosis"`.
 - `explanation`
   - Provides the educational explanation shown after completion.
 - `difficulty_level` / `difficulty_label`
@@ -319,6 +320,7 @@ Important functions include:
 - `calculate_ph_from_hco3_paco2`
 - `winters_expected_paco2`
 - `metabolic_alkalosis_expected_paco2`
+- `acute_respiratory_acidosis_expected_hco3`
 - `respiratory_alkalosis_expected_hco3_acute`
 - `chronic_respiratory_acidosis_expected_hco3`
 - `calc_anion_gap`
@@ -332,6 +334,7 @@ What this means architecturally:
 Examples of built-in physiologic reasoning:
 - Metabolic acidosis uses Winter's formula for expected respiratory compensation.
 - Metabolic alkalosis uses expected compensatory PaCO2.
+- Acute respiratory acidosis estimates expected bicarbonate rise.
 - Acute respiratory alkalosis estimates expected bicarbonate reduction.
 - Chronic respiratory acidosis estimates expected bicarbonate elevation.
 - Anion gap is computed directly from sodium, chloride, and bicarbonate.
@@ -404,6 +407,8 @@ Archetypes are organized by module. They represent acid-base patterns first, and
 - `salicylate_toxicity` - Master
 - `dka_vomiting` - Master
 - `mixed_hagma_metabolic_alkalosis` - Master
+- `respiratory_alkalosis_hagma` - Master
+- `respiratory_acidosis_hagma` - Master
 
 Design interpretation:
 - An archetype is not just a diagnosis label.
@@ -411,6 +416,8 @@ Design interpretation:
 - Some archetypes now include mild/moderate/severe or subtle/moderate/severe variation bands to improve replay variety without changing the underlying acid-base pattern.
 - This now includes `simple_respiratory_alkalosis` and `simple_respiratory_acidosis`, which represent single-process respiratory disorders aimed primarily at beginner pattern recognition.
 - `mixed_hagma_metabolic_alkalosis` now also uses structured variation bands (`obvious_mix`, `subtle_mix`, and `near_normal_ph_trap`) to vary how strongly the additional metabolic alkalosis is signalled while preserving the same Master-level mixed-disorder reasoning path.
+- `respiratory_alkalosis_hagma` is the respiratory-alkalosis counterpart to the respiratory-acidosis mixed archetype. It uses acute respiratory alkalosis compensation expectations and variation bands (`obvious_mixed`, `near_normal_ph_trap`, and `subtle_mismatch`) so learners must detect that bicarbonate is too low for a single respiratory process while the anion gap stays clearly raised.
+- `respiratory_acidosis_hagma` now spans chronic obvious mismatches, an acute respiratory failure + HAGMA variant, and a subtle near-miss compensation variant while remaining one Master mixed-disorder archetype.
 - In those respiratory archetypes, variation bands adjust severity while preserving the same disorder pattern, compensation logic, and beginner question flow.
 - Respiratory generators still compute anion gap through the shared `calc_anion_gap()` helper in `generator/physiology.py`. This keeps the schema and answer-key structure consistent across archetypes, even when anion-gap reasoning is not required at lower levels.
 
@@ -418,7 +425,7 @@ Current live difficulty assignment in the generated dataset:
 - Beginner: `opioid_toxicity`, `panic_hyperventilation`, `simple_metabolic_alkalosis`, `simple_nagma`, `simple_respiratory_acidosis`, `simple_respiratory_alkalosis`
 - Intermediate: `acute_copd_exacerbation`, `copd_chronic_retainer`, `diuretic_metabolic_alkalosis`, `sepsis_respiratory_alkalosis`, `vomiting_metabolic_alkalosis`
 - Advanced: `alcoholic_ketoacidosis`, `diarrhoea_nagma`, `dka`, `lactic_acidosis`, `starvation_ketosis`, `toxic_alcohol`, `uraemia`
-- Master: `dka_vomiting`, `mixed_hagma_metabolic_alkalosis`, `salicylate_toxicity`
+- Master: `dka_vomiting`, `mixed_hagma_metabolic_alkalosis`, `respiratory_acidosis_hagma`, `respiratory_alkalosis_hagma`, `salicylate_toxicity`
 
 At present, each archetype maps to exactly one difficulty level in `docs/abg_cases.json`; no archetype currently spans multiple difficulty tiers.
 
@@ -457,17 +464,19 @@ Mixed archetypes:
 - `salicylate_toxicity`
 - `dka_vomiting`
 - `mixed_hagma_metabolic_alkalosis`
+- `respiratory_alkalosis_hagma`
+- `respiratory_acidosis_hagma`
 
 Current archetype count:
 - Metabolic: 11
 - Respiratory: 7
-- Mixed: 3
+- Mixed: 5
 
-Total archetypes: 21
+Total archetypes: 23
 
 Current generated dataset size:
 - 8 cases per archetype
-- 168 cases total
+- 184 cases total
 
 Variation bands increase effective replay diversity beyond the raw archetype count without requiring a larger archetype library.
 

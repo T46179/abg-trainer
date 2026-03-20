@@ -17,7 +17,13 @@ from .metabolic import (
     generate_uraemia_case,
     generate_vomiting_case,
 )
-from .mixed import generate_dka_vomiting_case, generate_mixed_hagma_metabolic_alkalosis_case, generate_salicylate_case
+from .mixed import (
+    generate_dka_vomiting_case,
+    generate_mixed_hagma_metabolic_alkalosis_case,
+    generate_respiratory_acidosis_hagma_case,
+    generate_respiratory_alkalosis_hagma_case,
+    generate_salicylate_case,
+)
 from .respiratory import (
     generate_acute_copd_case,
     generate_copd_case,
@@ -38,6 +44,8 @@ __all__ = [
     "generate_dka_vomiting_case",
     "generate_lactate_case",
     "generate_mixed_hagma_metabolic_alkalosis_case",
+    "generate_respiratory_acidosis_hagma_case",
+    "generate_respiratory_alkalosis_hagma_case",
     "generate_opioid_case",
     "generate_panic_case",
     "generate_salicylate_case",

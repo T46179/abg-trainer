@@ -16,6 +16,7 @@ clinical stems, answers, and progression metadata.
 import random
 
 from ..physiology import (
+    acute_respiratory_acidosis_expected_hco3,
     calc_anion_gap,
     calculate_ph_from_hco3_paco2,
     chronic_respiratory_acidosis_expected_hco3,
@@ -435,18 +436,43 @@ def generate_simple_respiratory_alkalosis_case(case_id):
 
 def generate_acute_copd_case(case_id):
     band = random.choice(ACUTE_COPD_VARIATION_BANDS)
-    paco2 = random.uniform(*band["paco2_range"])
-    expected_hco3 = chronic_respiratory_acidosis_expected_hco3(paco2)
-    hco3 = round(expected_hco3 + random.uniform(*band["hco3_offset_range"]), 1)
-    hco3 = min(max(hco3, band["hco3_range"][0]), band["hco3_range"][1])
-    ph = calculate_ph_from_hco3_paco2(hco3, paco2)
+
+    for _ in range(80):
+        paco2 = round(random.uniform(*band["paco2_range"]), 1)
+        expected_hco3 = chronic_respiratory_acidosis_expected_hco3(paco2)
+        acute_expected_hco3 = acute_respiratory_acidosis_expected_hco3(paco2)
+        gap_below_chronic = random.uniform(2.5, 4.8)
+        hco3 = round(expected_hco3 - gap_below_chronic, 1)
+
+        if not (band["hco3_range"][0] <= hco3 <= band["hco3_range"][1]):
+            continue
+        if hco3 <= round(acute_expected_hco3 + 2, 1):
+            continue
+
+        ph = calculate_ph_from_hco3_paco2(hco3, paco2)
+        if ph >= 7.35:
+            continue
+
+        break
+    else:
+        raise ValueError(f"Unable to generate acute-on-chronic COPD values for {case_id}")
+
     na = random.randint(*band["sodium_range"])
     cl = random.randint(*band["chloride_range"])
+    ag = calc_anion_gap(na, cl, hco3)
     clinical_stem, patient_gender = generate_stem(
         "acute_copd_exacerbation",
         min_features=band["stem_feature_range"][0],
         max_features=band["stem_feature_range"][1],
         return_patient_gender=True,
+    )
+    chronic_low = round(expected_hco3 - 2, 1)
+    chronic_high = round(expected_hco3 + 2, 1)
+    explanation = (
+        f"Low pH indicates acidaemia. PaCO2 is markedly elevated, so there is a primary respiratory acidosis. "
+        f"If this were isolated chronic respiratory acidosis at the current PaCO2, HCO3 would be about {expected_hco3:.1f} mmol/L "
+        f"(acceptable range {chronic_low}-{chronic_high}), but the actual HCO3 is {hco3} mmol/L, which is too low for isolated chronic compensation. "
+        f"HCO3 is still above the acute-only expectation of about {acute_expected_hco3:.1f} mmol/L, which supports acute worsening on a chronic CO2-retaining background rather than simple acute hypoventilation."
     )
 
     return build_case(
@@ -467,12 +493,17 @@ def generate_acute_copd_case(case_id):
         answer_key=build_answer_key(
             ph_status=derived_ph_status(ph),
             primary_disorder="Respiratory acidosis",
-            compensation="Chronic with acute worsening",
-            anion_gap_value=calc_anion_gap(na, cl, hco3),
+            compensation="Inappropriate",
+            anion_gap_value=ag,
             anion_gap_category="Normal",
             final_diagnosis="COPD exacerbation",
+            expected_compensation={
+                "rule": "Chronic respiratory acidosis",
+                "expected_hco3_mmolL": round(expected_hco3, 1),
+                "acceptable_range_mmolL": [chronic_low, chronic_high],
+            },
         ),
-        explanation="COPD exacerbations cause acute rises in CO2 on a background of chronic respiratory acidosis.",
+        explanation=explanation,
         level=2,
         archetype="acute_copd_exacerbation",
         patient_gender=patient_gender,
@@ -480,12 +511,38 @@ def generate_acute_copd_case(case_id):
 
 
 def generate_sepsis_case(case_id):
-    paco2 = random.uniform(22, 30)
-    hco3 = random.uniform(22, 26)
-    na = random.randint(136, 142)
-    cl = random.randint(100, 106)
-    ph = calculate_ph_from_hco3_paco2(hco3, paco2)
+    for _ in range(80):
+        paco2 = round(random.uniform(22, 30), 1)
+        expected_hco3 = respiratory_alkalosis_expected_hco3_acute(paco2)
+        hco3 = round(expected_hco3 + random.uniform(-0.8, 0.8), 1)
+
+        if not (20 <= hco3 <= 24):
+            continue
+
+        na = random.randint(136, 142)
+        target_ag = random.randint(9, 14)
+        cl = na - (hco3 + target_ag)
+        if not (100 <= cl <= 106):
+            continue
+
+        ph = calculate_ph_from_hco3_paco2(hco3, paco2)
+        if ph <= 7.45:
+            continue
+
+        break
+    else:
+        raise ValueError(f"Unable to generate sepsis respiratory alkalosis values for {case_id}")
+
+    ag = calc_anion_gap(na, cl, hco3)
+    expected_hco3_low = round(expected_hco3 - 2, 1)
+    expected_hco3_high = round(expected_hco3 + 2, 1)
     clinical_stem, patient_gender = generate_stem("sepsis_respiratory_alkalosis", return_patient_gender=True)
+    explanation = (
+        f"High pH indicates alkalaemia. PaCO2 is low, which indicates a primary respiratory alkalosis. "
+        f"For acute respiratory alkalosis, expected HCO3 is about {expected_hco3:.1f} mmol/L "
+        f"(acceptable range {expected_hco3_low}-{expected_hco3_high}), and the measured HCO3 is {hco3} mmol/L, so compensation is appropriate. "
+        f"The anion gap is {na} - ({cl} + {hco3}) = {ag}, which is normal. This pattern fits sepsis-related hyperventilation without an added metabolic process."
+    )
 
     return build_case(
         case_id=case_id,
@@ -505,12 +562,17 @@ def generate_sepsis_case(case_id):
         answer_key=build_answer_key(
             ph_status=derived_ph_status(ph),
             primary_disorder="Respiratory alkalosis",
-            compensation="None",
-            anion_gap_value=calc_anion_gap(na, cl, hco3),
+            compensation="Appropriate",
+            anion_gap_value=ag,
             anion_gap_category="Normal",
             final_diagnosis="Sepsis",
+            expected_compensation={
+                "rule": "Acute respiratory alkalosis",
+                "expected_hco3_mmolL": round(expected_hco3, 1),
+                "acceptable_range_mmolL": [expected_hco3_low, expected_hco3_high],
+            },
         ),
-        explanation="Sepsis commonly causes respiratory alkalosis due to hyperventilation.",
+        explanation=explanation,
         level=2,
         archetype="sepsis_respiratory_alkalosis",
         patient_gender=patient_gender,

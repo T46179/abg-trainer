@@ -3,902 +3,26 @@ Number of cases: 8
 ================================================================================
 
 {
-  "case_id": "SALICYLATE_007",
-  "title": "Salicylate toxicity (mixed respiratory alkalosis + HAGMA)",
-  "case_type": "ABG",
-  "category": "mixed_disorder",
-  "clinical_stem": "27M presents with nausea, hyperventilation, and tinnitus after ingesting a large quantity of tablets.",
-  "inputs": {
-    "gas": {
-      "ph": 7.4,
-      "paco2_mmHg": 20,
-      "hco3_mmolL": 12
-    },
-    "electrolytes": {
-      "na_mmolL": 142,
-      "cl_mmolL": 106,
-      "glucose_mmolL": 5.4
-    },
-    "other": {
-      "lactate_mmolL": 2.3
-    },
-    "lactate_mmolL": 2.3
-  },
-  "questions_flow": [
-    {
-      "step": 1,
-      "key": "ph_status",
-      "label": "pH",
-      "prompt": "What is the pH status?",
-      "options": [
-        "Acidaemia",
-        "Alkalaemia",
-        "Normal"
-      ]
-    },
-    {
-      "step": 2,
-      "key": "primary_disorder",
-      "label": "Primary acid-base disorder",
-      "prompt": "What is the primary acid-base disorder?",
-      "options": [
-        "Respiratory acidosis",
-        "Respiratory alkalosis",
-        "Metabolic acidosis",
-        "Metabolic alkalosis"
-      ]
-    },
-    {
-      "step": 3,
-      "key": "compensation",
-      "label": "Compensation",
-      "prompt": "Is the physiological compensation appropriate?",
-      "options": [
-        "Appropriate",
-        "Inappropriate"
-      ]
-    },
-    {
-      "step": 4,
-      "key": "anion_gap",
-      "label": "Anion gap",
-      "prompt": "What is the anion gap status?",
-      "options": [
-        "Raised",
-        "Normal"
-      ]
-    },
-    {
-      "step": 5,
-      "key": "final_diagnosis",
-      "prompt": "Most likely diagnosis?",
-      "options": [
-        "Salicylate toxicity",
-        "DKA",
-        "Diarrhoea",
-        "Panic attack / hyperventilation",
-        "Renal failure (uraemia)"
-      ]
-    }
-  ],
-  "answer_key": {
-    "ph_status": "Normal",
-    "primary_disorder": "Metabolic acidosis",
-    "compensation": "Inappropriate",
-    "anion_gap_value": 24,
-    "anion_gap_category": "Raised",
-    "final_diagnosis": "Salicylate toxicity",
-    "expected_compensation": {
-      "rule": "Mixed disorder present",
-      "note": "Low PaCO2 and low HCO3 are due to two primary processes: respiratory alkalosis and HAGMA"
-    }
-  },
-  "learning_objective": "Recognise the mixed respiratory alkalosis and high anion gap metabolic acidosis of salicylate toxicity",
-  "tags": [
-    "salicylate",
-    "mixed_disorder",
-    "respiratory_alkalosis",
-    "hagma",
-    "toxicology"
-  ],
-  "explanation": "Both PaCO2 and HCO3 are low. This is not explained by a single primary disorder alone. The low PaCO2 indicates a respiratory alkalosis, while the low HCO3 with raised anion gap (24.0) indicates a high anion gap metabolic acidosis. This is a mixed respiratory alkalosis and metabolic acidosis, classic for salicylate toxicity.",
-  "timing": {
-    "timer_visible_by_default": false,
-    "time_bonus_scope": "whole_case",
-    "time_bonus_tiers_seconds_inclusive": [
-      {
-        "max_seconds": 30,
-        "bonus": 10
-      },
-      {
-        "max_seconds": 45,
-        "bonus": 7
-      },
-      {
-        "max_seconds": 60,
-        "bonus": 5
-      },
-      {
-        "max_seconds": 90,
-        "bonus": 3
-      },
-      {
-        "max_seconds": 999999,
-        "bonus": 0
-      }
-    ]
-  },
-  "patient_gender": "M",
-  "archetype": "salicylate_toxicity",
-  "difficulty_level": 4,
-  "difficulty_label": "master",
-  "skills_tested": [
-    "ph_status",
-    "primary_disorder",
-    "compensation",
-    "anion_gap",
-    "mixed_disorder_detection",
-    "final_diagnosis"
-  ],
-  "case_pool": "mixed_disorders",
-  "progression": {
-    "base_xp": 40
-  }
-}
-
---------------------------------------------------------------------------------
-
-{
   "case_id": "SALICYLATE_004",
   "title": "Salicylate toxicity (mixed respiratory alkalosis + HAGMA)",
   "case_type": "ABG",
   "category": "mixed_disorder",
-  "clinical_stem": "34M presents confused, tachypnoeic, and febrile with ringing in the ears.",
-  "inputs": {
-    "gas": {
-      "ph": 7.3,
-      "paco2_mmHg": 23,
-      "hco3_mmolL": 11
-    },
-    "electrolytes": {
-      "na_mmolL": 139,
-      "cl_mmolL": 102,
-      "glucose_mmolL": 5.7
-    },
-    "other": {
-      "lactate_mmolL": 2.0
-    },
-    "lactate_mmolL": 2.0
-  },
-  "questions_flow": [
-    {
-      "step": 1,
-      "key": "ph_status",
-      "label": "pH",
-      "prompt": "What is the pH status?",
-      "options": [
-        "Acidaemia",
-        "Alkalaemia",
-        "Normal"
-      ]
-    },
-    {
-      "step": 2,
-      "key": "primary_disorder",
-      "label": "Primary acid-base disorder",
-      "prompt": "What is the primary acid-base disorder?",
-      "options": [
-        "Respiratory acidosis",
-        "Respiratory alkalosis",
-        "Metabolic acidosis",
-        "Metabolic alkalosis"
-      ]
-    },
-    {
-      "step": 3,
-      "key": "compensation",
-      "label": "Compensation",
-      "prompt": "Is the physiological compensation appropriate?",
-      "options": [
-        "Appropriate",
-        "Inappropriate"
-      ]
-    },
-    {
-      "step": 4,
-      "key": "anion_gap",
-      "label": "Anion gap",
-      "prompt": "What is the anion gap status?",
-      "options": [
-        "Raised",
-        "Normal"
-      ]
-    },
-    {
-      "step": 5,
-      "key": "final_diagnosis",
-      "prompt": "Most likely diagnosis?",
-      "options": [
-        "Salicylate toxicity",
-        "DKA",
-        "Diarrhoea",
-        "Panic attack / hyperventilation",
-        "Renal failure (uraemia)"
-      ]
-    }
-  ],
-  "answer_key": {
-    "ph_status": "Acidaemia",
-    "primary_disorder": "Metabolic acidosis",
-    "compensation": "Inappropriate",
-    "anion_gap_value": 26,
-    "anion_gap_category": "Raised",
-    "final_diagnosis": "Salicylate toxicity",
-    "expected_compensation": {
-      "rule": "Mixed disorder present",
-      "note": "Low PaCO2 and low HCO3 are due to two primary processes: respiratory alkalosis and HAGMA"
-    }
-  },
-  "learning_objective": "Recognise the mixed respiratory alkalosis and high anion gap metabolic acidosis of salicylate toxicity",
-  "tags": [
-    "salicylate",
-    "mixed_disorder",
-    "respiratory_alkalosis",
-    "hagma",
-    "toxicology"
-  ],
-  "explanation": "Both PaCO2 and HCO3 are low. This is not explained by a single primary disorder alone. The low PaCO2 indicates a respiratory alkalosis, while the low HCO3 with raised anion gap (26.0) indicates a high anion gap metabolic acidosis. This is a mixed respiratory alkalosis and metabolic acidosis, classic for salicylate toxicity.",
-  "timing": {
-    "timer_visible_by_default": false,
-    "time_bonus_scope": "whole_case",
-    "time_bonus_tiers_seconds_inclusive": [
-      {
-        "max_seconds": 30,
-        "bonus": 10
-      },
-      {
-        "max_seconds": 45,
-        "bonus": 7
-      },
-      {
-        "max_seconds": 60,
-        "bonus": 5
-      },
-      {
-        "max_seconds": 90,
-        "bonus": 3
-      },
-      {
-        "max_seconds": 999999,
-        "bonus": 0
-      }
-    ]
-  },
-  "patient_gender": "M",
-  "archetype": "salicylate_toxicity",
-  "difficulty_level": 4,
-  "difficulty_label": "master",
-  "skills_tested": [
-    "ph_status",
-    "primary_disorder",
-    "compensation",
-    "anion_gap",
-    "mixed_disorder_detection",
-    "final_diagnosis"
-  ],
-  "case_pool": "mixed_disorders",
-  "progression": {
-    "base_xp": 40
-  }
-}
-
---------------------------------------------------------------------------------
-
-{
-  "case_id": "SALICYLATE_006",
-  "title": "Salicylate toxicity (mixed respiratory alkalosis + HAGMA)",
-  "case_type": "ABG",
-  "category": "mixed_disorder",
-  "clinical_stem": "27F presents with nausea, hyperventilation, and tinnitus after ingesting a large quantity of tablets.",
-  "inputs": {
-    "gas": {
-      "ph": 7.3,
-      "paco2_mmHg": 21,
-      "hco3_mmolL": 10
-    },
-    "electrolytes": {
-      "na_mmolL": 140,
-      "cl_mmolL": 109,
-      "glucose_mmolL": 5.2
-    },
-    "other": {
-      "lactate_mmolL": 1.6
-    },
-    "lactate_mmolL": 1.6
-  },
-  "questions_flow": [
-    {
-      "step": 1,
-      "key": "ph_status",
-      "label": "pH",
-      "prompt": "What is the pH status?",
-      "options": [
-        "Acidaemia",
-        "Alkalaemia",
-        "Normal"
-      ]
-    },
-    {
-      "step": 2,
-      "key": "primary_disorder",
-      "label": "Primary acid-base disorder",
-      "prompt": "What is the primary acid-base disorder?",
-      "options": [
-        "Respiratory acidosis",
-        "Respiratory alkalosis",
-        "Metabolic acidosis",
-        "Metabolic alkalosis"
-      ]
-    },
-    {
-      "step": 3,
-      "key": "compensation",
-      "label": "Compensation",
-      "prompt": "Is the physiological compensation appropriate?",
-      "options": [
-        "Appropriate",
-        "Inappropriate"
-      ]
-    },
-    {
-      "step": 4,
-      "key": "anion_gap",
-      "label": "Anion gap",
-      "prompt": "What is the anion gap status?",
-      "options": [
-        "Raised",
-        "Normal"
-      ]
-    },
-    {
-      "step": 5,
-      "key": "final_diagnosis",
-      "prompt": "Most likely diagnosis?",
-      "options": [
-        "Salicylate toxicity",
-        "DKA",
-        "Diarrhoea",
-        "Panic attack / hyperventilation",
-        "Renal failure (uraemia)"
-      ]
-    }
-  ],
-  "answer_key": {
-    "ph_status": "Acidaemia",
-    "primary_disorder": "Metabolic acidosis",
-    "compensation": "Inappropriate",
-    "anion_gap_value": 21,
-    "anion_gap_category": "Raised",
-    "final_diagnosis": "Salicylate toxicity",
-    "expected_compensation": {
-      "rule": "Mixed disorder present",
-      "note": "Low PaCO2 and low HCO3 are due to two primary processes: respiratory alkalosis and HAGMA"
-    }
-  },
-  "learning_objective": "Recognise the mixed respiratory alkalosis and high anion gap metabolic acidosis of salicylate toxicity",
-  "tags": [
-    "salicylate",
-    "mixed_disorder",
-    "respiratory_alkalosis",
-    "hagma",
-    "toxicology"
-  ],
-  "explanation": "Both PaCO2 and HCO3 are low. This is not explained by a single primary disorder alone. The low PaCO2 indicates a respiratory alkalosis, while the low HCO3 with raised anion gap (21.0) indicates a high anion gap metabolic acidosis. This is a mixed respiratory alkalosis and metabolic acidosis, classic for salicylate toxicity.",
-  "timing": {
-    "timer_visible_by_default": false,
-    "time_bonus_scope": "whole_case",
-    "time_bonus_tiers_seconds_inclusive": [
-      {
-        "max_seconds": 30,
-        "bonus": 10
-      },
-      {
-        "max_seconds": 45,
-        "bonus": 7
-      },
-      {
-        "max_seconds": 60,
-        "bonus": 5
-      },
-      {
-        "max_seconds": 90,
-        "bonus": 3
-      },
-      {
-        "max_seconds": 999999,
-        "bonus": 0
-      }
-    ]
-  },
-  "patient_gender": "F",
-  "archetype": "salicylate_toxicity",
-  "difficulty_level": 4,
-  "difficulty_label": "master",
-  "skills_tested": [
-    "ph_status",
-    "primary_disorder",
-    "compensation",
-    "anion_gap",
-    "mixed_disorder_detection",
-    "final_diagnosis"
-  ],
-  "case_pool": "mixed_disorders",
-  "progression": {
-    "base_xp": 40
-  }
-}
-
---------------------------------------------------------------------------------
-
-{
-  "case_id": "SALICYLATE_008",
-  "title": "Salicylate toxicity (mixed respiratory alkalosis + HAGMA)",
-  "case_type": "ABG",
-  "category": "mixed_disorder",
   "clinical_stem": "21F presents with tinnitus, vomiting, fever, and rapid breathing after an overdose.",
   "inputs": {
     "gas": {
-      "ph": 7.5,
-      "paco2_mmHg": 20,
-      "hco3_mmolL": 15
+      "ph": 7.49,
+      "paco2_mmHg": 19,
+      "hco3_mmolL": 14
     },
     "electrolytes": {
-      "na_mmolL": 139,
-      "cl_mmolL": 97,
+      "na_mmolL": 142,
+      "cl_mmolL": 100,
       "glucose_mmolL": 4.9
     },
     "other": {
-      "lactate_mmolL": 1.0
+      "lactate_mmolL": 2.4
     },
-    "lactate_mmolL": 1.0
-  },
-  "questions_flow": [
-    {
-      "step": 1,
-      "key": "ph_status",
-      "label": "pH",
-      "prompt": "What is the pH status?",
-      "options": [
-        "Acidaemia",
-        "Alkalaemia",
-        "Normal"
-      ]
-    },
-    {
-      "step": 2,
-      "key": "primary_disorder",
-      "label": "Primary acid-base disorder",
-      "prompt": "What is the primary acid-base disorder?",
-      "options": [
-        "Respiratory acidosis",
-        "Respiratory alkalosis",
-        "Metabolic acidosis",
-        "Metabolic alkalosis"
-      ]
-    },
-    {
-      "step": 3,
-      "key": "compensation",
-      "label": "Compensation",
-      "prompt": "Is the physiological compensation appropriate?",
-      "options": [
-        "Appropriate",
-        "Inappropriate"
-      ]
-    },
-    {
-      "step": 4,
-      "key": "anion_gap",
-      "label": "Anion gap",
-      "prompt": "What is the anion gap status?",
-      "options": [
-        "Raised",
-        "Normal"
-      ]
-    },
-    {
-      "step": 5,
-      "key": "final_diagnosis",
-      "prompt": "Most likely diagnosis?",
-      "options": [
-        "Salicylate toxicity",
-        "DKA",
-        "Diarrhoea",
-        "Panic attack / hyperventilation",
-        "Renal failure (uraemia)"
-      ]
-    }
-  ],
-  "answer_key": {
-    "ph_status": "Alkalaemia",
-    "primary_disorder": "Metabolic acidosis",
-    "compensation": "Inappropriate",
-    "anion_gap_value": 27,
-    "anion_gap_category": "Raised",
-    "final_diagnosis": "Salicylate toxicity",
-    "expected_compensation": {
-      "rule": "Mixed disorder present",
-      "note": "Low PaCO2 and low HCO3 are due to two primary processes: respiratory alkalosis and HAGMA"
-    }
-  },
-  "learning_objective": "Recognise the mixed respiratory alkalosis and high anion gap metabolic acidosis of salicylate toxicity",
-  "tags": [
-    "salicylate",
-    "mixed_disorder",
-    "respiratory_alkalosis",
-    "hagma",
-    "toxicology"
-  ],
-  "explanation": "Both PaCO2 and HCO3 are low. This is not explained by a single primary disorder alone. The low PaCO2 indicates a respiratory alkalosis, while the low HCO3 with raised anion gap (27.0) indicates a high anion gap metabolic acidosis. This is a mixed respiratory alkalosis and metabolic acidosis, classic for salicylate toxicity.",
-  "timing": {
-    "timer_visible_by_default": false,
-    "time_bonus_scope": "whole_case",
-    "time_bonus_tiers_seconds_inclusive": [
-      {
-        "max_seconds": 30,
-        "bonus": 10
-      },
-      {
-        "max_seconds": 45,
-        "bonus": 7
-      },
-      {
-        "max_seconds": 60,
-        "bonus": 5
-      },
-      {
-        "max_seconds": 90,
-        "bonus": 3
-      },
-      {
-        "max_seconds": 999999,
-        "bonus": 0
-      }
-    ]
-  },
-  "patient_gender": "F",
-  "archetype": "salicylate_toxicity",
-  "difficulty_level": 4,
-  "difficulty_label": "master",
-  "skills_tested": [
-    "ph_status",
-    "primary_disorder",
-    "compensation",
-    "anion_gap",
-    "mixed_disorder_detection",
-    "final_diagnosis"
-  ],
-  "case_pool": "mixed_disorders",
-  "progression": {
-    "base_xp": 40
-  }
-}
-
---------------------------------------------------------------------------------
-
-{
-  "case_id": "SALICYLATE_002",
-  "title": "Salicylate toxicity (mixed respiratory alkalosis + HAGMA)",
-  "case_type": "ABG",
-  "category": "mixed_disorder",
-  "clinical_stem": "21F presents with tinnitus, vomiting, fever, and rapid breathing after an overdose.",
-  "inputs": {
-    "gas": {
-      "ph": 7.28,
-      "paco2_mmHg": 22,
-      "hco3_mmolL": 10
-    },
-    "electrolytes": {
-      "na_mmolL": 136,
-      "cl_mmolL": 100,
-      "glucose_mmolL": 5.6
-    },
-    "other": {
-      "lactate_mmolL": 2.1
-    },
-    "lactate_mmolL": 2.1
-  },
-  "questions_flow": [
-    {
-      "step": 1,
-      "key": "ph_status",
-      "label": "pH",
-      "prompt": "What is the pH status?",
-      "options": [
-        "Acidaemia",
-        "Alkalaemia",
-        "Normal"
-      ]
-    },
-    {
-      "step": 2,
-      "key": "primary_disorder",
-      "label": "Primary acid-base disorder",
-      "prompt": "What is the primary acid-base disorder?",
-      "options": [
-        "Respiratory acidosis",
-        "Respiratory alkalosis",
-        "Metabolic acidosis",
-        "Metabolic alkalosis"
-      ]
-    },
-    {
-      "step": 3,
-      "key": "compensation",
-      "label": "Compensation",
-      "prompt": "Is the physiological compensation appropriate?",
-      "options": [
-        "Appropriate",
-        "Inappropriate"
-      ]
-    },
-    {
-      "step": 4,
-      "key": "anion_gap",
-      "label": "Anion gap",
-      "prompt": "What is the anion gap status?",
-      "options": [
-        "Raised",
-        "Normal"
-      ]
-    },
-    {
-      "step": 5,
-      "key": "final_diagnosis",
-      "prompt": "Most likely diagnosis?",
-      "options": [
-        "Salicylate toxicity",
-        "DKA",
-        "Diarrhoea",
-        "Panic attack / hyperventilation",
-        "Renal failure (uraemia)"
-      ]
-    }
-  ],
-  "answer_key": {
-    "ph_status": "Acidaemia",
-    "primary_disorder": "Metabolic acidosis",
-    "compensation": "Inappropriate",
-    "anion_gap_value": 26,
-    "anion_gap_category": "Raised",
-    "final_diagnosis": "Salicylate toxicity",
-    "expected_compensation": {
-      "rule": "Mixed disorder present",
-      "note": "Low PaCO2 and low HCO3 are due to two primary processes: respiratory alkalosis and HAGMA"
-    }
-  },
-  "learning_objective": "Recognise the mixed respiratory alkalosis and high anion gap metabolic acidosis of salicylate toxicity",
-  "tags": [
-    "salicylate",
-    "mixed_disorder",
-    "respiratory_alkalosis",
-    "hagma",
-    "toxicology"
-  ],
-  "explanation": "Both PaCO2 and HCO3 are low. This is not explained by a single primary disorder alone. The low PaCO2 indicates a respiratory alkalosis, while the low HCO3 with raised anion gap (26.0) indicates a high anion gap metabolic acidosis. This is a mixed respiratory alkalosis and metabolic acidosis, classic for salicylate toxicity.",
-  "timing": {
-    "timer_visible_by_default": false,
-    "time_bonus_scope": "whole_case",
-    "time_bonus_tiers_seconds_inclusive": [
-      {
-        "max_seconds": 30,
-        "bonus": 10
-      },
-      {
-        "max_seconds": 45,
-        "bonus": 7
-      },
-      {
-        "max_seconds": 60,
-        "bonus": 5
-      },
-      {
-        "max_seconds": 90,
-        "bonus": 3
-      },
-      {
-        "max_seconds": 999999,
-        "bonus": 0
-      }
-    ]
-  },
-  "patient_gender": "F",
-  "archetype": "salicylate_toxicity",
-  "difficulty_level": 4,
-  "difficulty_label": "master",
-  "skills_tested": [
-    "ph_status",
-    "primary_disorder",
-    "compensation",
-    "anion_gap",
-    "mixed_disorder_detection",
-    "final_diagnosis"
-  ],
-  "case_pool": "mixed_disorders",
-  "progression": {
-    "base_xp": 40
-  }
-}
-
---------------------------------------------------------------------------------
-
-{
-  "case_id": "SALICYLATE_003",
-  "title": "Salicylate toxicity (mixed respiratory alkalosis + HAGMA)",
-  "case_type": "ABG",
-  "category": "mixed_disorder",
-  "clinical_stem": "27M presents with nausea, hyperventilation, and tinnitus after ingesting a large quantity of tablets.",
-  "inputs": {
-    "gas": {
-      "ph": 7.45,
-      "paco2_mmHg": 18,
-      "hco3_mmolL": 12
-    },
-    "electrolytes": {
-      "na_mmolL": 136,
-      "cl_mmolL": 98,
-      "glucose_mmolL": 5.7
-    },
-    "other": {
-      "lactate_mmolL": 1.5
-    },
-    "lactate_mmolL": 1.5
-  },
-  "questions_flow": [
-    {
-      "step": 1,
-      "key": "ph_status",
-      "label": "pH",
-      "prompt": "What is the pH status?",
-      "options": [
-        "Acidaemia",
-        "Alkalaemia",
-        "Normal"
-      ]
-    },
-    {
-      "step": 2,
-      "key": "primary_disorder",
-      "label": "Primary acid-base disorder",
-      "prompt": "What is the primary acid-base disorder?",
-      "options": [
-        "Respiratory acidosis",
-        "Respiratory alkalosis",
-        "Metabolic acidosis",
-        "Metabolic alkalosis"
-      ]
-    },
-    {
-      "step": 3,
-      "key": "compensation",
-      "label": "Compensation",
-      "prompt": "Is the physiological compensation appropriate?",
-      "options": [
-        "Appropriate",
-        "Inappropriate"
-      ]
-    },
-    {
-      "step": 4,
-      "key": "anion_gap",
-      "label": "Anion gap",
-      "prompt": "What is the anion gap status?",
-      "options": [
-        "Raised",
-        "Normal"
-      ]
-    },
-    {
-      "step": 5,
-      "key": "final_diagnosis",
-      "prompt": "Most likely diagnosis?",
-      "options": [
-        "Salicylate toxicity",
-        "DKA",
-        "Diarrhoea",
-        "Panic attack / hyperventilation",
-        "Renal failure (uraemia)"
-      ]
-    }
-  ],
-  "answer_key": {
-    "ph_status": "Normal",
-    "primary_disorder": "Metabolic acidosis",
-    "compensation": "Inappropriate",
-    "anion_gap_value": 26,
-    "anion_gap_category": "Raised",
-    "final_diagnosis": "Salicylate toxicity",
-    "expected_compensation": {
-      "rule": "Mixed disorder present",
-      "note": "Low PaCO2 and low HCO3 are due to two primary processes: respiratory alkalosis and HAGMA"
-    }
-  },
-  "learning_objective": "Recognise the mixed respiratory alkalosis and high anion gap metabolic acidosis of salicylate toxicity",
-  "tags": [
-    "salicylate",
-    "mixed_disorder",
-    "respiratory_alkalosis",
-    "hagma",
-    "toxicology"
-  ],
-  "explanation": "Both PaCO2 and HCO3 are low. This is not explained by a single primary disorder alone. The low PaCO2 indicates a respiratory alkalosis, while the low HCO3 with raised anion gap (26.0) indicates a high anion gap metabolic acidosis. This is a mixed respiratory alkalosis and metabolic acidosis, classic for salicylate toxicity.",
-  "timing": {
-    "timer_visible_by_default": false,
-    "time_bonus_scope": "whole_case",
-    "time_bonus_tiers_seconds_inclusive": [
-      {
-        "max_seconds": 30,
-        "bonus": 10
-      },
-      {
-        "max_seconds": 45,
-        "bonus": 7
-      },
-      {
-        "max_seconds": 60,
-        "bonus": 5
-      },
-      {
-        "max_seconds": 90,
-        "bonus": 3
-      },
-      {
-        "max_seconds": 999999,
-        "bonus": 0
-      }
-    ]
-  },
-  "patient_gender": "M",
-  "archetype": "salicylate_toxicity",
-  "difficulty_level": 4,
-  "difficulty_label": "master",
-  "skills_tested": [
-    "ph_status",
-    "primary_disorder",
-    "compensation",
-    "anion_gap",
-    "mixed_disorder_detection",
-    "final_diagnosis"
-  ],
-  "case_pool": "mixed_disorders",
-  "progression": {
-    "base_xp": 40
-  }
-}
-
---------------------------------------------------------------------------------
-
-{
-  "case_id": "SALICYLATE_001",
-  "title": "Salicylate toxicity (mixed respiratory alkalosis + HAGMA)",
-  "case_type": "ABG",
-  "category": "mixed_disorder",
-  "clinical_stem": "34F presents confused, tachypnoeic, and febrile with ringing in the ears.",
-  "inputs": {
-    "gas": {
-      "ph": 7.57,
-      "paco2_mmHg": 18,
-      "hco3_mmolL": 16
-    },
-    "electrolytes": {
-      "na_mmolL": 138,
-      "cl_mmolL": 94,
-      "glucose_mmolL": 4.3
-    },
-    "other": {
-      "lactate_mmolL": 1.7
-    },
-    "lactate_mmolL": 1.7
+    "lactate_mmolL": 2.4
   },
   "questions_flow": [
     {
@@ -1029,22 +153,898 @@ Number of cases: 8
   "title": "Salicylate toxicity (mixed respiratory alkalosis + HAGMA)",
   "case_type": "ABG",
   "category": "mixed_disorder",
+  "clinical_stem": "34F presents confused, tachypnoeic, and febrile with ringing in the ears.",
+  "inputs": {
+    "gas": {
+      "ph": 7.36,
+      "paco2_mmHg": 24,
+      "hco3_mmolL": 13
+    },
+    "electrolytes": {
+      "na_mmolL": 141,
+      "cl_mmolL": 101,
+      "glucose_mmolL": 5.3
+    },
+    "other": {
+      "lactate_mmolL": 1.2
+    },
+    "lactate_mmolL": 1.2
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Salicylate toxicity",
+        "DKA",
+        "Diarrhoea",
+        "Panic attack / hyperventilation",
+        "Renal failure (uraemia)"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Normal",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Inappropriate",
+    "anion_gap_value": 27,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Salicylate toxicity",
+    "expected_compensation": {
+      "rule": "Mixed disorder present",
+      "note": "Low PaCO2 and low HCO3 are due to two primary processes: respiratory alkalosis and HAGMA"
+    }
+  },
+  "learning_objective": "Recognise the mixed respiratory alkalosis and high anion gap metabolic acidosis of salicylate toxicity",
+  "tags": [
+    "salicylate",
+    "mixed_disorder",
+    "respiratory_alkalosis",
+    "hagma",
+    "toxicology"
+  ],
+  "explanation": "Both PaCO2 and HCO3 are low. This is not explained by a single primary disorder alone. The low PaCO2 indicates a respiratory alkalosis, while the low HCO3 with raised anion gap (27.0) indicates a high anion gap metabolic acidosis. This is a mixed respiratory alkalosis and metabolic acidosis, classic for salicylate toxicity.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "salicylate_toxicity",
+  "difficulty_level": 4,
+  "difficulty_label": "master",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "mixed_disorder_detection",
+    "final_diagnosis"
+  ],
+  "case_pool": "mixed_disorders",
+  "progression": {
+    "base_xp": 40
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "SALICYLATE_007",
+  "title": "Salicylate toxicity (mixed respiratory alkalosis + HAGMA)",
+  "case_type": "ABG",
+  "category": "mixed_disorder",
   "clinical_stem": "21M presents with tinnitus, vomiting, fever, and rapid breathing after an overdose.",
   "inputs": {
     "gas": {
-      "ph": 7.32,
-      "paco2_mmHg": 20,
-      "hco3_mmolL": 10
+      "ph": 7.28,
+      "paco2_mmHg": 24,
+      "hco3_mmolL": 11
     },
     "electrolytes": {
       "na_mmolL": 136,
-      "cl_mmolL": 100,
+      "cl_mmolL": 102,
+      "glucose_mmolL": 5.0
+    },
+    "other": {
+      "lactate_mmolL": 1.4
+    },
+    "lactate_mmolL": 1.4
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Salicylate toxicity",
+        "DKA",
+        "Diarrhoea",
+        "Panic attack / hyperventilation",
+        "Renal failure (uraemia)"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Inappropriate",
+    "anion_gap_value": 23,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Salicylate toxicity",
+    "expected_compensation": {
+      "rule": "Mixed disorder present",
+      "note": "Low PaCO2 and low HCO3 are due to two primary processes: respiratory alkalosis and HAGMA"
+    }
+  },
+  "learning_objective": "Recognise the mixed respiratory alkalosis and high anion gap metabolic acidosis of salicylate toxicity",
+  "tags": [
+    "salicylate",
+    "mixed_disorder",
+    "respiratory_alkalosis",
+    "hagma",
+    "toxicology"
+  ],
+  "explanation": "Both PaCO2 and HCO3 are low. This is not explained by a single primary disorder alone. The low PaCO2 indicates a respiratory alkalosis, while the low HCO3 with raised anion gap (23.0) indicates a high anion gap metabolic acidosis. This is a mixed respiratory alkalosis and metabolic acidosis, classic for salicylate toxicity.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "salicylate_toxicity",
+  "difficulty_level": 4,
+  "difficulty_label": "master",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "mixed_disorder_detection",
+    "final_diagnosis"
+  ],
+  "case_pool": "mixed_disorders",
+  "progression": {
+    "base_xp": 40
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "SALICYLATE_006",
+  "title": "Salicylate toxicity (mixed respiratory alkalosis + HAGMA)",
+  "case_type": "ABG",
+  "category": "mixed_disorder",
+  "clinical_stem": "34M presents confused, tachypnoeic, and febrile with ringing in the ears.",
+  "inputs": {
+    "gas": {
+      "ph": 7.49,
+      "paco2_mmHg": 19,
+      "hco3_mmolL": 14
+    },
+    "electrolytes": {
+      "na_mmolL": 142,
+      "cl_mmolL": 108,
       "glucose_mmolL": 4.9
     },
     "other": {
-      "lactate_mmolL": 1.1
+      "lactate_mmolL": 2.3
     },
-    "lactate_mmolL": 1.1
+    "lactate_mmolL": 2.3
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Salicylate toxicity",
+        "DKA",
+        "Diarrhoea",
+        "Panic attack / hyperventilation",
+        "Renal failure (uraemia)"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Alkalaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Inappropriate",
+    "anion_gap_value": 20,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Salicylate toxicity",
+    "expected_compensation": {
+      "rule": "Mixed disorder present",
+      "note": "Low PaCO2 and low HCO3 are due to two primary processes: respiratory alkalosis and HAGMA"
+    }
+  },
+  "learning_objective": "Recognise the mixed respiratory alkalosis and high anion gap metabolic acidosis of salicylate toxicity",
+  "tags": [
+    "salicylate",
+    "mixed_disorder",
+    "respiratory_alkalosis",
+    "hagma",
+    "toxicology"
+  ],
+  "explanation": "Both PaCO2 and HCO3 are low. This is not explained by a single primary disorder alone. The low PaCO2 indicates a respiratory alkalosis, while the low HCO3 with raised anion gap (20.0) indicates a high anion gap metabolic acidosis. This is a mixed respiratory alkalosis and metabolic acidosis, classic for salicylate toxicity.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "salicylate_toxicity",
+  "difficulty_level": 4,
+  "difficulty_label": "master",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "mixed_disorder_detection",
+    "final_diagnosis"
+  ],
+  "case_pool": "mixed_disorders",
+  "progression": {
+    "base_xp": 40
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "SALICYLATE_002",
+  "title": "Salicylate toxicity (mixed respiratory alkalosis + HAGMA)",
+  "case_type": "ABG",
+  "category": "mixed_disorder",
+  "clinical_stem": "34M presents confused, tachypnoeic, and febrile with ringing in the ears.",
+  "inputs": {
+    "gas": {
+      "ph": 7.32,
+      "paco2_mmHg": 22,
+      "hco3_mmolL": 11
+    },
+    "electrolytes": {
+      "na_mmolL": 140,
+      "cl_mmolL": 106,
+      "glucose_mmolL": 4.2
+    },
+    "other": {
+      "lactate_mmolL": 1.0
+    },
+    "lactate_mmolL": 1.0
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Salicylate toxicity",
+        "DKA",
+        "Diarrhoea",
+        "Panic attack / hyperventilation",
+        "Renal failure (uraemia)"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Inappropriate",
+    "anion_gap_value": 23,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Salicylate toxicity",
+    "expected_compensation": {
+      "rule": "Mixed disorder present",
+      "note": "Low PaCO2 and low HCO3 are due to two primary processes: respiratory alkalosis and HAGMA"
+    }
+  },
+  "learning_objective": "Recognise the mixed respiratory alkalosis and high anion gap metabolic acidosis of salicylate toxicity",
+  "tags": [
+    "salicylate",
+    "mixed_disorder",
+    "respiratory_alkalosis",
+    "hagma",
+    "toxicology"
+  ],
+  "explanation": "Both PaCO2 and HCO3 are low. This is not explained by a single primary disorder alone. The low PaCO2 indicates a respiratory alkalosis, while the low HCO3 with raised anion gap (23.0) indicates a high anion gap metabolic acidosis. This is a mixed respiratory alkalosis and metabolic acidosis, classic for salicylate toxicity.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "M",
+  "archetype": "salicylate_toxicity",
+  "difficulty_level": 4,
+  "difficulty_label": "master",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "mixed_disorder_detection",
+    "final_diagnosis"
+  ],
+  "case_pool": "mixed_disorders",
+  "progression": {
+    "base_xp": 40
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "SALICYLATE_003",
+  "title": "Salicylate toxicity (mixed respiratory alkalosis + HAGMA)",
+  "case_type": "ABG",
+  "category": "mixed_disorder",
+  "clinical_stem": "21F presents with tinnitus, vomiting, fever, and rapid breathing after an overdose.",
+  "inputs": {
+    "gas": {
+      "ph": 7.43,
+      "paco2_mmHg": 22,
+      "hco3_mmolL": 14
+    },
+    "electrolytes": {
+      "na_mmolL": 137,
+      "cl_mmolL": 101,
+      "glucose_mmolL": 4.6
+    },
+    "other": {
+      "lactate_mmolL": 1.6
+    },
+    "lactate_mmolL": 1.6
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Salicylate toxicity",
+        "DKA",
+        "Diarrhoea",
+        "Panic attack / hyperventilation",
+        "Renal failure (uraemia)"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Normal",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Inappropriate",
+    "anion_gap_value": 22,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Salicylate toxicity",
+    "expected_compensation": {
+      "rule": "Mixed disorder present",
+      "note": "Low PaCO2 and low HCO3 are due to two primary processes: respiratory alkalosis and HAGMA"
+    }
+  },
+  "learning_objective": "Recognise the mixed respiratory alkalosis and high anion gap metabolic acidosis of salicylate toxicity",
+  "tags": [
+    "salicylate",
+    "mixed_disorder",
+    "respiratory_alkalosis",
+    "hagma",
+    "toxicology"
+  ],
+  "explanation": "Both PaCO2 and HCO3 are low. This is not explained by a single primary disorder alone. The low PaCO2 indicates a respiratory alkalosis, while the low HCO3 with raised anion gap (22.0) indicates a high anion gap metabolic acidosis. This is a mixed respiratory alkalosis and metabolic acidosis, classic for salicylate toxicity.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "salicylate_toxicity",
+  "difficulty_level": 4,
+  "difficulty_label": "master",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "mixed_disorder_detection",
+    "final_diagnosis"
+  ],
+  "case_pool": "mixed_disorders",
+  "progression": {
+    "base_xp": 40
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "SALICYLATE_001",
+  "title": "Salicylate toxicity (mixed respiratory alkalosis + HAGMA)",
+  "case_type": "ABG",
+  "category": "mixed_disorder",
+  "clinical_stem": "21F presents with tinnitus, vomiting, fever, and rapid breathing after an overdose.",
+  "inputs": {
+    "gas": {
+      "ph": 7.48,
+      "paco2_mmHg": 21,
+      "hco3_mmolL": 15
+    },
+    "electrolytes": {
+      "na_mmolL": 138,
+      "cl_mmolL": 102,
+      "glucose_mmolL": 5.7
+    },
+    "other": {
+      "lactate_mmolL": 1.8
+    },
+    "lactate_mmolL": 1.8
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Salicylate toxicity",
+        "DKA",
+        "Diarrhoea",
+        "Panic attack / hyperventilation",
+        "Renal failure (uraemia)"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Alkalaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Inappropriate",
+    "anion_gap_value": 21,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Salicylate toxicity",
+    "expected_compensation": {
+      "rule": "Mixed disorder present",
+      "note": "Low PaCO2 and low HCO3 are due to two primary processes: respiratory alkalosis and HAGMA"
+    }
+  },
+  "learning_objective": "Recognise the mixed respiratory alkalosis and high anion gap metabolic acidosis of salicylate toxicity",
+  "tags": [
+    "salicylate",
+    "mixed_disorder",
+    "respiratory_alkalosis",
+    "hagma",
+    "toxicology"
+  ],
+  "explanation": "Both PaCO2 and HCO3 are low. This is not explained by a single primary disorder alone. The low PaCO2 indicates a respiratory alkalosis, while the low HCO3 with raised anion gap (21.0) indicates a high anion gap metabolic acidosis. This is a mixed respiratory alkalosis and metabolic acidosis, classic for salicylate toxicity.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "salicylate_toxicity",
+  "difficulty_level": 4,
+  "difficulty_label": "master",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "mixed_disorder_detection",
+    "final_diagnosis"
+  ],
+  "case_pool": "mixed_disorders",
+  "progression": {
+    "base_xp": 40
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "SALICYLATE_008",
+  "title": "Salicylate toxicity (mixed respiratory alkalosis + HAGMA)",
+  "case_type": "ABG",
+  "category": "mixed_disorder",
+  "clinical_stem": "34M presents confused, tachypnoeic, and febrile with ringing in the ears.",
+  "inputs": {
+    "gas": {
+      "ph": 7.26,
+      "paco2_mmHg": 23,
+      "hco3_mmolL": 10
+    },
+    "electrolytes": {
+      "na_mmolL": 137,
+      "cl_mmolL": 101,
+      "glucose_mmolL": 5.3
+    },
+    "other": {
+      "lactate_mmolL": 2.4
+    },
+    "lactate_mmolL": 2.4
   },
   "questions_flow": [
     {

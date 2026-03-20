@@ -100,6 +100,7 @@ OPTIONS = {
         "None",
         "Metabolic alkalosis",
         "Non-anion gap metabolic acidosis",
+        "High anion gap metabolic acidosis",
     ],
 }
 

@@ -3,25 +3,172 @@ Number of cases: 8
 ================================================================================
 
 {
-  "case_id": "URAEMIA_001",
+  "case_id": "URAEMIA_003",
   "title": "Renal failure (uraemic HAGMA with appropriate respiratory compensation)",
   "case_type": "ABG",
   "category": "metabolic_acidosis_hagma",
-  "clinical_stem": "72F with advanced CKD presents with reduced appetite and progressive fatigue over several days.",
+  "clinical_stem": "68F with advanced kidney disease presents drowsy with nausea, reduced urine output, and progressive weakness.",
   "inputs": {
     "gas": {
-      "ph": 7.33,
-      "paco2_mmHg": 31.3,
+      "ph": 7.29,
+      "paco2_mmHg": 21.3,
+      "hco3_mmolL": 10
+    },
+    "electrolytes": {
+      "na_mmolL": 134,
+      "cl_mmolL": 98
+    },
+    "other": {
+      "lactate_mmolL": 2.0
+    },
+    "lactate_mmolL": 2.0
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Renal failure (uraemia)",
+        "DKA",
+        "Lactic acidosis",
+        "Toxic alcohol",
+        "Diarrhoea"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 26,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Renal failure (uraemia)",
+    "expected_compensation": {
+      "rule": "Winter",
+      "expected_paco2_mmHg": 23.0,
+      "acceptable_range_mmHg": [
+        21.0,
+        25.0
+      ]
+    }
+  },
+  "learning_objective": "Recognise high anion gap metabolic acidosis from uraemia with appropriate respiratory compensation",
+  "tags": [
+    "uraemia",
+    "renal_failure",
+    "hagma",
+    "metabolic_acidosis"
+  ],
+  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary metabolic acidosis. Winter's formula predicts PaCO2 ~23.0 (+/-2); measured 21.3 is appropriate compensation. Anion gap is 134 - (98 + 10) = 26, which is raised. This pattern is most consistent with renal failure causing uraemic high anion gap metabolic acidosis.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "uraemia",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core_metabolic",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "URAEMIA_006",
+  "title": "Renal failure (uraemic HAGMA with appropriate respiratory compensation)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_hagma",
+  "clinical_stem": "61M with renal impairment presents with weakness and poor intake after worsening uraemic symptoms.",
+  "inputs": {
+    "gas": {
+      "ph": 7.31,
+      "paco2_mmHg": 33.1,
       "hco3_mmolL": 16
     },
     "electrolytes": {
-      "na_mmolL": 139,
-      "cl_mmolL": 103
+      "na_mmolL": 140,
+      "cl_mmolL": 104
     },
     "other": {
-      "lactate_mmolL": 1.3
+      "lactate_mmolL": 0.9
     },
-    "lactate_mmolL": 1.3
+    "lactate_mmolL": 0.9
   },
   "questions_flow": [
     {
@@ -103,7 +250,7 @@ Number of cases: 8
     "hagma",
     "metabolic_acidosis"
   ],
-  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary metabolic acidosis. Winter's formula predicts PaCO2 ~32.0 (+/-2); measured 31.3 is appropriate compensation. Anion gap is 139 - (103 + 16) = 20, which is raised. This pattern is most consistent with renal failure causing uraemic high anion gap metabolic acidosis.",
+  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary metabolic acidosis. Winter's formula predicts PaCO2 ~32.0 (+/-2); measured 33.1 is appropriate compensation. Anion gap is 140 - (104 + 16) = 20, which is raised. This pattern is most consistent with renal failure causing uraemic high anion gap metabolic acidosis.",
   "timing": {
     "timer_visible_by_default": false,
     "time_bonus_scope": "whole_case",
@@ -130,7 +277,7 @@ Number of cases: 8
       }
     ]
   },
-  "patient_gender": "F",
+  "patient_gender": "M",
   "archetype": "uraemia",
   "difficulty_level": 3,
   "difficulty_label": "advanced",
@@ -150,25 +297,25 @@ Number of cases: 8
 --------------------------------------------------------------------------------
 
 {
-  "case_id": "URAEMIA_003",
+  "case_id": "URAEMIA_004",
   "title": "Renal failure (uraemic HAGMA with appropriate respiratory compensation)",
   "case_type": "ABG",
   "category": "metabolic_acidosis_hagma",
-  "clinical_stem": "68M with advanced kidney disease presents drowsy with nausea, reduced urine output, and progressive weakness.",
+  "clinical_stem": "71M with advanced CKD presents with malaise, reduced urine output, and progressive weakness over several days.",
   "inputs": {
     "gas": {
-      "ph": 7.3,
-      "paco2_mmHg": 25.4,
+      "ph": 7.29,
+      "paco2_mmHg": 26.1,
       "hco3_mmolL": 12
     },
     "electrolytes": {
-      "na_mmolL": 134,
-      "cl_mmolL": 92
+      "na_mmolL": 138,
+      "cl_mmolL": 103
     },
     "other": {
-      "lactate_mmolL": 1.1
+      "lactate_mmolL": 1.4
     },
-    "lactate_mmolL": 1.1
+    "lactate_mmolL": 1.4
   },
   "questions_flow": [
     {
@@ -231,7 +378,7 @@ Number of cases: 8
     "ph_status": "Acidaemia",
     "primary_disorder": "Metabolic acidosis",
     "compensation": "Appropriate",
-    "anion_gap_value": 30,
+    "anion_gap_value": 23,
     "anion_gap_category": "Raised",
     "final_diagnosis": "Renal failure (uraemia)",
     "expected_compensation": {
@@ -250,7 +397,7 @@ Number of cases: 8
     "hagma",
     "metabolic_acidosis"
   ],
-  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary metabolic acidosis. Winter's formula predicts PaCO2 ~26.0 (+/-2); measured 25.4 is appropriate compensation. Anion gap is 134 - (92 + 12) = 30, which is raised. This pattern is most consistent with renal failure causing uraemic high anion gap metabolic acidosis.",
+  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary metabolic acidosis. Winter's formula predicts PaCO2 ~26.0 (+/-2); measured 26.1 is appropriate compensation. Anion gap is 138 - (103 + 12) = 23, which is raised. This pattern is most consistent with renal failure causing uraemic high anion gap metabolic acidosis.",
   "timing": {
     "timer_visible_by_default": false,
     "time_bonus_scope": "whole_case",
@@ -297,25 +444,25 @@ Number of cases: 8
 --------------------------------------------------------------------------------
 
 {
-  "case_id": "URAEMIA_008",
+  "case_id": "URAEMIA_002",
   "title": "Renal failure (uraemic HAGMA with appropriate respiratory compensation)",
   "case_type": "ABG",
   "category": "metabolic_acidosis_hagma",
-  "clinical_stem": "58M with renal failure presents with poor appetite and increasing drowsiness after worsening oliguria.",
+  "clinical_stem": "63M with uraemia presents increasingly somnolent with poor intake and signs of volume overload.",
   "inputs": {
     "gas": {
-      "ph": 7.32,
-      "paco2_mmHg": 30.1,
-      "hco3_mmolL": 15
+      "ph": 7.3,
+      "paco2_mmHg": 23.0,
+      "hco3_mmolL": 11
     },
     "electrolytes": {
-      "na_mmolL": 139,
-      "cl_mmolL": 99
+      "na_mmolL": 132,
+      "cl_mmolL": 92
     },
     "other": {
-      "lactate_mmolL": 1.5
+      "lactate_mmolL": 1.6
     },
-    "lactate_mmolL": 1.5
+    "lactate_mmolL": 1.6
   },
   "questions_flow": [
     {
@@ -378,15 +525,15 @@ Number of cases: 8
     "ph_status": "Acidaemia",
     "primary_disorder": "Metabolic acidosis",
     "compensation": "Appropriate",
-    "anion_gap_value": 25,
+    "anion_gap_value": 29,
     "anion_gap_category": "Raised",
     "final_diagnosis": "Renal failure (uraemia)",
     "expected_compensation": {
       "rule": "Winter",
-      "expected_paco2_mmHg": 30.5,
+      "expected_paco2_mmHg": 24.5,
       "acceptable_range_mmHg": [
-        28.5,
-        32.5
+        22.5,
+        26.5
       ]
     }
   },
@@ -397,7 +544,7 @@ Number of cases: 8
     "hagma",
     "metabolic_acidosis"
   ],
-  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary metabolic acidosis. Winter's formula predicts PaCO2 ~30.5 (+/-2); measured 30.1 is appropriate compensation. Anion gap is 139 - (99 + 15) = 25, which is raised. This pattern is most consistent with renal failure causing uraemic high anion gap metabolic acidosis.",
+  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary metabolic acidosis. Winter's formula predicts PaCO2 ~24.5 (+/-2); measured 23.0 is appropriate compensation. Anion gap is 132 - (92 + 11) = 29, which is raised. This pattern is most consistent with renal failure causing uraemic high anion gap metabolic acidosis.",
   "timing": {
     "timer_visible_by_default": false,
     "time_bonus_scope": "whole_case",
@@ -425,300 +572,6 @@ Number of cases: 8
     ]
   },
   "patient_gender": "M",
-  "archetype": "uraemia",
-  "difficulty_level": 3,
-  "difficulty_label": "advanced",
-  "skills_tested": [
-    "ph_status",
-    "primary_disorder",
-    "compensation",
-    "anion_gap",
-    "final_diagnosis"
-  ],
-  "case_pool": "core_metabolic",
-  "progression": {
-    "base_xp": 25
-  }
-}
-
---------------------------------------------------------------------------------
-
-{
-  "case_id": "URAEMIA_006",
-  "title": "Renal failure (uraemic HAGMA with appropriate respiratory compensation)",
-  "case_type": "ABG",
-  "category": "metabolic_acidosis_hagma",
-  "clinical_stem": "66M on haemodialysis presents with malaise and nausea after missing a recent dialysis session.",
-  "inputs": {
-    "gas": {
-      "ph": 7.33,
-      "paco2_mmHg": 29.7,
-      "hco3_mmolL": 15
-    },
-    "electrolytes": {
-      "na_mmolL": 136,
-      "cl_mmolL": 99
-    },
-    "other": {
-      "lactate_mmolL": 1.1
-    },
-    "lactate_mmolL": 1.1
-  },
-  "questions_flow": [
-    {
-      "step": 1,
-      "key": "ph_status",
-      "label": "pH",
-      "prompt": "What is the pH status?",
-      "options": [
-        "Acidaemia",
-        "Alkalaemia",
-        "Normal"
-      ]
-    },
-    {
-      "step": 2,
-      "key": "primary_disorder",
-      "label": "Primary acid-base disorder",
-      "prompt": "What is the primary acid-base disorder?",
-      "options": [
-        "Respiratory acidosis",
-        "Respiratory alkalosis",
-        "Metabolic acidosis",
-        "Metabolic alkalosis"
-      ]
-    },
-    {
-      "step": 3,
-      "key": "compensation",
-      "label": "Compensation",
-      "prompt": "Is the physiological compensation appropriate?",
-      "options": [
-        "Appropriate",
-        "Inappropriate"
-      ]
-    },
-    {
-      "step": 4,
-      "key": "anion_gap",
-      "label": "Anion gap",
-      "prompt": "What is the anion gap status?",
-      "options": [
-        "Raised",
-        "Normal"
-      ]
-    },
-    {
-      "step": 5,
-      "key": "final_diagnosis",
-      "prompt": "Most likely diagnosis?",
-      "options": [
-        "Renal failure (uraemia)",
-        "DKA",
-        "Lactic acidosis",
-        "Toxic alcohol",
-        "Diarrhoea"
-      ]
-    }
-  ],
-  "answer_key": {
-    "ph_status": "Acidaemia",
-    "primary_disorder": "Metabolic acidosis",
-    "compensation": "Appropriate",
-    "anion_gap_value": 22,
-    "anion_gap_category": "Raised",
-    "final_diagnosis": "Renal failure (uraemia)",
-    "expected_compensation": {
-      "rule": "Winter",
-      "expected_paco2_mmHg": 30.5,
-      "acceptable_range_mmHg": [
-        28.5,
-        32.5
-      ]
-    }
-  },
-  "learning_objective": "Recognise high anion gap metabolic acidosis from uraemia with appropriate respiratory compensation",
-  "tags": [
-    "uraemia",
-    "renal_failure",
-    "hagma",
-    "metabolic_acidosis"
-  ],
-  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary metabolic acidosis. Winter's formula predicts PaCO2 ~30.5 (+/-2); measured 29.7 is appropriate compensation. Anion gap is 136 - (99 + 15) = 22, which is raised. This pattern is most consistent with renal failure causing uraemic high anion gap metabolic acidosis.",
-  "timing": {
-    "timer_visible_by_default": false,
-    "time_bonus_scope": "whole_case",
-    "time_bonus_tiers_seconds_inclusive": [
-      {
-        "max_seconds": 30,
-        "bonus": 10
-      },
-      {
-        "max_seconds": 45,
-        "bonus": 7
-      },
-      {
-        "max_seconds": 60,
-        "bonus": 5
-      },
-      {
-        "max_seconds": 90,
-        "bonus": 3
-      },
-      {
-        "max_seconds": 999999,
-        "bonus": 0
-      }
-    ]
-  },
-  "patient_gender": "M",
-  "archetype": "uraemia",
-  "difficulty_level": 3,
-  "difficulty_label": "advanced",
-  "skills_tested": [
-    "ph_status",
-    "primary_disorder",
-    "compensation",
-    "anion_gap",
-    "final_diagnosis"
-  ],
-  "case_pool": "core_metabolic",
-  "progression": {
-    "base_xp": 25
-  }
-}
-
---------------------------------------------------------------------------------
-
-{
-  "case_id": "URAEMIA_007",
-  "title": "Renal failure (uraemic HAGMA with appropriate respiratory compensation)",
-  "case_type": "ABG",
-  "category": "metabolic_acidosis_hagma",
-  "clinical_stem": "72F with advanced CKD presents with reduced appetite and progressive fatigue over several days.",
-  "inputs": {
-    "gas": {
-      "ph": 7.31,
-      "paco2_mmHg": 34.9,
-      "hco3_mmolL": 17
-    },
-    "electrolytes": {
-      "na_mmolL": 140,
-      "cl_mmolL": 103
-    },
-    "other": {
-      "lactate_mmolL": 1.3
-    },
-    "lactate_mmolL": 1.3
-  },
-  "questions_flow": [
-    {
-      "step": 1,
-      "key": "ph_status",
-      "label": "pH",
-      "prompt": "What is the pH status?",
-      "options": [
-        "Acidaemia",
-        "Alkalaemia",
-        "Normal"
-      ]
-    },
-    {
-      "step": 2,
-      "key": "primary_disorder",
-      "label": "Primary acid-base disorder",
-      "prompt": "What is the primary acid-base disorder?",
-      "options": [
-        "Respiratory acidosis",
-        "Respiratory alkalosis",
-        "Metabolic acidosis",
-        "Metabolic alkalosis"
-      ]
-    },
-    {
-      "step": 3,
-      "key": "compensation",
-      "label": "Compensation",
-      "prompt": "Is the physiological compensation appropriate?",
-      "options": [
-        "Appropriate",
-        "Inappropriate"
-      ]
-    },
-    {
-      "step": 4,
-      "key": "anion_gap",
-      "label": "Anion gap",
-      "prompt": "What is the anion gap status?",
-      "options": [
-        "Raised",
-        "Normal"
-      ]
-    },
-    {
-      "step": 5,
-      "key": "final_diagnosis",
-      "prompt": "Most likely diagnosis?",
-      "options": [
-        "Renal failure (uraemia)",
-        "DKA",
-        "Lactic acidosis",
-        "Toxic alcohol",
-        "Diarrhoea"
-      ]
-    }
-  ],
-  "answer_key": {
-    "ph_status": "Acidaemia",
-    "primary_disorder": "Metabolic acidosis",
-    "compensation": "Appropriate",
-    "anion_gap_value": 20,
-    "anion_gap_category": "Raised",
-    "final_diagnosis": "Renal failure (uraemia)",
-    "expected_compensation": {
-      "rule": "Winter",
-      "expected_paco2_mmHg": 33.5,
-      "acceptable_range_mmHg": [
-        31.5,
-        35.5
-      ]
-    }
-  },
-  "learning_objective": "Recognise high anion gap metabolic acidosis from uraemia with appropriate respiratory compensation",
-  "tags": [
-    "uraemia",
-    "renal_failure",
-    "hagma",
-    "metabolic_acidosis"
-  ],
-  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary metabolic acidosis. Winter's formula predicts PaCO2 ~33.5 (+/-2); measured 34.9 is appropriate compensation. Anion gap is 140 - (103 + 17) = 20, which is raised. This pattern is most consistent with renal failure causing uraemic high anion gap metabolic acidosis.",
-  "timing": {
-    "timer_visible_by_default": false,
-    "time_bonus_scope": "whole_case",
-    "time_bonus_tiers_seconds_inclusive": [
-      {
-        "max_seconds": 30,
-        "bonus": 10
-      },
-      {
-        "max_seconds": 45,
-        "bonus": 7
-      },
-      {
-        "max_seconds": 60,
-        "bonus": 5
-      },
-      {
-        "max_seconds": 90,
-        "bonus": 3
-      },
-      {
-        "max_seconds": 999999,
-        "bonus": 0
-      }
-    ]
-  },
-  "patient_gender": "F",
   "archetype": "uraemia",
   "difficulty_level": 3,
   "difficulty_label": "advanced",
@@ -742,16 +595,16 @@ Number of cases: 8
   "title": "Renal failure (uraemic HAGMA with appropriate respiratory compensation)",
   "case_type": "ABG",
   "category": "metabolic_acidosis_hagma",
-  "clinical_stem": "66M on haemodialysis presents with malaise and nausea after missing a recent dialysis session.",
+  "clinical_stem": "66F on haemodialysis presents with malaise and nausea after missing a recent dialysis session.",
   "inputs": {
     "gas": {
-      "ph": 7.34,
-      "paco2_mmHg": 32.6,
-      "hco3_mmolL": 17
+      "ph": 7.32,
+      "paco2_mmHg": 29.8,
+      "hco3_mmolL": 15
     },
     "electrolytes": {
-      "na_mmolL": 140,
-      "cl_mmolL": 103
+      "na_mmolL": 136,
+      "cl_mmolL": 102
     },
     "other": {
       "lactate_mmolL": 1.0
@@ -819,15 +672,15 @@ Number of cases: 8
     "ph_status": "Acidaemia",
     "primary_disorder": "Metabolic acidosis",
     "compensation": "Appropriate",
-    "anion_gap_value": 20,
+    "anion_gap_value": 19,
     "anion_gap_category": "Raised",
     "final_diagnosis": "Renal failure (uraemia)",
     "expected_compensation": {
       "rule": "Winter",
-      "expected_paco2_mmHg": 33.5,
+      "expected_paco2_mmHg": 30.5,
       "acceptable_range_mmHg": [
-        31.5,
-        35.5
+        28.5,
+        32.5
       ]
     }
   },
@@ -838,7 +691,7 @@ Number of cases: 8
     "hagma",
     "metabolic_acidosis"
   ],
-  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary metabolic acidosis. Winter's formula predicts PaCO2 ~33.5 (+/-2); measured 32.6 is appropriate compensation. Anion gap is 140 - (103 + 17) = 20, which is raised. This pattern is most consistent with renal failure causing uraemic high anion gap metabolic acidosis.",
+  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary metabolic acidosis. Winter's formula predicts PaCO2 ~30.5 (+/-2); measured 29.8 is appropriate compensation. Anion gap is 136 - (102 + 15) = 19, which is raised. This pattern is most consistent with renal failure causing uraemic high anion gap metabolic acidosis.",
   "timing": {
     "timer_visible_by_default": false,
     "time_bonus_scope": "whole_case",
@@ -865,7 +718,7 @@ Number of cases: 8
       }
     ]
   },
-  "patient_gender": "M",
+  "patient_gender": "F",
   "archetype": "uraemia",
   "difficulty_level": 3,
   "difficulty_label": "advanced",
@@ -885,25 +738,25 @@ Number of cases: 8
 --------------------------------------------------------------------------------
 
 {
-  "case_id": "URAEMIA_004",
+  "case_id": "URAEMIA_007",
   "title": "Renal failure (uraemic HAGMA with appropriate respiratory compensation)",
   "case_type": "ABG",
   "category": "metabolic_acidosis_hagma",
-  "clinical_stem": "64F on haemodialysis presents lethargic and nauseated after missing recent dialysis sessions.",
+  "clinical_stem": "72M with advanced CKD presents with reduced appetite and progressive fatigue over several days.",
   "inputs": {
     "gas": {
-      "ph": 7.32,
-      "paco2_mmHg": 30.2,
-      "hco3_mmolL": 15
+      "ph": 7.33,
+      "paco2_mmHg": 31.5,
+      "hco3_mmolL": 16
     },
     "electrolytes": {
-      "na_mmolL": 134,
-      "cl_mmolL": 97
+      "na_mmolL": 138,
+      "cl_mmolL": 103
     },
     "other": {
-      "lactate_mmolL": 1.3
+      "lactate_mmolL": 1.1
     },
-    "lactate_mmolL": 1.3
+    "lactate_mmolL": 1.1
   },
   "questions_flow": [
     {
@@ -966,15 +819,15 @@ Number of cases: 8
     "ph_status": "Acidaemia",
     "primary_disorder": "Metabolic acidosis",
     "compensation": "Appropriate",
-    "anion_gap_value": 22,
+    "anion_gap_value": 19,
     "anion_gap_category": "Raised",
     "final_diagnosis": "Renal failure (uraemia)",
     "expected_compensation": {
       "rule": "Winter",
-      "expected_paco2_mmHg": 30.5,
+      "expected_paco2_mmHg": 32.0,
       "acceptable_range_mmHg": [
-        28.5,
-        32.5
+        30.0,
+        34.0
       ]
     }
   },
@@ -985,7 +838,7 @@ Number of cases: 8
     "hagma",
     "metabolic_acidosis"
   ],
-  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary metabolic acidosis. Winter's formula predicts PaCO2 ~30.5 (+/-2); measured 30.2 is appropriate compensation. Anion gap is 134 - (97 + 15) = 22, which is raised. This pattern is most consistent with renal failure causing uraemic high anion gap metabolic acidosis.",
+  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary metabolic acidosis. Winter's formula predicts PaCO2 ~32.0 (+/-2); measured 31.5 is appropriate compensation. Anion gap is 138 - (103 + 16) = 19, which is raised. This pattern is most consistent with renal failure causing uraemic high anion gap metabolic acidosis.",
   "timing": {
     "timer_visible_by_default": false,
     "time_bonus_scope": "whole_case",
@@ -1012,7 +865,7 @@ Number of cases: 8
       }
     ]
   },
-  "patient_gender": "F",
+  "patient_gender": "M",
   "archetype": "uraemia",
   "difficulty_level": 3,
   "difficulty_label": "advanced",
@@ -1032,25 +885,25 @@ Number of cases: 8
 --------------------------------------------------------------------------------
 
 {
-  "case_id": "URAEMIA_002",
+  "case_id": "URAEMIA_001",
   "title": "Renal failure (uraemic HAGMA with appropriate respiratory compensation)",
   "case_type": "ABG",
   "category": "metabolic_acidosis_hagma",
-  "clinical_stem": "71F with advanced CKD presents with malaise, reduced urine output, and progressive weakness over several days.",
+  "clinical_stem": "59F with renal failure presents with fluid overload, lethargy, and worsening oliguria after missing dialysis.",
   "inputs": {
     "gas": {
-      "ph": 7.31,
-      "paco2_mmHg": 28.8,
-      "hco3_mmolL": 14
+      "ph": 7.29,
+      "paco2_mmHg": 23.8,
+      "hco3_mmolL": 11
     },
     "electrolytes": {
-      "na_mmolL": 137,
-      "cl_mmolL": 97
+      "na_mmolL": 138,
+      "cl_mmolL": 101
     },
     "other": {
-      "lactate_mmolL": 1.2
+      "lactate_mmolL": 1.6
     },
-    "lactate_mmolL": 1.2
+    "lactate_mmolL": 1.6
   },
   "questions_flow": [
     {
@@ -1118,6 +971,153 @@ Number of cases: 8
     "final_diagnosis": "Renal failure (uraemia)",
     "expected_compensation": {
       "rule": "Winter",
+      "expected_paco2_mmHg": 24.5,
+      "acceptable_range_mmHg": [
+        22.5,
+        26.5
+      ]
+    }
+  },
+  "learning_objective": "Recognise high anion gap metabolic acidosis from uraemia with appropriate respiratory compensation",
+  "tags": [
+    "uraemia",
+    "renal_failure",
+    "hagma",
+    "metabolic_acidosis"
+  ],
+  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary metabolic acidosis. Winter's formula predicts PaCO2 ~24.5 (+/-2); measured 23.8 is appropriate compensation. Anion gap is 138 - (101 + 11) = 26, which is raised. This pattern is most consistent with renal failure causing uraemic high anion gap metabolic acidosis.",
+  "timing": {
+    "timer_visible_by_default": false,
+    "time_bonus_scope": "whole_case",
+    "time_bonus_tiers_seconds_inclusive": [
+      {
+        "max_seconds": 30,
+        "bonus": 10
+      },
+      {
+        "max_seconds": 45,
+        "bonus": 7
+      },
+      {
+        "max_seconds": 60,
+        "bonus": 5
+      },
+      {
+        "max_seconds": 90,
+        "bonus": 3
+      },
+      {
+        "max_seconds": 999999,
+        "bonus": 0
+      }
+    ]
+  },
+  "patient_gender": "F",
+  "archetype": "uraemia",
+  "difficulty_level": 3,
+  "difficulty_label": "advanced",
+  "skills_tested": [
+    "ph_status",
+    "primary_disorder",
+    "compensation",
+    "anion_gap",
+    "final_diagnosis"
+  ],
+  "case_pool": "core_metabolic",
+  "progression": {
+    "base_xp": 25
+  }
+}
+
+--------------------------------------------------------------------------------
+
+{
+  "case_id": "URAEMIA_008",
+  "title": "Renal failure (uraemic HAGMA with appropriate respiratory compensation)",
+  "case_type": "ABG",
+  "category": "metabolic_acidosis_hagma",
+  "clinical_stem": "64F on haemodialysis presents lethargic and nauseated after missing recent dialysis sessions.",
+  "inputs": {
+    "gas": {
+      "ph": 7.32,
+      "paco2_mmHg": 27.9,
+      "hco3_mmolL": 14
+    },
+    "electrolytes": {
+      "na_mmolL": 138,
+      "cl_mmolL": 100
+    },
+    "other": {
+      "lactate_mmolL": 1.2
+    },
+    "lactate_mmolL": 1.2
+  },
+  "questions_flow": [
+    {
+      "step": 1,
+      "key": "ph_status",
+      "label": "pH",
+      "prompt": "What is the pH status?",
+      "options": [
+        "Acidaemia",
+        "Alkalaemia",
+        "Normal"
+      ]
+    },
+    {
+      "step": 2,
+      "key": "primary_disorder",
+      "label": "Primary acid-base disorder",
+      "prompt": "What is the primary acid-base disorder?",
+      "options": [
+        "Respiratory acidosis",
+        "Respiratory alkalosis",
+        "Metabolic acidosis",
+        "Metabolic alkalosis"
+      ]
+    },
+    {
+      "step": 3,
+      "key": "compensation",
+      "label": "Compensation",
+      "prompt": "Is the physiological compensation appropriate?",
+      "options": [
+        "Appropriate",
+        "Inappropriate"
+      ]
+    },
+    {
+      "step": 4,
+      "key": "anion_gap",
+      "label": "Anion gap",
+      "prompt": "What is the anion gap status?",
+      "options": [
+        "Raised",
+        "Normal"
+      ]
+    },
+    {
+      "step": 5,
+      "key": "final_diagnosis",
+      "prompt": "Most likely diagnosis?",
+      "options": [
+        "Renal failure (uraemia)",
+        "DKA",
+        "Lactic acidosis",
+        "Toxic alcohol",
+        "Diarrhoea"
+      ]
+    }
+  ],
+  "answer_key": {
+    "ph_status": "Acidaemia",
+    "primary_disorder": "Metabolic acidosis",
+    "compensation": "Appropriate",
+    "anion_gap_value": 24,
+    "anion_gap_category": "Raised",
+    "final_diagnosis": "Renal failure (uraemia)",
+    "expected_compensation": {
+      "rule": "Winter",
       "expected_paco2_mmHg": 29.0,
       "acceptable_range_mmHg": [
         27.0,
@@ -1132,7 +1132,7 @@ Number of cases: 8
     "hagma",
     "metabolic_acidosis"
   ],
-  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary metabolic acidosis. Winter's formula predicts PaCO2 ~29.0 (+/-2); measured 28.8 is appropriate compensation. Anion gap is 137 - (97 + 14) = 26, which is raised. This pattern is most consistent with renal failure causing uraemic high anion gap metabolic acidosis.",
+  "explanation": "Low pH indicates acidaemia. Low HCO3 indicates a primary metabolic acidosis. Winter's formula predicts PaCO2 ~29.0 (+/-2); measured 27.9 is appropriate compensation. Anion gap is 138 - (100 + 14) = 24, which is raised. This pattern is most consistent with renal failure causing uraemic high anion gap metabolic acidosis.",
   "timing": {
     "timer_visible_by_default": false,
     "time_bonus_scope": "whole_case",

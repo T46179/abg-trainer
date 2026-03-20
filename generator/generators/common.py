@@ -67,6 +67,30 @@ ALLOWED_DIAGNOSIS_OPTION_PAIRS = {
             "high anion gap metabolic acidosis",
         }
     ),
+    frozenset(
+        {
+            "respiratory acidosis with concurrent high anion gap metabolic acidosis",
+            "respiratory acidosis",
+        }
+    ),
+    frozenset(
+        {
+            "respiratory acidosis with concurrent high anion gap metabolic acidosis",
+            "high anion gap metabolic acidosis",
+        }
+    ),
+    frozenset(
+        {
+            "respiratory alkalosis with concurrent high anion gap metabolic acidosis",
+            "respiratory alkalosis",
+        }
+    ),
+    frozenset(
+        {
+            "respiratory alkalosis with concurrent high anion gap metabolic acidosis",
+            "high anion gap metabolic acidosis",
+        }
+    ),
 }
 
 MECHANISM_LABELS = {
