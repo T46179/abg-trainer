@@ -46,6 +46,7 @@ DIAGNOSIS_CANONICAL_LABELS = {
     "benzodiazepine overdose": "sedative overdose",
     "diabetic ketoacidosis": "dka",
     "opioid overdose": "opioid toxicity",
+    "panic attack hyperventilation": "panic attack / hyperventilation",
     "panic hyperventilation": "panic attack / hyperventilation",
     "uraemia": "renal failure (uraemia)",
 }
@@ -91,6 +92,8 @@ ALLOWED_DIAGNOSIS_OPTION_PAIRS = {
             "high anion gap metabolic acidosis",
         }
     ),
+    frozenset({"respiratory acidosis", "lactic acidosis"}),
+    frozenset({"sepsis", "panic attack / hyperventilation"}),
 }
 
 MECHANISM_LABELS = {

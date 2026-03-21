@@ -108,6 +108,7 @@ DKA_VARIATION_BANDS = [
         "name": "mild",
         "hco3_range": (13, 16),
         "anion_gap_range": (20, 24),
+        "glucose_range": (16.0, 22.0),
         "lactate_range": (0.9, 1.8),
         "sodium_range": (136, 142),
         "compensation_delta_range": (-1.0, 1.0),
@@ -117,6 +118,7 @@ DKA_VARIATION_BANDS = [
         "name": "moderate",
         "hco3_range": (10, 13),
         "anion_gap_range": (24, 28),
+        "glucose_range": (20.0, 28.0),
         "lactate_range": (1.0, 2.3),
         "sodium_range": (134, 141),
         "compensation_delta_range": (-1.5, 1.5),
@@ -126,6 +128,7 @@ DKA_VARIATION_BANDS = [
         "name": "severe",
         "hco3_range": (8, 10),
         "anion_gap_range": (28, 32),
+        "glucose_range": (24.0, 34.0),
         "lactate_range": (1.4, 2.8),
         "sodium_range": (132, 140),
         "compensation_delta_range": (-1.8, 1.8),
@@ -139,6 +142,7 @@ ALCOHOLIC_KETOACIDOSIS_VARIATION_BANDS = [
         "hco3_range": (15, 18),
         "anion_gap_range": (18, 24),
         "chloride_range": (92, 100),
+        "glucose_range": (4.2, 7.8),
         "lactate_range": (1.5, 3.0),
         "sodium_range": (132, 138),
         "compensation_delta_range": (-1.4, 1.0),
@@ -149,6 +153,7 @@ ALCOHOLIC_KETOACIDOSIS_VARIATION_BANDS = [
         "hco3_range": (10, 14),
         "anion_gap_range": (22, 30),
         "chloride_range": (88, 98),
+        "glucose_range": (4.0, 9.5),
         "lactate_range": (1.5, 3.5),
         "sodium_range": (130, 137),
         "compensation_delta_range": (-1.2, 1.2),
@@ -159,6 +164,7 @@ ALCOHOLIC_KETOACIDOSIS_VARIATION_BANDS = [
         "hco3_range": (6, 10),
         "anion_gap_range": (26, 36),
         "chloride_range": (84, 96),
+        "glucose_range": (4.0, 11.0),
         "lactate_range": (1.5, 4.0),
         "sodium_range": (128, 136),
         "compensation_delta_range": (-1.0, 1.0),
@@ -614,6 +620,7 @@ def generate_alcoholic_ketoacidosis_case(case_id):
     paco2_high = min(expected_paco2 + 2, compensation_midpoint + 0.8)
     paco2 = round(random.uniform(paco2_low, paco2_high), 1)
     ph = estimate_ph(hco3, paco2)
+    glucose = round(random.uniform(*band["glucose_range"]), 1)
     lactate = None
 
     if random.random() < 0.65:
@@ -651,7 +658,7 @@ def generate_alcoholic_ketoacidosis_case(case_id):
         learning_objective="Recognise alcoholic ketoacidosis as a high anion gap metabolic acidosis with appropriate respiratory compensation",
         tags=["alcoholic_ketoacidosis", "hagma", "metabolic_acidosis"],
         clinical_stem=clinical_stem,
-        inputs=build_inputs(ph, paco2, hco3, na, cl, lactate=lactate),
+        inputs=build_inputs(ph, paco2, hco3, na, cl, lactate=lactate, glucose=glucose),
         questions_flow=shuffle_question_options(
             advanced_question_flow([
                 "Alcoholic ketoacidosis",
@@ -783,6 +790,7 @@ def generate_dka_case(case_id):
     target_ag = random.randint(*band["anion_gap_range"])
     cl = na - (hco3 + target_ag)
     ag = calc_anion_gap(na, cl, hco3)
+    glucose = round(random.uniform(*band["glucose_range"]), 1)
     lactate = round(random.uniform(*band["lactate_range"]), 1)
 
     explanation = (
@@ -804,7 +812,7 @@ def generate_dka_case(case_id):
         learning_objective="Recognise high anion gap metabolic acidosis with appropriate respiratory compensation",
         tags=["dka", "hagma", "metabolic_acidosis"],
         clinical_stem=clinical_stem,
-        inputs=build_inputs(ph, paco2, hco3, na, cl, lactate=lactate),
+        inputs=build_inputs(ph, paco2, hco3, na, cl, lactate=lactate, glucose=glucose),
         questions_flow=shuffle_question_options(
             advanced_question_flow([
                 "DKA",
@@ -978,9 +986,9 @@ def generate_diarrhoea_case(case_id):
     ]
 
     ph_label = derived_ph_status(ph)
-    if ph_label == "acidaemia":
+    if ph_label == "Acidaemia":
         ph_text = "Low pH indicates acidaemia."
-    elif ph_label == "alkalaemia":
+    elif ph_label == "Alkalaemia":
         ph_text = "High pH indicates alkalaemia."
     else:
         ph_text = "The pH is in the normal range, but the low HCO3 still indicates a primary metabolic acidosis with respiratory compensation."
@@ -1101,15 +1109,38 @@ def generate_lactate_case(case_id):
     na = random.uniform(138, 144)
     cl = random.uniform(95, 102)
     lactate = random.uniform(4, 10)
-    ag = calc_anion_gap(na, cl, hco3)
     clinical_stem, patient_gender = generate_stem("lactic_acidosis", return_patient_gender=True)
+    inputs = build_inputs(ph, paco2, hco3, na, cl, lactate=lactate)
+    gas = inputs["gas"]
+    electrolytes = inputs["electrolytes"]
+    lactate_value = inputs["other"]["lactate_mmolL"]
+    displayed_expected_paco2 = round(winters_expected_paco2(gas["hco3_mmolL"]), 1)
+    ag = calc_anion_gap(electrolytes["na_mmolL"], electrolytes["cl_mmolL"], gas["hco3_mmolL"])
+    ph_status = derived_ph_status(gas["ph"])
+
+    if ph_status == "Acidaemia":
+        ph_text = f"pH is {gas['ph']}, so there is acidaemia."
+    elif ph_status == "Alkalaemia":
+        ph_text = f"pH is {gas['ph']}, so there is alkalaemia overall."
+    else:
+        ph_text = f"pH is {gas['ph']}, so the overall pH is near normal."
+
+    explanation = (
+        f"1. {ph_text} "
+        f"2. HCO3 is {gas['hco3_mmolL']} mmol/L, which is low and indicates a primary metabolic acidosis. "
+        f"3. For this metabolic acidosis, Winter's formula predicts a PaCO2 of about {displayed_expected_paco2} mmHg "
+        f"(acceptable range {round(displayed_expected_paco2 - 2, 1)}-{round(displayed_expected_paco2 + 2, 1)}), "
+        f"and the measured PaCO2 is {gas['paco2_mmHg']} mmHg, so the respiratory compensation is appropriate. "
+        f"4. The anion gap is {electrolytes['na_mmolL']} - ({electrolytes['cl_mmolL']} + {gas['hco3_mmolL']}) = {ag}, which is raised. "
+        f"5. Lactate is {lactate_value} mmol/L, which materially supports lactic acidosis, and the septic clinical context makes sepsis-related lactic acidosis the best fit."
+    )
 
     return build_case(
         case_id=case_id,
         title="Lactic acidosis (sepsis)",
         category="metabolic_acidosis_hagma",
         clinical_stem=clinical_stem,
-        inputs=build_inputs(ph, paco2, hco3, na, cl, lactate=lactate),
+        inputs=inputs,
         questions_flow=shuffle_question_options(
             advanced_question_flow([
                 "Lactic acidosis",
@@ -1120,7 +1151,7 @@ def generate_lactate_case(case_id):
             ])
         ),
         answer_key=build_answer_key(
-            ph_status=derived_ph_status(ph),
+            ph_status=ph_status,
             primary_disorder="Metabolic acidosis",
             compensation="Appropriate",
             anion_gap_value=ag,
@@ -1128,11 +1159,11 @@ def generate_lactate_case(case_id):
             final_diagnosis="Lactic acidosis",
             expected_compensation={
                 "rule": "Winter",
-                "expected_paco2_mmHg": round(expected_paco2, 1),
-                "acceptable_range_mmHg": [round(expected_paco2 - 2, 1), round(expected_paco2 + 2, 1)],
+                "expected_paco2_mmHg": displayed_expected_paco2,
+                "acceptable_range_mmHg": [round(displayed_expected_paco2 - 2, 1), round(displayed_expected_paco2 + 2, 1)],
             },
         ),
-        explanation="Sepsis commonly causes high anion gap metabolic acidosis due to lactate accumulation.",
+        explanation=explanation,
         level=3,
         archetype="lactic_acidosis",
         patient_gender=patient_gender,

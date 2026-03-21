@@ -1,6 +1,6 @@
 # AI Project Context: ABG Trainer
 
-Last updated: 2026-03-20
+Last updated: 2026-03-21
 
 This document summarizes the architecture and case schema so external AI tools can understand the project even when only this file is provided.
 
@@ -94,7 +94,7 @@ What the main modules do:
 
 - `generator/validation.py`
   - Validates each generated case.
-  - Checks physiologic plausibility, question flow structure, archetype-specific compensation expectations, and duplicate IDs.
+  - Checks physiologic plausibility, question flow structure, explicit archetype-specific contracts, mixed-disorder numeric proof, diagnosis-critical adjunct labs, scored-step answer membership, and duplicate IDs.
 
 - `generator/reporting.py`
   - Prints generation summaries and examples for local inspection when building the JSON payload.
@@ -117,7 +117,7 @@ What the main modules do:
   - Mixed-disorder archetype generators.
 
 - `generator/tests/test_generate_cases.py`
-  - Coverage-style integration tests for case counts, structure, plausibility, and JSON output.
+  - Coverage-style integration tests for case counts, structure, plausibility, JSON output, and targeted regression protection for validation/explanation drift.
 
 - `docs/index.html`
   - Static HTML shell for the training app.
@@ -339,6 +339,11 @@ Examples of built-in physiologic reasoning:
 - Chronic respiratory acidosis estimates expected bicarbonate elevation.
 - Anion gap is computed directly from sodium, chloride, and bicarbonate.
 
+Recent validation direction:
+- The project now prefers explicit archetype validation contracts rather than silent generic fallthrough.
+- Mixed-disorder validators increasingly prove the second process from displayed numbers rather than trusting labels or explanations.
+- Diagnosis-critical adjunct labs such as glucose and lactate are now validated selectively where they materially support or contradict the named diagnosis family.
+
 This physiology layer is what keeps the training cases medically coherent.
 
 ## 5. Question Flow System
@@ -418,6 +423,7 @@ Design interpretation:
 - `mixed_hagma_metabolic_alkalosis` now also uses structured variation bands (`obvious_mix`, `subtle_mix`, and `near_normal_ph_trap`) to vary how strongly the additional metabolic alkalosis is signalled while preserving the same Master-level mixed-disorder reasoning path.
 - `respiratory_alkalosis_hagma` is the respiratory-alkalosis counterpart to the respiratory-acidosis mixed archetype. It uses acute respiratory alkalosis compensation expectations and variation bands (`obvious_mixed`, `near_normal_ph_trap`, and `subtle_mismatch`) so learners must detect that bicarbonate is too low for a single respiratory process while the anion gap stays clearly raised.
 - `respiratory_acidosis_hagma` now spans chronic obvious mismatches, an acute respiratory failure + HAGMA variant, and a subtle near-miss compensation variant while remaining one Master mixed-disorder archetype.
+- `salicylate_toxicity` now follows the same Master mixed-disorder pattern as `respiratory_alkalosis_hagma`: the primary process is scored as respiratory alkalosis, the additional metabolic process is explicit high anion gap metabolic acidosis, and validation checks that the displayed numbers prove both processes.
 - In those respiratory archetypes, variation bands adjust severity while preserving the same disorder pattern, compensation logic, and beginner question flow.
 - Respiratory generators still compute anion gap through the shared `calc_anion_gap()` helper in `generator/physiology.py`. This keeps the schema and answer-key structure consistent across archetypes, even when anion-gap reasoning is not required at lower levels.
 
@@ -549,6 +555,11 @@ Current frontend shell and UI behavior:
 - The footer now includes a global feedback link plus a reset-progress control that clears local storage and reloads the app.
 - `index.html` also includes Google Analytics (`gtag`) and Microsoft Clarity instrumentation.
 
+Current analytics/persistence state:
+- The frontend persists lightweight user-progress state in local storage, including XP, level, streak, cases completed, aggregate answer counts, a short `recentResults` buffer, the latest detailed case summary, and seen-case tracking by difficulty.
+- Product analytics currently rely on Google Analytics events and Microsoft Clarity session behavior tooling.
+- There is not yet a persistent per-attempt performance history rich enough to drive weakness-based remediation or case curation across archetypes/skills.
+
 Data flow:
 1. Python generation writes `abg_cases.json`.
 2. The browser fetches `abg_cases.json`.
@@ -567,6 +578,9 @@ In practical frontend terms, `docs/app.js` is primarily responsible for:
 - practice intro onboarding flow
 - per-case feedback URL generation
 - analytics event tracking for page views, case starts, answers, completions, and feedback opens
+
+Current analytics limitation that matters architecturally:
+- The app can summarize overall progress and the latest case review, but it does not yet retain enough attempt-level history to support a true "Performance" dashboard with weakest-skill breakdowns and curated remediation recommendations.
 
 Launch-mode access control is also enforced in `docs/app.js` through centralized helpers rather than scattered per-view conditions. That frontend access layer is responsible for:
 - learn-mode gating
@@ -714,11 +728,16 @@ When proposing or implementing changes in this project, external AI tools should
   - any frontend logic that depends on the field
 - Keep `AI_PROJECT_CONTEXT.md` accurate whenever schema changes
 
-9. Prefer variation bands before unlimited new archetypes
+11. Explanation quality matters when it is part of the teaching contract
+- Explanations should reinforce the same reasoning steps the learner is scored on.
+- When a generator explanation depends on derived labels such as pH status, compare against the helper's actual outputs rather than ad hoc string variants.
+- Lactic-acidosis style cases should explicitly walk through pH, primary disorder, compensation, anion gap, and diagnosis fit instead of relying on one-line summaries.
+
+12. Prefer variation bands before unlimited new archetypes
 - If a pattern already exists but feels repetitive, first consider adding variation bands
 - Add new archetypes when they introduce a genuinely distinct acid-base pattern
 
-10. Keep documentation aligned with code
+13. Keep documentation aligned with code
 - `AI_PROJECT_CONTEXT.md` should reflect actual implemented architecture, not aspirational features
 - If new archetypes are added, update the archetype library and case pool summary
 - If schema changes, update the case data schema section

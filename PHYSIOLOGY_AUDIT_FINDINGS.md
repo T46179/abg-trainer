@@ -8,19 +8,20 @@ Overall judgment:
 - The project is not yet safe for exam-facing educational use in its current state.
 
 Why it is not yet safe:
-- One important mixed archetype, `salicylate_toxicity`, still teaches an awkward and potentially misleading forced primary-disorder label.
-- Validation coverage is still incomplete enough that explanation drift, adjunct-lab drift, and distractor drift can slip through silently.
+- The core high-risk physiology issues fixed today are materially improved, but the project still needs a final regeneration and execution pass before it can be treated as release-safe.
+- Remaining risk now sits more in explanation quality, live-payload freshness, and long-tail content drift than in the previously identified critical mixed-disorder scoring errors.
 
 Biggest strengths:
 - Shared formulas in `generator/physiology.py` are correct for the compensation models currently in use.
-- `mixed_hagma_metabolic_alkalosis`, `respiratory_acidosis_hagma`, `respiratory_alkalosis_hagma`, and the redesigned `dka_vomiting` are now the strongest physiology-first parts of the mixed-disorder library.
+- `mixed_hagma_metabolic_alkalosis`, `respiratory_acidosis_hagma`, `respiratory_alkalosis_hagma`, the redesigned `dka_vomiting`, and the reworked `salicylate_toxicity` are now the strongest physiology-first parts of the mixed-disorder library.
 - The generator consistently derives pH from Henderson-Hasselbalch logic and validates ABG consistency against it.
 - The previous compensation-schema break in `acute_copd_exacerbation` and `sepsis_respiratory_alkalosis` has been corrected, so those intermediate cases are now answerable within the binary UI contract.
+- Validation now enforces explicit archetype-contract coverage, generic answer-key membership for scored steps, mixed-case numeric proof checks, and diagnosis-critical adjunct-lab contracts in [generator/validation.py](E:/Desktop/abg-trainer/generator/validation.py).
 
 Biggest concerns:
-- `salicylate_toxicity` still asks learners to force a single primary-disorder label onto physiology that is genuinely cross-system.
-- Validation still does not broadly check explanation correctness, adjunct-lab support, or preservation of intended distractors.
-- A mixed-disorder schema that handles extra metabolic processes reasonably well but handles mixed respiratory-plus-metabolic teaching awkwardly.
+- The checked-in live payload may still lag the source generators until `docs/abg_cases.json` is regenerated and revalidated in an executable environment.
+- Validation still does not broadly check explanation correctness.
+- Progression metadata and performance analytics remain much shallower than the physiology model now supports.
 
 ## 2. What Appears Physiologically Strong
 
@@ -28,7 +29,7 @@ Biggest concerns:
 - The single-process beginner metabolic archetypes are mostly well shaped. `simple_nagma` and `simple_metabolic_alkalosis` intentionally keep pH clearly abnormal for beginner clarity and keep chloride direction physiologically aligned with the stated diagnosis in [generator/generators/metabolic.py](E:/Desktop/abg-trainer/generator/generators/metabolic.py#L326) and [generator/generators/metabolic.py](E:/Desktop/abg-trainer/generator/generators/metabolic.py#L407).
 - The higher-risk HAGMA archetypes `starvation_ketosis`, `alcoholic_ketoacidosis`, `toxic_alcohol`, and `uraemia` are better than average. They use AG ranges, respiratory compensation windows, and context modifiers that usually support the named diagnosis rather than just generating generic HAGMA numbers in [generator/generators/metabolic.py](E:/Desktop/abg-trainer/generator/generators/metabolic.py#L485), [generator/generators/metabolic.py](E:/Desktop/abg-trainer/generator/generators/metabolic.py#L597), [generator/generators/metabolic.py](E:/Desktop/abg-trainer/generator/generators/metabolic.py#L685), and [generator/generators/metabolic.py](E:/Desktop/abg-trainer/generator/generators/metabolic.py#L1031).
 - The strongest mixed-disorder implementations are `mixed_hagma_metabolic_alkalosis`, `respiratory_acidosis_hagma`, `respiratory_alkalosis_hagma`, and the redesigned `dka_vomiting`. They explicitly compare actual values against an expected compensation model rather than using vague "partial compensation" language in [generator/generators/mixed.py](E:/Desktop/abg-trainer/generator/generators/mixed.py) and [generator/validation.py](E:/Desktop/abg-trainer/generator/validation.py).
-- Validation is stronger than before because compensation answers with a compensation question must now stay inside the binary option set, `acute_copd_exacerbation` plus `sepsis_respiratory_alkalosis` now have archetype-specific checks, and `dka_vomiting` now validates hyperglycaemia support, delta-gap-preserved bicarbonate, and Winter-consistent respiratory compensation in [generator/validation.py](E:/Desktop/abg-trainer/generator/validation.py).
+- Validation is substantially stronger than before because it now uses explicit archetype contracts, validates every scored step against its option list, audits archetype coverage across generated cases, and applies physiology-specific mixed-case plus adjunct-lab checks in [generator/validation.py](E:/Desktop/abg-trainer/generator/validation.py).
 
 ## 3. Findings By Severity
 
@@ -42,70 +43,70 @@ Biggest concerns:
 - Title: Validation coverage is incomplete in exactly the places that most need it
 - Severity: Major
 - Issue:
-  Validation is stronger than before, but it still does not broadly validate explanation correctness, diagnosis-supporting adjunct labs across all archetypes, or preservation of required final-diagnosis distractors after sanitization.
+  The original audit concern was valid, but most of the specific coverage gaps have now been addressed. The remaining gap is narrower: validation still does not broadly validate explanation correctness, and required distractor preservation still depends on targeted sanitizer allowlists rather than a formal contract per archetype.
 - Why it matters:
   A case can still pass numeric validation while teaching the wrong lesson. That is especially risky for exam users, because the vulnerable failures now sit in explanation wording, distractor quality, and label framing rather than raw acid-base arithmetic.
 - Evidence:
-  `validation.py` now contains targeted branches for the previously broken respiratory intermediate archetypes and for `dka_vomiting`, but there is still no generic check that an explanation matches the displayed physiology or that curated mixed-disorder distractors survive `sanitize_final_diagnosis_options()` in [generator/generators/common.py](E:/Desktop/abg-trainer/generator/generators/common.py).
+  `validation.py` now declares explicit archetype contracts, enforces generic scored-step answer membership, and validates mixed numeric proof plus diagnosis-critical labs in [generator/validation.py](E:/Desktop/abg-trainer/generator/validation.py). The remaining uncovered area is explanation-versus-physiology validation, and mixed distractor preservation is still handled indirectly through `sanitize_final_diagnosis_options()` allow-pairs in [generator/generators/common.py](E:/Desktop/abg-trainer/generator/generators/common.py).
 - Recommended fix:
-  Extend validation beyond raw numeric plausibility. Add reusable checks for explanation-versus-physiology consistency, diagnosis-supporting adjunct labs where relevant, and required distractor presence for mixed cases.
+  Keep the current contract-based validation architecture, then add reusable explanation-versus-physiology checks and, if mixed distractor regressions recur, archetype-specific required-distractor assertions.
 
 - Title: Salicylate cases are represented awkwardly enough to risk teaching the wrong "primary disorder"
 - Severity: Major
 - Issue:
-  `generate_salicylate_case` hardcodes `primary_disorder="Metabolic acidosis"` in [generator/generators/mixed.py](E:/Desktop/abg-trainer/generator/generators/mixed.py#L282), even though the explanation correctly says the low PaCO2 indicates respiratory alkalosis and some live cases are alkalemic or near-normal.
+  This finding has been addressed in source. `generate_salicylate_case` now models salicylate as respiratory alkalosis with concurrent high anion gap metabolic acidosis in [generator/generators/mixed.py](E:/Desktop/abg-trainer/generator/generators/mixed.py#L334).
 - Why it matters:
-  The learner is explicitly asked to choose a primary disorder. In current salicylate cases, the answer key can tell them to click "Metabolic acidosis" even when the pH is alkalemic and the explanation itself says respiratory alkalosis is present. That is pedagogically unstable for exam users.
+  This was a genuine educational-safety issue because the previous schema forced an incorrect single-process framing onto classic salicylate mixed physiology.
 - Evidence:
-  Live salicylate case [docs/abg_cases.json](E:/Desktop/abg-trainer/docs/abg_cases.json#L8231) stores `ph_status = "Alkalaemia"` and `primary_disorder = "Metabolic acidosis"`, while the explanation at [docs/abg_cases.json](E:/Desktop/abg-trainer/docs/abg_cases.json#L8251) says the low PaCO2 indicates respiratory alkalosis.
+  The source generator now stores `primary_disorder="Respiratory alkalosis"`, `compensation="Inappropriate"`, `anion_gap_category="Raised"`, and `additional_metabolic_process="High anion gap metabolic acidosis"` with explicit acute respiratory alkalosis mismatch metadata in [generator/generators/mixed.py](E:/Desktop/abg-trainer/generator/generators/mixed.py#L334). The corresponding validator in [generator/validation.py](E:/Desktop/abg-trainer/generator/validation.py#L869) now fails any drift back to the old single-process model.
 - Recommended fix:
-  Either change the question model for salicylate so it asks for "overall pattern" rather than a forced primary single-process label, or add a schema path that can encode a concurrent respiratory process explicitly.
+  Completed in source. Regenerate `docs/abg_cases.json` in a runnable environment so the live payload matches the corrected salicylate model.
 
 - Title: Final-diagnosis option sanitization is mutating curated distractors in physiology-significant ways
 - Severity: Major
 - Issue:
-  Mixed archetypes define pedagogically chosen distractors in their generators, but `sanitize_final_diagnosis_options()` in [generator/generators/common.py](E:/Desktop/abg-trainer/generator/generators/common.py#L229) can remove them and backfill from a generic pool in [generator/generators/common.py](E:/Desktop/abg-trainer/generator/generators/common.py#L10).
+  This remains a watch area, but the mixed respiratory archetypes that failed today have been patched with a minimal sanitizer allowlist update in [generator/generators/common.py](E:/Desktop/abg-trainer/generator/generators/common.py).
 - Why it matters:
-  This weakens mixed-disorder teaching. The intended "mixed vs single-process" distractors can disappear silently, so the final question may stop testing the physiology the archetype was designed to teach.
+  This weakens mixed-disorder teaching when explicitly curated single-process comparators disappear and generic backfill options replace them.
 - Evidence:
-  `dka_vomiting` still requests `["DKA with vomiting", "DKA", "Vomiting", "Salicylate toxicity", "Renal failure"]` in [generator/generators/mixed.py](E:/Desktop/abg-trainer/generator/generators/mixed.py), but the shipped payload example [docs/abg_cases.json](E:/Desktop/abg-trainer/docs/abg_cases.json) still backfills away the most educationally important single-process comparators.
+  `respiratory_acidosis_hagma` and `respiratory_alkalosis_hagma` define explicit final-diagnosis distractors in [generator/generators/mixed.py](E:/Desktop/abg-trainer/generator/generators/mixed.py), and their current tests now assert preservation of the intended curated comparators in [generator/tests/test_generate_cases.py](E:/Desktop/abg-trainer/generator/tests/test_generate_cases.py).
 - Recommended fix:
-  Stop using token-overlap heuristics as the final authority for mixed-disorder diagnosis sets. Preserve explicitly authored distractors unless there is a truly identical label collision.
+  The immediate regression was fixed with narrow allow-pair additions. A broader distractor-contract system can still wait unless this starts recurring across more archetypes.
 
 ### Moderate
 
 - Title: Diarrhoea explanations can misstate pH status
 - Severity: Moderate
 - Issue:
-  `generate_diarrhoea_case` compares `derived_ph_status()` against lowercase strings in [generator/generators/metabolic.py](E:/Desktop/abg-trainer/generator/generators/metabolic.py#L981) and [generator/generators/metabolic.py](E:/Desktop/abg-trainer/generator/generators/metabolic.py#L983), but `derived_ph_status()` returns capitalized values in [generator/physiology.py](E:/Desktop/abg-trainer/generator/physiology.py#L211).
+  This finding has now been addressed in source. `generate_diarrhoea_case` now compares `derived_ph_status()` against the helper's actual enum outputs in [generator/generators/metabolic.py](E:/Desktop/abg-trainer/generator/generators/metabolic.py#L971).
 - Why it matters:
-  Feedback text can tell a learner the pH is normal when the case is actually acidemic. That is not just cosmetic if the explanation is part of the teaching loop.
+  The original bug could tell a learner the pH was normal when the stored answer key correctly said acidaemia. That was a teaching-loop problem rather than a raw physiology-generation problem.
 - Evidence:
-  The lowercase comparisons can never match the capitalized helper output.
+  The explanation branch now uses `Acidaemia`, `Alkalaemia`, and `Normal` consistently, and the targeted explanation test in [generator/tests/test_generate_cases.py](E:/Desktop/abg-trainer/generator/tests/test_generate_cases.py#L823) would fail if this capitalization bug returned.
 - Recommended fix:
-  Normalize the string comparison or compare against the helper's actual enum values.
+  Completed in source. Keep the targeted test so this cannot silently regress.
 
 - Title: The mixed-disorder schema handles extra metabolic processes better than extra respiratory ones
 - Severity: Moderate
 - Issue:
-  `additional_metabolic_process` is explicitly metabolic-only in [generator/config.py](E:/Desktop/abg-trainer/generator/config.py#L99). That works for the HAGMA-plus-respiratory archetypes, but not for salicylate or any future case where the second process is respiratory.
+  This is still structurally true in general, but salicylate is no longer blocked by it because it now uses the same "respiratory primary + additional metabolic process" pattern as `respiratory_alkalosis_hagma`.
 - Why it matters:
   It forces the system to flatten some genuine mixed disorders into awkward primary labels or omit a key reasoning step from the question flow.
 - Evidence:
-  `salicylate_toxicity` is a mixed respiratory alkalosis plus HAGMA case in [generator/generators/mixed.py](E:/Desktop/abg-trainer/generator/generators/mixed.py#L240), but there is no schema path to ask the learner to name the concurrent respiratory process.
+  `salicylate_toxicity` now fits the existing mixed master flow in [generator/generators/mixed.py](E:/Desktop/abg-trainer/generator/generators/mixed.py#L334), so this is a future-generalization issue rather than a current salicylate blocker.
 - Recommended fix:
   Introduce a more general "additional_process" schema or a separate mixed-pattern question step for master mixed cases.
 
 - Title: `lactic_acidosis` is physiologically okay but educationally under-explained
 - Severity: Moderate
 - Issue:
-  `generate_lactate_case` produces plausible HAGMA numbers in [generator/generators/metabolic.py](E:/Desktop/abg-trainer/generator/generators/metabolic.py#L1096), but its explanation is only `"Sepsis commonly causes high anion gap metabolic acidosis due to lactate accumulation."`
+  This finding has now been addressed in source. `generate_lactate_case` still generates the same physiology pattern, but its explanation now explicitly walks through pH status, primary disorder, Winter compensation, anion gap calculation, and why the lactate/sepsis context fits lactic acidosis in [generator/generators/metabolic.py](E:/Desktop/abg-trainer/generator/generators/metabolic.py#L1104).
 - Why it matters:
-  The answer key expects the learner to reason through primary disorder, compensation, and anion gap, but the explanation does not reinforce those steps.
+  The previous one-line explanation did not reinforce the exact reasoning steps the learner was being scored on, which weakened the educational value of an otherwise sound archetype.
 - Evidence:
-  See [generator/generators/metabolic.py](E:/Desktop/abg-trainer/generator/generators/metabolic.py#L1125) versus the one-line explanation at [generator/generators/metabolic.py](E:/Desktop/abg-trainer/generator/generators/metabolic.py#L1133).
+  The updated explanation now references pH, HCO3, Winter's formula, anion gap, lactate, and septic context, and the targeted content test in [generator/tests/test_generate_cases.py](E:/Desktop/abg-trainer/generator/tests/test_generate_cases.py#L842) locks those teaching elements in place.
 - Recommended fix:
-  Bring the explanation up to the same standard as the stronger metabolic generators.
+  Completed in source. Regenerate `docs/abg_cases.json` in a runnable environment so the live payload picks up the stronger lactic-acidosis explanation.
 
 ### Minor
 
@@ -154,13 +155,14 @@ Biggest concerns:
 - `simple_nagma`: Strong. Clear beginner hyperchloraemic NAGMA pattern with pH kept acidemic and compensation constrained.
 - `simple_metabolic_alkalosis`: Strong. Clear beginner alkalosis pattern with chloride direction and respiratory compensation aligned.
 - `dka`: Probably correct, but it would teach more safely with explicit glucose.
-- `alcoholic_ketoacidosis`: Stronger than average. Good use of mild lactate and non-hyperglycaemic framing.
+- `dka`: Stronger than before. It now includes explicit DKA-supportive glucose in source and validation.
+- `alcoholic_ketoacidosis`: Stronger than average. Good use of mild lactate and now explicit non-DKA glucose framing.
 - `starvation_ketosis`: Strong. Good use of low-normal glucose and mild AG ranges.
 - `toxic_alcohol`: Strong. Good distinction from lactate-heavy HAGMA.
 - `vomiting_metabolic_alkalosis`: Fine physiologically.
 - `diuretic_metabolic_alkalosis`: Fine physiologically.
-- `diarrhoea_nagma`: Physiology is fine; explanation logic is bugged.
-- `lactic_acidosis`: Physiology acceptable, explanation underpowered.
+- `diarrhoea_nagma`: Improved. The explanation branch now matches the stored pH-status enum correctly.
+- `lactic_acidosis`: Improved. Physiology remains acceptable and the explanation now teaches the scored reasoning steps explicitly.
 - `uraemia`: Strong enough.
 - `opioid_toxicity`: Fine acute respiratory acidosis physiology.
 - `simple_respiratory_acidosis`: Fine beginner respiratory acidosis archetype.
@@ -169,7 +171,7 @@ Biggest concerns:
 - `simple_respiratory_alkalosis`: Fine beginner respiratory alkalosis archetype.
 - `sepsis_respiratory_alkalosis`: Improved. It now fits the binary compensation contract as acute respiratory alkalosis with defensible appropriate compensation and explicit expected-compensation metadata.
 - `acute_copd_exacerbation`: Improved. It now fits the binary contract as respiratory acidosis scored `Inappropriate` relative to isolated chronic compensation, with the acute-on-chronic nuance carried in the explanation.
-- `salicylate_toxicity`: Genuine mixed physiology, but the forced primary-disorder labelling is educationally awkward.
+- `salicylate_toxicity`: Improved substantially. It now teaches the intended classic pattern as respiratory alkalosis with concurrent HAGMA and validates the mixed physiology numerically.
 - `mixed_hagma_metabolic_alkalosis`: Strong and probably the best current mixed archetype.
 - `respiratory_acidosis_hagma`: Strong. Good use of chronic vs acute compensation rules and mismatch logic.
 - `respiratory_alkalosis_hagma`: Strong. Good counterpart to the respiratory-acidosis mixed archetype.
@@ -182,33 +184,33 @@ What validation currently catches well:
 - Henderson-Hasselbalch consistency via re-derived pH.
 - AG recalculation from displayed values.
 - Many archetype-specific compensation models for the stronger metabolic and mixed archetypes.
+- Generic scored-step answer membership against option lists.
+- Explicit archetype coverage auditing across generated cases.
 - Binary compensation membership when a compensation question is present.
-- `dka_vomiting` now validates hyperglycaemia support, preserved bicarbonate above isolated-HAGMA expectations, and Winter-consistent compensation.
+- `dka`, `dka_vomiting`, `alcoholic_ketoacidosis`, `starvation_ketosis`, `lactic_acidosis`, `toxic_alcohol`, and `salicylate_toxicity` now have adjunct-lab support/contradiction checks where relevant.
+- Mixed cases now validate second-process proof numerically rather than trusting labels alone.
 - Final-diagnosis option overlap and duplication.
 
 What validation currently misses:
-- Generic answer-key membership for non-diagnosis steps other than compensation.
 - Explanation correctness against the displayed physiology.
-- Whether diagnosis-supporting contextual labs such as glucose or lactate support the named diagnosis across the whole library rather than only in archetypes with bespoke checks.
-- Whether mixed-case diagnosis distractors still include the intended single-process comparators after sanitization.
+- Whether every archetype with curated final-diagnosis distractors has a formal required-distractor contract.
 
 What should eventually be validated:
 - Every registered archetype should declare its compensation rule explicitly or declare that no compensation question should be asked.
-- Every step's correct answer should be validated against its option list.
 - Mixed cases should validate that the second process is actually proven by the numbers, not just by the stem.
 - Diagnosis-critical adjunct labs such as glucose in DKA-family cases should be archetype-specific, not just schema-complete.
+- Explanation text should be checked against the displayed physiology for archetypes where the explanation is part of the teaching contract.
 
 ## 6. Recommended Next Actions
 
 Must fix before wider release:
-- Rework salicylate question modelling so it does not force a misleading single primary disorder.
-- Add broader validation for explanation correctness, adjunct-lab support, and required mixed-case distractors.
+- Regenerate and revalidate `docs/abg_cases.json` in an environment with a runnable Python toolchain so the shipped payload matches the corrected source generators and validators.
+- Add broader validation for explanation correctness and, if needed, formal required-distractor contracts for mixed archetypes.
 - Re-audit and regenerate `docs/abg_cases.json` after any further physiology-critical fixes.
 
 Should improve soon:
-- Add generic answer-key-versus-option validation for all question steps.
-- Fix the diarrhoea explanation branch bug.
-- Make explanation quality more consistent for cases like `lactic_acidosis`.
+- Improve progression/performance metadata if the product is going to introduce weakness-driven remediation.
+- Continue raising explanation quality in archetypes that are still shorter or less explicit than the strongest metabolic generators.
 
 Can wait:
 - Clean up progression metadata drift such as incomplete `case_pool` mapping.

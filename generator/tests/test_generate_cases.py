@@ -9,6 +9,7 @@ import sys
 import tempfile
 import unittest
 from collections import Counter
+from copy import deepcopy
 from pathlib import Path
 from unittest import mock
 
@@ -21,7 +22,9 @@ from generator.config import DIFFICULTY_UNLOCK_LEVELS, STEM_BANK, XP_REQUIRED_PE
 from generator.generators.common import build_case, build_inputs, diagnosis_labels_conflict, normalize_diagnosis_option
 from generator.physiology import (
     acute_respiratory_acidosis_expected_hco3,
+    calc_anion_gap,
     chronic_respiratory_acidosis_expected_hco3,
+    estimate_ph,
     hagma_bicarbonate_preservation,
     isolated_hagma_expected_hco3,
     respiratory_alkalosis_expected_hco3_acute,
@@ -29,14 +32,68 @@ from generator.physiology import (
 )
 from generator.progression import get_level_progress, level_from_total_xp, unlocked_difficulty_for_level, xp_to_reach_level
 from generator.stems import generate_stem
+from generator.validation import (
+    ARCHETYPE_VALIDATION_CONTRACTS,
+    validate_archetype_contract_coverage,
+    validate_case,
+    validate_cases,
+)
 
 
 class GenerateCasesTests(unittest.TestCase):
+    STEP_ANSWER_FIELDS = {
+        "ph_status": "ph_status",
+        "primary_disorder": "primary_disorder",
+        "compensation": "compensation",
+        "anion_gap": "anion_gap_category",
+        "additional_metabolic_process": "additional_metabolic_process",
+        "final_diagnosis": "final_diagnosis",
+    }
+
     @staticmethod
     def _get_case_lactate(case):
         inputs = case["inputs"]
         other = inputs.get("other", {})
         return other.get("lactate_mmolL", inputs.get("lactate_mmolL"))
+
+    @staticmethod
+    def _find_question(case, key):
+        return next(question for question in case["questions_flow"] if question.get("key") == key)
+
+    @classmethod
+    def _answer_for_step(cls, case, key):
+        return case["answer_key"][cls.STEP_ANSWER_FIELDS[key]]
+
+    @staticmethod
+    def _get_generated_case(archetype):
+        return next(
+            case for case in generate_cases.generate_all_cases()
+            if case["archetype"] == archetype
+        )
+
+    @staticmethod
+    def _rewrite_displayed_values(case, *, paco2=None, hco3=None, na=None, cl=None):
+        gas = case["inputs"]["gas"]
+        electrolytes = case["inputs"]["electrolytes"]
+
+        if paco2 is not None:
+            gas["paco2_mmHg"] = round(paco2, 1)
+        if hco3 is not None:
+            gas["hco3_mmolL"] = round(hco3, 1)
+        if na is not None:
+            electrolytes["na_mmolL"] = na
+        if cl is not None:
+            electrolytes["cl_mmolL"] = cl
+
+        gas["ph"] = estimate_ph(gas["hco3_mmolL"], gas["paco2_mmHg"])
+        ag = calc_anion_gap(
+            electrolytes["na_mmolL"],
+            electrolytes["cl_mmolL"],
+            gas["hco3_mmolL"],
+        )
+        case["answer_key"]["anion_gap_value"] = ag
+        case["answer_key"]["anion_gap_category"] = "Raised" if ag > 16 else "Normal"
+        return ag
 
     def test_build_inputs_supports_wide_sparse_schema(self):
         inputs = build_inputs(
@@ -346,6 +403,220 @@ class GenerateCasesTests(unittest.TestCase):
                 msg=f"{case['case_id']}: compensation answer must stay within the binary UI options",
             )
 
+    def test_generated_archetypes_have_explicit_validation_contracts(self):
+        cases = generate_cases.generate_all_cases()
+        coverage_errors = validate_archetype_contract_coverage(cases)
+        generated_archetypes = {case["archetype"] for case in cases}
+
+        self.assertFalse(coverage_errors, msg="\n".join(coverage_errors))
+        self.assertSetEqual(generated_archetypes, set(ARCHETYPE_VALIDATION_CONTRACTS))
+
+    def test_generated_cases_pass_full_validation(self):
+        cases = generate_cases.generate_all_cases()
+        errors = validate_cases(cases)
+
+        self.assertFalse(errors, msg="\n".join(errors))
+
+    def test_validation_rejects_case_without_explicit_archetype_contract(self):
+        case = deepcopy(self._get_generated_case("dka"))
+        case["case_id"] = "BROKEN_CONTRACT_001"
+        case["archetype"] = "future_unvalidated_archetype"
+
+        errors = validate_case(case)
+
+        self.assertTrue(
+            any("no explicit validation contract" in error for error in errors),
+            msg=errors,
+        )
+
+    def test_validation_rejects_correct_answers_missing_from_options_for_each_scored_step(self):
+        base_case = self._get_generated_case("dka_vomiting")
+
+        for question_key in self.STEP_ANSWER_FIELDS:
+            with self.subTest(question_key=question_key):
+                case = deepcopy(base_case)
+                question = self._find_question(case, question_key)
+                correct_answer = self._answer_for_step(case, question_key)
+                question["options"] = [option for option in question["options"] if option != correct_answer]
+
+                errors = validate_case(case)
+
+                self.assertTrue(
+                    any(
+                        f"question step '{question_key}' options missing correct answer '{correct_answer}'" in error
+                        for error in errors
+                    ),
+                    msg=errors,
+                )
+
+    def test_validation_rejects_dka_vomiting_without_numeric_proof_of_metabolic_alkalosis(self):
+        case = deepcopy(self._get_generated_case("dka_vomiting"))
+        electrolytes = case["inputs"]["electrolytes"]
+        gas = case["inputs"]["gas"]
+        ag = calc_anion_gap(electrolytes["na_mmolL"], electrolytes["cl_mmolL"], gas["hco3_mmolL"])
+        isolated_hco3 = isolated_hagma_expected_hco3(ag)
+        replacement_cl = int(round(electrolytes["na_mmolL"] - (isolated_hco3 + ag)))
+        winter_paco2 = round(winters_expected_paco2(isolated_hco3), 1)
+
+        self._rewrite_displayed_values(
+            case,
+            paco2=winter_paco2,
+            hco3=isolated_hco3,
+            cl=replacement_cl,
+        )
+
+        errors = validate_case(case)
+
+        self.assertTrue(
+            any("does not preserve enough delta-gap signal" in error for error in errors),
+            msg=errors,
+        )
+
+    def test_validation_rejects_respiratory_alkalosis_hagma_without_hco3_mismatch(self):
+        case = deepcopy(self._get_generated_case("respiratory_alkalosis_hagma"))
+        electrolytes = case["inputs"]["electrolytes"]
+        gas = case["inputs"]["gas"]
+        ag = calc_anion_gap(electrolytes["na_mmolL"], electrolytes["cl_mmolL"], gas["hco3_mmolL"])
+        expected_hco3 = round(respiratory_alkalosis_expected_hco3_acute(gas["paco2_mmHg"]), 1)
+        replacement_cl = int(round(electrolytes["na_mmolL"] - (expected_hco3 + ag)))
+
+        self._rewrite_displayed_values(
+            case,
+            hco3=expected_hco3,
+            cl=replacement_cl,
+        )
+        rewritten_ph = case["inputs"]["gas"]["ph"]
+        case["answer_key"]["ph_status"] = (
+            "Acidaemia" if rewritten_ph < 7.35 else "Alkalaemia" if rewritten_ph > 7.45 else "Normal"
+        )
+
+        errors = validate_case(case)
+
+        self.assertTrue(
+            any("should fall below the expected respiratory compensation range" in error for error in errors),
+            msg=errors,
+        )
+
+    def test_validation_rejects_salicylate_if_reverted_to_single_process_schema(self):
+        case = deepcopy(self._get_generated_case("salicylate_toxicity"))
+        case["questions_flow"] = [
+            question for question in case["questions_flow"]
+            if question.get("key") != "additional_metabolic_process"
+        ]
+        case["answer_key"]["primary_disorder"] = "Metabolic acidosis"
+        case["answer_key"].pop("additional_metabolic_process", None)
+
+        errors = validate_case(case)
+
+        self.assertTrue(
+            any("should use the mixed question flow with an additional metabolic process step" in error for error in errors),
+            msg=errors,
+        )
+        self.assertTrue(
+            any("should be respiratory alkalosis" in error for error in errors),
+            msg=errors,
+        )
+        self.assertTrue(
+            any("should identify a concurrent high anion gap metabolic acidosis" in error for error in errors),
+            msg=errors,
+        )
+
+    def test_validation_rejects_salicylate_without_hco3_mismatch(self):
+        case = deepcopy(self._get_generated_case("salicylate_toxicity"))
+        electrolytes = case["inputs"]["electrolytes"]
+        gas = case["inputs"]["gas"]
+        ag = calc_anion_gap(electrolytes["na_mmolL"], electrolytes["cl_mmolL"], gas["hco3_mmolL"])
+        expected_hco3 = round(respiratory_alkalosis_expected_hco3_acute(gas["paco2_mmHg"]), 1)
+        replacement_cl = int(round(electrolytes["na_mmolL"] - (expected_hco3 + ag)))
+
+        self._rewrite_displayed_values(
+            case,
+            hco3=expected_hco3,
+            cl=replacement_cl,
+        )
+
+        errors = validate_case(case)
+
+        self.assertTrue(
+            any("should fall below the expected respiratory compensation range" in error for error in errors),
+            msg=errors,
+        )
+
+    def test_validation_rejects_salicylate_with_dka_like_glucose(self):
+        case = deepcopy(self._get_generated_case("salicylate_toxicity"))
+        case["inputs"]["electrolytes"]["glucose_mmolL"] = 20.0
+
+        errors = validate_case(case)
+
+        self.assertTrue(
+            any("stay well below DKA-range hyperglycaemia" in error for error in errors),
+            msg=errors,
+        )
+
+    def test_validation_rejects_salicylate_with_lactate_dominant_gap(self):
+        case = deepcopy(self._get_generated_case("salicylate_toxicity"))
+        case["inputs"].setdefault("other", {})["lactate_mmolL"] = 5.5
+        case["inputs"]["lactate_mmolL"] = 5.5
+
+        errors = validate_case(case)
+
+        self.assertTrue(
+            any("salicylate remains the main explanation for the HAGMA" in error for error in errors),
+            msg=errors,
+        )
+
+    def test_validation_rejects_dka_family_without_supportive_glucose(self):
+        for archetype in ("dka", "dka_vomiting"):
+            with self.subTest(archetype=archetype):
+                case = deepcopy(self._get_generated_case(archetype))
+                case["inputs"]["electrolytes"]["glucose_mmolL"] = 6.0
+
+                errors = validate_case(case)
+
+                self.assertTrue(
+                    any("glucose should support the diagnosis" in error for error in errors),
+                    msg=errors,
+                )
+
+    def test_validation_rejects_alcoholic_ketoacidosis_with_dka_like_glucose(self):
+        case = deepcopy(self._get_generated_case("alcoholic_ketoacidosis"))
+        case["inputs"]["electrolytes"]["glucose_mmolL"] = 18.0
+
+        errors = validate_case(case)
+
+        self.assertTrue(
+            any("stay below classic DKA-range hyperglycaemia" in error for error in errors),
+            msg=errors,
+        )
+
+    def test_validation_rejects_lactic_acidosis_without_supportive_lactate(self):
+        case = deepcopy(self._get_generated_case("lactic_acidosis"))
+        case["inputs"]["other"]["lactate_mmolL"] = 1.8
+        case["inputs"]["lactate_mmolL"] = 1.8
+
+        errors = validate_case(case)
+
+        self.assertTrue(
+            any("lactate should materially support the diagnosis" in error for error in errors),
+            msg=errors,
+        )
+
+    def test_validation_rejects_toxic_alcohol_if_lactate_becomes_main_hagma_explanation(self):
+        case = deepcopy(self._get_generated_case("toxic_alcohol"))
+        electrolytes = case["inputs"]["electrolytes"]
+        gas = case["inputs"]["gas"]
+        ag = calc_anion_gap(electrolytes["na_mmolL"], electrolytes["cl_mmolL"], gas["hco3_mmolL"])
+        dominant_lactate = round((ag - 12) + 1.0, 1)
+        case["inputs"].setdefault("other", {})["lactate_mmolL"] = dominant_lactate
+        case["inputs"]["lactate_mmolL"] = dominant_lactate
+
+        errors = validate_case(case)
+
+        self.assertTrue(
+            any("should not be the main explanation for the HAGMA" in error for error in errors),
+            msg=errors,
+        )
+
     def test_generated_cases_match_henderson_hasselbalch_within_tolerance(self):
         cases = generate_cases.generate_all_cases()
 
@@ -383,6 +654,12 @@ class GenerateCasesTests(unittest.TestCase):
             self.assertEqual(answer_key["final_diagnosis"], "Alcoholic ketoacidosis")
             self.assertEqual(answer_key["primary_disorder"], "Metabolic acidosis")
             self.assertEqual(answer_key["anion_gap_category"], "Raised")
+            self.assertIn("glucose_mmolL", electrolytes, msg=case["case_id"])
+            self.assertLess(
+                electrolytes["glucose_mmolL"],
+                14.0,
+                msg=f"{case['case_id']}: alcoholic ketoacidosis should not look like classic DKA",
+            )
             self.assertGreater(ag, 16, msg=case["case_id"])
             self.assertAlmostEqual(
                 gas["paco2_mmHg"],
@@ -398,6 +675,38 @@ class GenerateCasesTests(unittest.TestCase):
                     4.0,
                     msg=f"{case['case_id']}: lactate should stay mild if present",
                 )
+
+    def test_dka_cases_match_expected_pattern(self):
+        cases = [
+            case for case in generate_cases.generate_all_cases()
+            if case["archetype"] == "dka"
+        ]
+
+        self.assertEqual(len(cases), 8)
+
+        for case in cases:
+            gas = case["inputs"]["gas"]
+            electrolytes = case["inputs"]["electrolytes"]
+            answer_key = case["answer_key"]
+            ag = electrolytes["na_mmolL"] - (electrolytes["cl_mmolL"] + gas["hco3_mmolL"])
+            expected_paco2 = winters_expected_paco2(gas["hco3_mmolL"])
+
+            self.assertEqual(answer_key["final_diagnosis"], "DKA")
+            self.assertEqual(answer_key["primary_disorder"], "Metabolic acidosis")
+            self.assertEqual(answer_key["anion_gap_category"], "Raised")
+            self.assertIn("glucose_mmolL", electrolytes, msg=case["case_id"])
+            self.assertGreaterEqual(
+                electrolytes["glucose_mmolL"],
+                14.0,
+                msg=f"{case['case_id']}: DKA glucose should support the diagnosis",
+            )
+            self.assertGreater(ag, 16, msg=case["case_id"])
+            self.assertAlmostEqual(
+                gas["paco2_mmHg"],
+                expected_paco2,
+                delta=2.0,
+                msg=f"{case['case_id']}: PaCO2 should follow Winter compensation",
+            )
 
     def test_toxic_alcohol_cases_match_expected_pattern(self):
         cases = [
@@ -510,6 +819,46 @@ class GenerateCasesTests(unittest.TestCase):
                 delta=2.0,
                 msg=f"{case['case_id']}: PaCO2 should follow Winter compensation",
             )
+
+    def test_diarrhoea_explanations_match_stored_ph_status(self):
+        cases = [
+            case for case in generate_cases.generate_all_cases()
+            if case["archetype"] == "diarrhoea_nagma"
+        ]
+
+        self.assertEqual(len(cases), 8)
+
+        for case in cases:
+            explanation = case["explanation"]
+            ph_status = case["answer_key"]["ph_status"]
+
+            if ph_status == "Acidaemia":
+                self.assertIn("Low pH indicates acidaemia.", explanation, msg=case["case_id"])
+            elif ph_status == "Alkalaemia":
+                self.assertIn("High pH indicates alkalaemia.", explanation, msg=case["case_id"])
+            else:
+                self.assertIn("The pH is in the normal range", explanation, msg=case["case_id"])
+
+    def test_lactic_acidosis_explanations_cover_key_reasoning_steps(self):
+        cases = [
+            case for case in generate_cases.generate_all_cases()
+            if case["archetype"] == "lactic_acidosis"
+        ]
+
+        self.assertEqual(len(cases), 8)
+
+        for case in cases:
+            explanation = case["explanation"].lower()
+
+            self.assertIn("pH is".lower(), explanation, msg=case["case_id"])
+            self.assertIn("hco3", explanation, msg=case["case_id"])
+            self.assertIn("metabolic acidosis", explanation, msg=case["case_id"])
+            self.assertIn("winter", explanation, msg=case["case_id"])
+            self.assertIn("appropriate", explanation, msg=case["case_id"])
+            self.assertIn("anion gap", explanation, msg=case["case_id"])
+            self.assertIn("lactate", explanation, msg=case["case_id"])
+            self.assertIn("septic clinical context", explanation, msg=case["case_id"])
+            self.assertIn("lactic acidosis", explanation, msg=case["case_id"])
 
     def test_simple_metabolic_alkalosis_cases_match_expected_pattern(self):
         cases = [
@@ -872,6 +1221,81 @@ class GenerateCasesTests(unittest.TestCase):
 
         self.assertGreaterEqual(near_normal_case_count, 1)
         self.assertGreaterEqual(subtle_mismatch_case_count, 1)
+
+    def test_salicylate_cases_match_expected_mixed_pattern(self):
+        cases = [
+            case for case in generate_cases.generate_all_cases()
+            if case["archetype"] == "salicylate_toxicity"
+        ]
+
+        self.assertEqual(len(cases), 8)
+        alkalemic_case_count = 0
+        near_normal_case_count = 0
+        acidemic_case_count = 0
+
+        for case in cases:
+            gas = case["inputs"]["gas"]
+            electrolytes = case["inputs"]["electrolytes"]
+            answer_key = case["answer_key"]
+            ag = electrolytes["na_mmolL"] - (electrolytes["cl_mmolL"] + gas["hco3_mmolL"])
+            expected_hco3 = respiratory_alkalosis_expected_hco3_acute(gas["paco2_mmHg"])
+            question_keys = [question.get("key") for question in case["questions_flow"]]
+            lactate = self._get_case_lactate(case)
+
+            self.assertEqual(
+                question_keys,
+                ["ph_status", "primary_disorder", "compensation", "anion_gap", "additional_metabolic_process", "final_diagnosis"],
+            )
+            self.assertEqual(answer_key["primary_disorder"], "Respiratory alkalosis")
+            self.assertEqual(answer_key["compensation"], "Inappropriate")
+            self.assertEqual(answer_key["anion_gap_category"], "Raised")
+            self.assertEqual(answer_key["additional_metabolic_process"], "High anion gap metabolic acidosis")
+            self.assertEqual(answer_key["final_diagnosis"], "Salicylate toxicity")
+            self.assertEqual(answer_key["expected_compensation"]["rule"], "Acute respiratory alkalosis")
+            self.assertLess(gas["paco2_mmHg"], 35, msg=case["case_id"])
+            self.assertGreater(ag, 16, msg=case["case_id"])
+            self.assertLess(gas["hco3_mmolL"], expected_hco3 - 2, msg=case["case_id"])
+            self.assertLess(electrolytes["glucose_mmolL"], 14.0, msg=case["case_id"])
+            self.assertIsNotNone(lactate, msg=case["case_id"])
+            self.assertLessEqual(lactate, 3.2, msg=case["case_id"])
+
+            if gas["ph"] < 7.35:
+                acidemic_case_count += 1
+            elif gas["ph"] > 7.45:
+                alkalemic_case_count += 1
+            else:
+                near_normal_case_count += 1
+
+            additional_process_options = next(
+                question["options"]
+                for question in case["questions_flow"]
+                if question.get("key") == "additional_metabolic_process"
+            )
+            self.assertIn("High anion gap metabolic acidosis", additional_process_options, msg=case["case_id"])
+
+            diagnosis_options = next(
+                question["options"]
+                for question in case["questions_flow"]
+                if question.get("key") == "final_diagnosis"
+            )
+            self.assertIn(
+                "Respiratory alkalosis with concurrent high anion gap metabolic acidosis",
+                diagnosis_options,
+                msg=case["case_id"],
+            )
+            self.assertIn("Respiratory alkalosis", diagnosis_options, msg=case["case_id"])
+            self.assertIn("High anion gap metabolic acidosis", diagnosis_options, msg=case["case_id"])
+            self.assertIn("DKA", diagnosis_options, msg=case["case_id"])
+            self.assertIn("Panic attack / hyperventilation", diagnosis_options, msg=case["case_id"])
+
+            explanation = case.get("explanation", "").lower()
+            self.assertIn("acute respiratory alkalosis", explanation, msg=case["case_id"])
+            self.assertIn("bicarbonate is too low for isolated acute respiratory alkalosis", explanation, msg=case["case_id"])
+            self.assertIn("classic for salicylate toxicity", explanation, msg=case["case_id"])
+
+        self.assertGreaterEqual(alkalemic_case_count, 1)
+        self.assertGreaterEqual(near_normal_case_count, 1)
+        self.assertGreaterEqual(acidemic_case_count, 1)
 
     def test_main_writes_valid_json_payload(self):
         with tempfile.TemporaryDirectory() as temp_dir:

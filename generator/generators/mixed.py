@@ -24,7 +24,7 @@ from ..physiology import (
     respiratory_alkalosis_expected_hco3_acute,
     winters_expected_paco2,
 )
-from ..question_flow import advanced_question_flow, default_timing, expert_question_flow, shuffle_question_options
+from ..question_flow import default_timing, expert_question_flow, shuffle_question_options
 from ..stems import generate_stem
 from .common import build_answer_key, build_case, build_inputs
 
@@ -89,6 +89,60 @@ MIXED_HAGMA_METABOLIC_ALKALOSIS_VARIATION_BANDS = [
             "40-year-old presents with recurrent vomiting and reduced intake during a prolonged systemic illness with increasing lethargy.",
         ],
         "explanation_emphasis": "The near-normal pH is a trap: the numbers still do not fit a single disorder because the bicarbonate is too high for the raised anion gap.",
+    },
+]
+
+SALICYLATE_VARIATION_BANDS = [
+    {
+        "name": "respiratory_alkalosis_dominant",
+        "paco2_range": (18, 24),
+        "anion_gap_range": (18, 24),
+        "gap_below_expected_range": (2.5, 4.0),
+        "sodium_range": (136, 143),
+        "chloride_range": (96, 108),
+        "glucose_range": (4.8, 7.8),
+        "lactate_range": (1.2, 2.4),
+        "ph_range": (7.45, 7.53),
+        "stem_options": [
+            "21-year-old presents with tinnitus, nausea, fever, and marked hyperventilation after an aspirin overdose.",
+            "29-year-old is brought in after a salicylate overdose with ringing in the ears, vomiting, and rapid breathing.",
+            "24-year-old presents with tinnitus, diaphoresis, and tachypnoea after ingesting a large number of tablets.",
+        ],
+        "explanation_emphasis": "The alkalemic pH does not rule out a concurrent metabolic acidosis when the bicarbonate is lower than acute respiratory alkalosis should produce.",
+    },
+    {
+        "name": "near_normal_ph_trap",
+        "paco2_range": (20, 27),
+        "anion_gap_range": (20, 27),
+        "gap_below_expected_range": (4.0, 6.0),
+        "sodium_range": (136, 143),
+        "chloride_range": (94, 108),
+        "glucose_range": (4.6, 8.2),
+        "lactate_range": (1.4, 2.8),
+        "ph_range": (7.35, 7.44),
+        "stem_options": [
+            "34-year-old presents confused, tachypnoeic, febrile, and complaining of ringing in the ears after an overdose.",
+            "27-year-old attends ED with nausea, hyperventilation, tinnitus, and diaphoresis after ingesting a large quantity of aspirin.",
+            "31-year-old presents with fever, vomiting, and persistent tinnitus after a deliberate salicylate ingestion.",
+        ],
+        "explanation_emphasis": "The near-normal pH is the trap: the displayed numbers still prove two primary processes.",
+    },
+    {
+        "name": "hagma_dominant",
+        "paco2_range": (22, 30),
+        "anion_gap_range": (24, 32),
+        "gap_below_expected_range": (5.5, 8.0),
+        "sodium_range": (136, 143),
+        "chloride_range": (92, 106),
+        "glucose_range": (4.4, 7.4),
+        "lactate_range": (1.5, 3.0),
+        "ph_range": (7.24, 7.34),
+        "stem_options": [
+            "38-year-old is reviewed after a salicylate overdose with worsening nausea, fever, tinnitus, and deep rapid breathing.",
+            "26-year-old presents with salicylate toxicity symptoms including vomiting, hyperventilation, and ringing in the ears.",
+            "33-year-old attends ED after an aspirin overdose with tachypnoea, diaphoresis, fever, and increasing lethargy.",
+        ],
+        "explanation_emphasis": "Even when the overall pH is acidemic, the PaCO2 is still too low to ignore and the bicarbonate falls further because a concurrent HAGMA is also present.",
     },
 ]
 
@@ -278,56 +332,91 @@ DKA_VOMITING_VARIATION_BANDS = [
 
 
 def generate_salicylate_case(case_id):
-    paco2 = random.randint(18, 24)
-    hco3 = random.randint(10, 16)
-    ph = estimate_ph(hco3, paco2)
-    na = random.randint(136, 142)
-    target_ag = random.randint(20, 28)
-    cl = na - (hco3 + target_ag)
-    ag = calc_anion_gap(na, cl, hco3)
-    lactate = round(random.uniform(1.0, 2.5), 1)
+    band = _salicylate_band_for_case(case_id)
 
-    stem_options = [
-        "21-year-old presents with tinnitus, vomiting, fever, and rapid breathing after an overdose.",
-        "34-year-old presents confused, tachypnoeic, and febrile with ringing in the ears.",
-        "27-year-old presents with nausea, hyperventilation, and tinnitus after ingesting a large quantity of tablets.",
-    ]
+    for _ in range(100):
+        paco2 = round(random.uniform(*band["paco2_range"]), 1)
+        expected_hco3 = respiratory_alkalosis_expected_hco3_acute(paco2)
+        target_ag = random.randint(*band["anion_gap_range"])
+        gap_below_expected = round(random.uniform(*band["gap_below_expected_range"]), 1)
+        hco3 = round(expected_hco3 - gap_below_expected, 1)
+
+        if hco3 < 10 or hco3 > 20:
+            continue
+
+        na = random.randint(*band["sodium_range"])
+        cl = int(round(na - (hco3 + target_ag)))
+        if not (band["chloride_range"][0] <= cl <= band["chloride_range"][1]):
+            continue
+
+        ag = calc_anion_gap(na, cl, hco3)
+        ph = estimate_ph(hco3, paco2)
+        if not (band["ph_range"][0] <= ph <= band["ph_range"][1]):
+            continue
+
+        break
+    else:
+        raise ValueError(f"Unable to generate salicylate mixed-disorder values for {case_id}")
+
+    lactate = round(random.uniform(*band["lactate_range"]), 1)
+    glucose = round(random.uniform(*band["glucose_range"]), 1)
+    expected_hco3_low = round(expected_hco3 - 2, 1)
+    expected_hco3_high = round(expected_hco3 + 2, 1)
+    clinical_stem = random.choice(band["stem_options"])
+
+    if ph < 7.35:
+        ph_summary = "acidaemia overall"
+    elif ph > 7.45:
+        ph_summary = "alkalaemia overall"
+    else:
+        ph_summary = "a near-normal overall pH"
 
     explanation = (
-        f"Both PaCO2 and HCO3 are low. This is not explained by a single primary disorder alone. "
-        f"The low PaCO2 indicates a respiratory alkalosis, while the low HCO3 with raised anion gap "
-        f"({ag:.1f}) indicates a high anion gap metabolic acidosis. "
-        f"This is a mixed respiratory alkalosis and metabolic acidosis, classic for salicylate toxicity."
+        f"1. pH is {ph}, so there is {ph_summary}. In salicylate toxicity the net pH can be alkalemic, near-normal, or acidemic depending on the balance of the two primary processes. "
+        f"2. PaCO2 is {paco2} mmHg, which is clearly low and indicates a primary respiratory alkalosis. "
+        f"3. If this were isolated acute respiratory alkalosis, HCO3 should be about {expected_hco3:.1f} mmol/L "
+        f"(acceptable range {expected_hco3_low}-{expected_hco3_high}), but the actual HCO3 is {hco3} mmol/L. "
+        f"The bicarbonate is too low for isolated acute respiratory alkalosis. {band['explanation_emphasis']} "
+        f"4. The anion gap is {na} - ({cl} + {hco3}) = {ag}, which is raised and proves a concurrent high anion gap metabolic acidosis. "
+        f"Lactate is {lactate}, so mild elevation may be present, but it is not the main explanation for the gap. "
+        f"5. Glucose is {glucose} mmol/L, which is not DKA-range hyperglycaemia. "
+        f"6. The overall pattern is respiratory alkalosis with concurrent high anion gap metabolic acidosis, classic for salicylate toxicity."
     )
 
     return build_case(
         case_id=case_id,
         title="Salicylate toxicity (mixed respiratory alkalosis + HAGMA)",
         category="mixed_disorder",
-        learning_objective="Recognise the mixed respiratory alkalosis and high anion gap metabolic acidosis of salicylate toxicity",
+        learning_objective="Recognise the classic respiratory alkalosis plus high anion gap metabolic acidosis pattern of salicylate toxicity",
         tags=["salicylate", "mixed_disorder", "respiratory_alkalosis", "hagma", "toxicology"],
-        clinical_stem=random.choice(stem_options),
-        inputs=build_inputs(ph, paco2, hco3, na, cl, lactate=lactate),
+        clinical_stem=clinical_stem,
+        inputs=build_inputs(ph, paco2, hco3, na, cl, lactate=lactate, glucose=glucose),
         questions_flow=shuffle_question_options(
-            advanced_question_flow([
-                "Salicylate toxicity",
-                "DKA",
-                "Diarrhoea",
-                "Panic attack / hyperventilation",
-                "Renal failure (uraemia)",
-            ])
+            expert_question_flow(
+                [
+                    "Salicylate toxicity",
+                    "Respiratory alkalosis with concurrent high anion gap metabolic acidosis",
+                    "Respiratory alkalosis",
+                    "High anion gap metabolic acidosis",
+                    "DKA",
+                    "Panic attack / hyperventilation",
+                ],
+                include_additional_metabolic_process=True,
+            )
         ),
         answer_key=build_answer_key(
             ph_status=derived_ph_status(ph),
-            primary_disorder="Metabolic acidosis",
+            primary_disorder="Respiratory alkalosis",
             compensation="Inappropriate",
             anion_gap_value=ag,
             anion_gap_category="Raised",
             final_diagnosis="Salicylate toxicity",
             expected_compensation={
-                "rule": "Mixed disorder present",
-                "note": "Low PaCO2 and low HCO3 are due to two primary processes: respiratory alkalosis and HAGMA",
+                "rule": "Acute respiratory alkalosis",
+                "expected_hco3_mmolL": round(expected_hco3, 1),
+                "acceptable_range_mmolL": [expected_hco3_low, expected_hco3_high],
             },
+            additional_metabolic_process="High anion gap metabolic acidosis",
         ),
         explanation=explanation,
         timing=default_timing(),
@@ -756,3 +845,14 @@ def _respiratory_alkalosis_hagma_band_for_case(case_id):
     # Cycle across bands so the fixed 8-case pool always covers the major mixed-pattern variants.
     band_index = (case_number - 1) % len(RESPIRATORY_ALKALOSIS_HAGMA_VARIATION_BANDS)
     return RESPIRATORY_ALKALOSIS_HAGMA_VARIATION_BANDS[band_index]
+
+
+def _salicylate_band_for_case(case_id):
+    try:
+        case_number = int(str(case_id).split("_")[-1])
+    except (TypeError, ValueError):
+        return random.choice(SALICYLATE_VARIATION_BANDS)
+
+    # Cycle across bands so the fixed 8-case pool covers alkalemic, near-normal, and acidemic salicylate variants.
+    band_index = (case_number - 1) % len(SALICYLATE_VARIATION_BANDS)
+    return SALICYLATE_VARIATION_BANDS[band_index]
